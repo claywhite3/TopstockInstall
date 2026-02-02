@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion - Scan Rail</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        
+        body {
+            background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            margin-top: 10px;
+        }
+        .back-icon { font-size: 24px; color: #000; text-decoration: none; }
+        .user-pill {
+            background-color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* --- CONTENT --- */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 25px;
+            text-align: center;
+            padding-bottom: 40px;
+        }
+
+        .logo-box {
+            width: 60px; height: 60px;
+            border: 3px solid #1a1a1a;
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; }
+
+        h2 { font-size: 22px; margin-bottom: 20px; color: #000; }
+
+        /* --- SCAN INPUT FIELD --- */
+        .scan-container {
+            position: relative;
+            width: 100%;
+            max-width: 350px;
+            margin-bottom: 25px;
+        }
+        .scan-input {
+            width: 100%;
+            padding: 15px 40px 15px 50px; 
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            outline: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .scan-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+            padding: 5px; 
+        }
+        .clear-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #999;
+            cursor: pointer;
+            background: #eee;
+            border-radius: 50%;
+            width: 24px; height: 24px;
+            display: flex; align-items: center; justify-content: center;
+        }
+
+        /* --- INSTRUCTION IMAGES --- */
+        .instruction-title { font-size: 18px; font-weight: 500; margin-bottom: 10px; }
+        .img-wrapper { width: 100%; max-width: 350px; margin-bottom: 15px; }
+        .flip-img { width: 100%; height: auto; border-radius: 8px; }
+        .wrong-img { width: 80%; height: auto; border-radius: 8px; margin-top: 10px; }
+
+        /* --- NAV BUTTONS --- */
+        .nav-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 350px;
+            margin-top: auto; 
+        }
+
+        .nav-btn {
+            background-color: #FDD757;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: black;
+            text-decoration: none;
+            transition: transform 0.1s;
+        }
+        .nav-btn:active { transform: scale(0.95); background-color: #eebf28; }
+
+        /* --- FAKE CAMERA OVERLAY --- */
+        #camera-overlay {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            
+            /* SOLID BLACK BACKGROUND */
+            background-color: #000; 
+        }
+
+        .camera-text {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 500;
+            z-index: 2;
+        }
+
+        .viewfinder {
+            width: 300px;
+            height: 180px;
+            border: 3px solid rgba(255,255,255,0.8);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden; 
+            
+            /* IMAGE IS INSIDE THE BOX */
+            background: url('camera-bg.jpg') no-repeat center center;
+            background-size: cover;
+            background-color: #333; 
+            
+            /* Standard Shadow */
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        /* The moving red laser line */
+        .laser-line {
+            width: 100%;
+            height: 2px;
+            background-color: red;
+            position: absolute;
+            top: 0;
+            animation: scan 2s infinite linear;
+            box-shadow: 0 0 5px red;
+            opacity: 0.8;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+
+        .cancel-scan {
+            margin-top: 30px;
+            color: white;
+            font-size: 16px;
+            padding: 10px 30px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="page4.html" class="back-icon"><i class="fas fa-chevron-left"></i></a>
+        <div class="user-pill">
+            <i class="fas fa-user"></i>
+            <span>installer01@email.com</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="logo-box"><span class="logo-text">V</span></div>
+
+        <h2>Please Scan the Rail ID</h2>
+
+        <div class="scan-container">
+            <i class="fas fa-barcode scan-icon" onclick="openScanner()"></i>
+            <input type="text" id="railID" class="scan-input" placeholder="Scan Rail ID" autocomplete="off">
+            <div class="clear-icon" onclick="clearInput()">
+                <i class="fas fa-times"></i>
+            </div>
+        </div>
+
+        <div class="instruction-title">Rotate Rail to find Rail ID</div>
+
+        <div class="img-wrapper">
+            <img src="flip-rail.jpg" alt="Rotate Rail" class="flip-img" onerror="this.style.display='none'">
+        </div>
+
+        <div class="img-wrapper">
+            <img src="wrong-rail.jpg" alt="Do Not Scan Front" class="wrong-img" onerror="this.style.display='none'">
+        </div>
+
+        <div class="nav-row">
+            <a href="page4.html" class="nav-btn">
+                <i class="fas fa-caret-left"></i> BACK
+            </a>
+            <button class="nav-btn" onclick="validateAndGo()">
+                NEXT <i class="fas fa-caret-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div id="camera-overlay">
+        <div class="camera-text">Align barcode in window</div>
+        <div class="viewfinder" id="viewfinder">
+            <div class="laser-line"></div>
+        </div>
+        <div class="cancel-scan" onclick="closeScanner()">Cancel</div>
+    </div>
+
+    <script>
+        function openScanner() {
+            const overlay = document.getElementById('camera-overlay');
+            const viewfinder = document.getElementById('viewfinder');
+            
+            overlay.style.display = 'flex';
+            // Reset to default white border
+            viewfinder.style.borderColor = 'rgba(255,255,255,0.8)';
+            viewfinder.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
+
+            // Wait 2.5 seconds, then "success"
+            setTimeout(() => {
+                // Visual Beep: Turn box green with a glow
+                viewfinder.style.borderColor = '#00FF00';
+                viewfinder.style.boxShadow = '0 0 30px #00FF00';
+                
+                setTimeout(() => {
+                    closeScanner();
+                    const inputField = document.getElementById('railID');
+                    inputField.value = "RL-8842-XJ"; 
+                }, 500); 
+            }, 2500);
+        }
+
+        function closeScanner() {
+            document.getElementById('camera-overlay').style.display = 'none';
+        }
+
+        function clearInput() {
+            document.getElementById('railID').value = "";
+        }
+
+        function validateAndGo() {
+            const val = document.getElementById('railID').value;
+            if(val.trim() === "") {
+                alert("Please scan or enter a Rail ID.");
+            } else {
+                window.location.href = 'page6.html';
+            }
+        }
+    </script>
+
+</body>
+</html>

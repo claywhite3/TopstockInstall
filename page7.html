@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion - Registering</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        
+        body {
+            background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 20px;
+            margin-top: 10px;
+        }
+        .user-pill {
+            background-color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 25px;
+            text-align: center;
+            padding-top: 20px;
+        }
+
+        .logo-box {
+            width: 60px; height: 60px;
+            border: 3px solid #1a1a1a;
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 30px;
+        }
+        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; }
+
+        h2 { font-size: 24px; margin-bottom: 30px; color: #000; font-weight: 500; }
+
+        .rail-display {
+            width: 100%;
+            max-width: 320px;
+            height: auto;
+            margin-bottom: 50px;
+            animation: float 3s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        /* --- SPINNER --- */
+        .spinner-container {
+            position: relative;
+            width: 220px;
+            height: 220px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .spinner-bg {
+            position: absolute;
+            width: 180px;
+            height: 180px;
+            background: #111;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            z-index: 1;
+        }
+
+        .spinner-ring {
+            position: absolute;
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            border: 8px dashed #FF8C00;
+            box-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+            animation: spin 6s linear infinite;
+            z-index: 2;
+        }
+        
+        .spinner-ring-inner {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 140, 0, 0.3);
+            border-top: 2px solid #FFD700;
+            animation: spin-reverse 3s linear infinite;
+            z-index: 2;
+        }
+
+        .spinner-text {
+            position: relative;
+            z-index: 3;
+            color: #FF8C00;
+            font-family: 'Orbitron', sans-serif;
+            text-align: center;
+            pointer-events: none; /* Let clicks pass through to container */
+        }
+        .main-status {
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+            color: #FFA500;
+            text-shadow: 0 0 5px rgba(255, 165, 0, 0.5);
+        }
+        .sub-status {
+            font-size: 12px;
+            color: #aaa;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        @keyframes spin-reverse { 100% { transform: rotate(-360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="user-pill">
+            <i class="fas fa-user"></i>
+            <span>installer01@email.com</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="logo-box"><span class="logo-text">V</span></div>
+
+        <h2>Please Wait</h2>
+
+        <img src="rail-loading.jpg" alt="Rail" class="rail-display" onerror="this.style.display='none'">
+
+        <div class="spinner-container" onclick="setFailurePath()">
+            <div class="spinner-ring"></div>
+            <div class="spinner-ring-inner"></div>
+            <div class="spinner-bg"></div>
+            
+            <div class="spinner-text">
+                <div class="main-status">Registering<br>the Rail</div>
+                <div class="sub-status">Please wait...</div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Default destination is Success (Page 8)
+        let nextPage = 'page8.html';
+
+        // Timer always runs for exactly 4 seconds
+        window.onload = function() {
+            setTimeout(function() {
+                // When time is up, go to whatever nextPage is currently set to
+                window.location.href = nextPage;
+            }, 4000); 
+        };
+
+        // If clicked, we silently switch the destination to Page 9
+        // No visual changes, so the audience suspects nothing.
+        function setFailurePath() {
+            nextPage = 'page9.html';
+            console.log("Failure path activated."); // For your debugging only
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modular A12.2 Settings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER STYLE --- */
+        .header {
+            background: linear-gradient(180deg, #FFD045 0%, #FFF5D6 100%);
+            padding: 15px 15px;
+            display: grid;
+            grid-template-columns: 1fr 2fr 1fr;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e0c040;
+        }
+
+        /* Left: Swap Rail Icon */
+        .header-left {
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 10px; /* Space between icon and other elements if added */
+        }
+
+        .swap-btn {
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .swap-btn:hover {
+            background: rgba(255, 255, 255, 0.5);
+        }
+
+        /* The Custom SVG Icon Style */
+        .swap-icon-svg {
+            width: 32px;
+            height: 32px;
+            fill: #2196F3; /* Vusion Blue */
+        }
+
+        /* Center: Title */
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        /* Right: Refresh */
+        .header-right {
+            display: flex;
+            justify-content: flex-end;
+        }
+
+        .refresh-btn {
+            background: none;
+            border: none;
+            font-size: 22px;
+            cursor: pointer;
+            color: #2196F3; /* Matching Blue for Action Icons */
+            padding: 0;
+            transition: transform 0.2s;
+        }
+
+        .refresh-btn:active {
+            transform: rotate(180deg);
+        }
+
+        /* --- CONTENT STYLES --- */
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            flex: 1; /* Pushes footer down */
+            padding-bottom: 80px; /* Space for the fixed bottom button */
+        }
+
+        .status-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .label {
+            font-size: 14px;
+            color: #555;
+            flex: 1;
+            font-weight: 500;
+        }
+
+        .input-box {
+            flex: 1.5;
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            color: #333;
+            background: #fff;
+        }
+
+        .input-box.readonly {
+            background: #f9f9f9;
+            color: #666;
+        }
+
+        .status-pill {
+            flex: 1.2;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 600;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .status-green { background-color: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status-red { background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .status-orange { background-color: #fff3cd; color: #856404; border: 1px solid #ffeeba; }
+        .status-gray { background-color: #e2e3e5; color: #383d41; border: 1px solid #d6d8db; }
+
+        .nav-dots {
+            width: 36px;
+            height: 36px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 18px;
+            text-decoration: none;
+        }
+        
+        .nav-dots:hover { background-color: #004494; }
+
+        .action-area {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr 1fr;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .action-btn {
+            padding: 10px;
+            border: 1px solid #333;
+            border-radius: 6px;
+            background: white;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+
+        .action-btn:hover:not(:disabled) {
+            background: #f0f0f0;
+        }
+
+        .action-btn.green {
+            background-color: #d4edda;
+            border-color: #155724;
+            color: #155724;
+        }
+
+        .action-btn:disabled {
+            background-color: #e0e0e0;
+            color: #999;
+            border-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .spinner {
+            border: 2px solid rgba(0,0,0,0.1);
+            border-left-color: #333;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+        }
+
+        .back-button-footer {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px;
+            background-color: #FFD045; /* Yellow to match previous pages */
+            color: #1a1a1a;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-left">
+            <a href="page5.html" class="swap-btn" title="Swap Rail">
+                <svg class="swap-icon-svg" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="7" y="5" width="8" height="10" rx="1" stroke="#2196F3" stroke-width="2" fill="white"/>
+                    <rect x="10" y="8" width="8" height="10" rx="1" stroke="#2196F3" stroke-width="2" fill="white"/>
+                    <path d="M5 11C5 9 6 7 8 7" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M5 11L7 9" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M20 12C20 14 19 16 17 16" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                    <path d="M20 12L18 14" stroke="#2196F3" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+            </a>
+        </div>
+
+        <div class="header-title">Modular A12.2</div>
+
+        <div class="header-right">
+            <button class="refresh-btn" onclick="location.reload()">
+                <i class="fas fa-rotate-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="status-card">
+            
+            <div class="row">
+                <span class="label">Topstock:</span>
+                <input type="text" class="input-box" value="Z001-0123" readonly>
+            </div>
+            <div class="row">
+                <span class="label">Sub-modulars:</span>
+                <input type="text" class="input-box" value="A12.3, A12.4" readonly>
+            </div>
+            <div class="row">
+                <span class="label">Opposing Aisle:</span>
+                <input type="text" class="input-box" value="A13.2" readonly>
+            </div>
+
+            <hr style="width:100%; border:0; border-top:1px solid #eee; margin: 10px 0;">
+
+            <div class="row">
+                <span class="label" style="font-weight:bold;">Installation Status</span>
+                <div id="main-status" class="status-pill status-orange">
+                    TESTING <div class="spinner"></div>
+                </div>
+            </div>
+
+            <div class="row">
+                <span class="label">Last Test:</span>
+                <input type="text" class="input-box readonly" id="last-test-time" value="" readonly>
+            </div>
+            <div class="row">
+                <span class="label">Last Failing Test:</span>
+                <input type="text" class="input-box readonly" value="2026/01/27 01:05pm" readonly>
+            </div>
+
+            <hr style="width:100%; border:0; border-top:1px solid #eee; margin: 10px 0;">
+
+            <div class="row">
+                <span class="label">BLE Connectivity</span>
+                <div id="status-ble" class="status-pill status-gray">PENDING</div>
+                <a href="page16.html" class="nav-dots">...</a>
+            </div>
+
+            <div class="row">
+                <span class="label">WIFI</span>
+                <div id="status-wifi" class="status-pill status-gray">PENDING</div>
+                <a href="page17.html" class="nav-dots">...</a>
+            </div>
+
+            <div class="row">
+                <span class="label">Tilt Status</span>
+                <div id="status-tilt" class="status-pill status-gray">PENDING</div>
+                <a href="page18.html" class="nav-dots">...</a>
+            </div>
+
+            <div class="row">
+                <span class="label">Camera Status</span>
+                <div id="status-camera" class="status-pill status-gray">PENDING</div>
+                <a href="page19.html" class="nav-dots">...</a>
+            </div>
+
+            <div class="row">
+                <span class="label">LED Status</span>
+                <div id="status-led" class="status-pill status-gray">PENDING</div>
+                <a href="page20.html" class="nav-dots">...</a>
+            </div>
+
+            <div class="action-area">
+                <button id="btn-timelines" class="action-btn green" disabled>Timelines</button>
+                <button id="btn-retest" class="action-btn" onclick="runRetest()" disabled>Re-test Failed Components</button>
+                <button id="btn-fulltest" class="action-btn" onclick="runFullTest()" disabled>Full Test</button>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <a href="page14.html" class="back-button-footer">
+            <i class="fas fa-caret-left"></i> BACK
+        </a>
+    </div>
+
+    <script>
+        const mainStatus = document.getElementById('main-status');
+        const statusBle = document.getElementById('status-ble');
+        const statusWifi = document.getElementById('status-wifi');
+        const statusTilt = document.getElementById('status-tilt');
+        const statusCamera = document.getElementById('status-camera');
+        const statusLed = document.getElementById('status-led');
+
+        const btnTimelines = document.getElementById('btn-timelines');
+        const btnRetest = document.getElementById('btn-retest');
+        const btnFulltest = document.getElementById('btn-fulltest');
+        const lastTestInput = document.getElementById('last-test-time');
+
+        function updateTimestamp() {
+            const now = new Date();
+            const formatted = now.getFullYear() + "/" + 
+                             String(now.getMonth()+1).padStart(2, '0') + "/" + 
+                             String(now.getDate()).padStart(2, '0') + " " + 
+                             String(now.getHours()).padStart(2, '0') + ":" + 
+                             String(now.getMinutes()).padStart(2, '0') + "pm";
+            lastTestInput.value = formatted;
+        }
+        updateTimestamp();
+
+        function setPill(element, type, text, spin = false) {
+            element.classList.remove('status-green', 'status-red', 'status-orange', 'status-gray');
+            element.classList.add(`status-${type}`);
+            if (spin) {
+                element.innerHTML = `${text} <div class="spinner"></div>`;
+            } else {
+                element.innerHTML = text;
+            }
+        }
+
+        window.onload = function() {
+            updateTimestamp();
+            setTimeout(() => {
+                // Simulate Failure State
+                setPill(mainStatus, 'orange', 'Needs Attention');
+                setPill(statusBle, 'green', 'ONLINE');
+                setPill(statusWifi, 'green', 'ONLINE');
+                setPill(statusTilt, 'green', 'OK');
+                setPill(statusLed, 'green', 'OK');
+                setPill(statusCamera, 'red', 'KO');
+
+                btnTimelines.disabled = false;
+                btnRetest.disabled = false;
+                btnFulltest.disabled = false;
+            }, 5000);
+        };
+
+        function runRetest() {
+            btnTimelines.disabled = true;
+            btnRetest.disabled = true;
+            btnFulltest.disabled = true;
+            setPill(statusCamera, 'orange', 'TESTING', true);
+
+            setTimeout(() => {
+                setPill(statusCamera, 'green', 'OK');
+                setPill(mainStatus, 'green', 'INSTALLED');
+                btnTimelines.disabled = false;
+                btnRetest.disabled = false;
+                btnFulltest.disabled = false;
+                updateTimestamp();
+            }, 3000);
+        }
+
+        function runFullTest() {
+            btnTimelines.disabled = true;
+            btnRetest.disabled = true;
+            btnFulltest.disabled = true;
+            setPill(mainStatus, 'orange', 'TESTING', true);
+            setPill(statusBle, 'gray', 'PENDING');
+            setPill(statusWifi, 'gray', 'PENDING');
+            setPill(statusTilt, 'gray', 'PENDING');
+            setPill(statusCamera, 'gray', 'PENDING');
+            setPill(statusLed, 'gray', 'PENDING');
+
+            setTimeout(() => {
+                setPill(mainStatus, 'green', 'INSTALLED');
+                setPill(statusBle, 'green', 'ONLINE');
+                setPill(statusWifi, 'green', 'ONLINE');
+                setPill(statusTilt, 'green', 'OK');
+                setPill(statusCamera, 'green', 'OK');
+                setPill(statusLed, 'green', 'OK');
+                btnTimelines.disabled = false;
+                btnRetest.disabled = false;
+                btnFulltest.disabled = false;
+                updateTimestamp();
+            }, 4000);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion - Aisle A12</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        
+        body {
+            /* Vusion Yellow Gradient */
+            background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden; 
+        }
+
+        /* --- HEADER --- */
+        .header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            padding: 20px;
+            margin-top: 10px;
+            flex-shrink: 0;
+        }
+        .user-pill {
+            background-color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* --- TITLE SECTION --- */
+        .top-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 20px;
+            flex-shrink: 0;
+            position: relative;
+        }
+        
+        .logo-box {
+            width: 50px; height: 50px;
+            border: 3px solid #1a1a1a;
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 15px;
+        }
+        .logo-text { font-size: 30px; font-weight: 700; color: #1a1a1a; line-height: 1; }
+
+        h2 { font-size: 24px; margin-bottom: 20px; color: #000; font-weight: 700; }
+
+        /* Golden Bolt Icon (Top Right of Title) */
+        .header-icon {
+            position: absolute;
+            right: 30px;
+            top: 60px;
+            font-size: 24px;
+            color: #FBC02D; /* Darker Gold */
+        }
+
+        /* --- DASHBOARD SUMMARY CARD --- */
+        .summary-card {
+            background-color: white;
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto 20px auto;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .summary-label { font-size: 14px; font-weight: 500; color: #333; }
+        
+        .stats-group {
+            display: flex;
+            gap: 15px;
+        }
+        .stat-bit {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+            font-weight: 700;
+        }
+
+        /* Opposite Aisle Box */
+        .opposite-box {
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 5px 15px;
+            font-weight: 700;
+            color: #555;
+            background: #f9f9f9;
+        }
+
+        /* --- TOOLS ROW --- */
+        .tools-row {
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            gap: 10px;
+            padding: 0 5px;
+        }
+        .search-pill {
+            flex: 1;
+            background-color: white;
+            border-radius: 30px;
+            padding: 10px 15px;
+            display: flex; align-items: center; gap: 10px;
+            color: #888; font-size: 13px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .tool-icon {
+            width: 40px; height: 40px;
+            background: white;
+            border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 16px;
+            color: #003399;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .refresh-blue { color: #2196F3; }
+
+        /* --- LIST AREA --- */
+        .list-container {
+            flex: 1;
+            width: 100%;
+            max-width: 380px;
+            margin: 0 auto;
+            padding: 0 5px 20px 5px;
+            overflow-y: auto;
+            scrollbar-width: none;
+        }
+        .list-container::-webkit-scrollbar { display: none; }
+
+        /* --- RAIL CARD --- */
+        .rail-card {
+            background-color: white;
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+
+        .rail-id { font-size: 16px; font-weight: 700; color: #333; }
+
+        .status-grid {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        .status-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+        .s-icon { font-size: 18px; }
+        .s-label { font-size: 8px; font-weight: 700; text-transform: uppercase; color: #333; }
+        
+        .gear-btn {
+            font-size: 22px;
+            color: #333;
+            margin-left: 10px;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        .gear-btn:hover { transform: rotate(45deg); }
+
+        /* Link reset for the gear icon */
+        .settings-link {
+            text-decoration: none;
+            color: inherit;
+            display: flex;
+            align-items: center;
+        }
+
+        /* Colors */
+        .c-green { color: #66BB6A; }
+        .c-red { color: #EF5350; }
+        .c-black { color: #000; }
+        .c-grey { color: #bbb; }
+
+        /* --- FOOTER NAV --- */
+        .footer-nav {
+            padding: 15px 20px 25px 20px;
+            display: flex;
+            justify-content: center;
+            background: linear-gradient(0deg, rgba(255,255,255,1) 0%, rgba(255,255,255,0) 100%);
+        }
+        .nav-btn {
+            background-color: #FDD757;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            cursor: pointer;
+            display: flex; align-items: center; gap: 10px;
+            color: black; text-decoration: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="user-pill">
+            <i class="fas fa-user"></i>
+            <span>installer01@email.com</span>
+        </div>
+    </div>
+
+    <div class="top-section">
+        <div class="logo-box"><span class="logo-text">V</span></div>
+        <h2>Aisle A12</h2>
+        <i class="fas fa-bolt header-icon"></i> </div>
+
+    <div class="summary-card">
+        <div class="summary-row">
+            <span class="summary-label">Modulars installation</span>
+            <div class="stats-group">
+                <div class="stat-bit"><i class="fas fa-check c-green"></i> 15</div>
+                <div class="stat-bit"><i class="fas fa-ban c-black"></i> 2</div>
+            </div>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Topstocks</span>
+            <div class="stats-group">
+                <div class="stat-bit"><i class="fas fa-check c-green"></i> 10</div>
+                <div class="stat-bit"><i class="fas fa-check c-red"></i> 5</div>
+            </div>
+        </div>
+        <div class="summary-row">
+            <span class="summary-label">Opposite Aisle</span>
+            <div class="opposite-box">A13</div>
+        </div>
+    </div>
+
+    <div class="tools-row">
+        <div class="search-pill">
+            <i class="fas fa-search"></i> Search...
+        </div>
+        <div class="tool-icon"><i class="fas fa-filter"></i></div>
+        <div class="tool-icon refresh-blue" onclick="location.reload()"><i class="fas fa-rotate-right"></i></div>
+    </div>
+
+    <div class="list-container">
+
+        <div class="rail-card">
+            <div class="rail-id">A12.1</div>
+            <div class="status-grid">
+                <div class="status-item">
+                    <i class="fas fa-rss s-icon c-green"></i>
+                    <span class="s-label">BLE</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-wifi s-icon c-green"></i>
+                    <span class="s-label">WIFI</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-bolt s-icon c-red"></i>
+                </div>
+                <div class="status-item">
+                    <i class="far fa-eye s-icon c-black"></i>
+                </div>
+            </div>
+            <i class="fas fa-gear gear-btn"></i>
+        </div>
+
+        <div class="rail-card">
+            <div class="rail-id">A12.2</div>
+            <div class="status-grid">
+                <div class="status-item">
+                    <i class="fas fa-rss s-icon c-red"></i>
+                    <span class="s-label">BLE</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-wifi s-icon c-green"></i>
+                    <span class="s-label">WIFI</span>
+                </div>
+                <div class="status-item">
+                    <i class="fas fa-bolt s-icon c-green"></i>
+                </div>
+                <div class="status-item">
+                    <i class="far fa-eye s-icon c-red"></i>
+                </div>
+            </div>
+            <a href="page15.html" class="settings-link">
+                <i class="fas fa-gear gear-btn"></i>
+            </a>
+        </div>
+
+        <div class="rail-card">
+            <div class="rail-id">A12.3</div>
+            <div class="status-grid">
+               <i class="fas fa-ban s-icon c-black" style="font-size: 24px; margin-right: 40px;"></i>
+            </div>
+            <i class="fas fa-gear gear-btn"></i>
+        </div>
+
+    </div>
+
+    <div class="footer-nav">
+        <a href="page10.html" class="nav-btn">
+            <i class="fas fa-caret-left"></i> BACK
+        </a>
+    </div>
+
+</body>
+</html>

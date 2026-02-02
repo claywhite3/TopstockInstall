@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Repair Camera - A12.2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            background: linear-gradient(180deg, #FFD045 0%, #FFF5D6 100%);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e0c040;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-align: center;
+        }
+
+        /* --- CONTAINER --- */
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            flex: 1;
+            padding-bottom: 100px;
+        }
+
+        /* --- QUESTION CARD --- */
+        .question-card {
+            background: white;
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .q-text {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* --- 3-POSITION SLIDER (Tri-Toggle) --- */
+        .tri-toggle-container {
+            display: flex;
+            background: #f0f0f0;
+            border-radius: 30px;
+            padding: 4px;
+            position: relative;
+            height: 40px;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            top: 4px;
+            left: 33.33%; 
+            width: 33.33%;
+            height: calc(100% - 8px);
+            background: #FFD045;
+            border-radius: 25px;
+            transition: left 0.3s ease, background 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 1;
+        }
+
+        .tri-toggle-container input[type="radio"] { display: none; }
+
+        .toggle-option {
+            flex: 1;
+            text-align: center;
+            z-index: 2;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: 700;
+            color: #666;
+            user-select: none;
+            transition: color 0.3s;
+        }
+
+        .tri-toggle-container input[type="radio"]:checked + label { color: #000; }
+
+        /* Logic to move the slider */
+        #q1-no:checked ~ .toggle-slider, #q2-no:checked ~ .toggle-slider, #q3-no:checked ~ .toggle-slider {
+            left: 4px; background: #e0e0e0; width: calc(33.33% - 4px);
+        }
+        #q1-idk:checked ~ .toggle-slider, #q2-idk:checked ~ .toggle-slider, #q3-idk:checked ~ .toggle-slider {
+            left: 33.33%; background: #FFD045;
+        }
+        #q1-yes:checked ~ .toggle-slider, #q2-yes:checked ~ .toggle-slider, #q3-yes:checked ~ .toggle-slider {
+            left: calc(66.66% + 0px); background: #ff6b6b; width: calc(33.33% - 4px);
+        }
+
+        /* --- ACTION BUTTON --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+        }
+
+        .go-btn {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .go-btn:active { transform: scale(0.98); }
+
+        /* --- MODALS --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.8); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-card {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            width: 100%;
+            max-width: 350px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            animation: popIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-icon { font-size: 40px; margin-bottom: 15px; color: #333; }
+        .modal-title { font-size: 18px; font-weight: 700; margin-bottom: 10px; color: #1a1a1a; }
+        .modal-text { font-size: 14px; color: #666; margin-bottom: 25px; line-height: 1.5; }
+
+        .modal-btn-group { display: flex; gap: 10px; }
+        .modal-btn {
+            flex: 1; padding: 12px; border-radius: 12px; border: none; font-weight: 600; cursor: pointer; font-size: 14px;
+        }
+        .btn-secondary { background: #f0f0f0; color: #333; }
+        .btn-primary { background: #FFD045; color: #1a1a1a; }
+        .btn-blue { background: #2196F3; color: white; }
+
+        /* Spinner for Redirect Modal */
+        .spinner {
+            border: 4px solid rgba(0,0,0,0.1);
+            border-left-color: #2196F3;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px auto;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-title">Diagnostic Questionnaire</div>
+    </div>
+
+    <div class="container">
+        
+        <div class="question-card">
+            <div class="q-text">1. Is there visible damage to the camera?</div>
+            <div class="tri-toggle-container">
+                <input type="radio" name="q1" id="q1-no" value="no">
+                <label for="q1-no" class="toggle-option">No</label>
+                <input type="radio" name="q1" id="q1-idk" value="idk" checked>
+                <label for="q1-idk" class="toggle-option">I don't know</label>
+                <input type="radio" name="q1" id="q1-yes" value="yes">
+                <label for="q1-yes" class="toggle-option">Yes</label>
+                <div class="toggle-slider"></div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="q-text">2. Is the camera obstructed?</div>
+            <div class="tri-toggle-container">
+                <input type="radio" name="q2" id="q2-no" value="no">
+                <label for="q2-no" class="toggle-option">No</label>
+                <input type="radio" name="q2" id="q2-idk" value="idk" checked>
+                <label for="q2-idk" class="toggle-option">I don't know</label>
+                <input type="radio" name="q2" id="q2-yes" value="yes">
+                <label for="q2-yes" class="toggle-option">Yes</label>
+                <div class="toggle-slider"></div>
+            </div>
+        </div>
+
+        <div class="question-card">
+            <div class="q-text">3. Is the camera dirty?</div>
+            <div class="tri-toggle-container">
+                <input type="radio" name="q3" id="q3-no" value="no">
+                <label for="q3-no" class="toggle-option">No</label>
+                <input type="radio" name="q3" id="q3-idk" value="idk" checked>
+                <label for="q3-idk" class="toggle-option">I don't know</label>
+                <input type="radio" name="q3" id="q3-yes" value="yes">
+                <label for="q3-yes" class="toggle-option">Yes</label>
+                <div class="toggle-slider"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <button class="go-btn" onclick="runDiagnostics()">
+            Run Diagnostics <i class="fas fa-arrow-right"></i>
+        </button>
+    </div>
+
+
+    <div class="modal-overlay" id="modal-swap">
+        <div class="modal-card">
+            <div class="modal-icon" style="color: #ff6b6b;"><i class="fas fa-triangle-exclamation"></i></div>
+            <div class="modal-title">Hardware Damage Detected</div>
+            <div class="modal-text">Physical damage requires a full rail replacement. Please swap this rail.</div>
+            <div class="modal-btn-group">
+                <button class="modal-btn btn-secondary" onclick="closeModal('modal-swap')">Back</button>
+                <a href="page5.html" class="modal-btn btn-primary">Swap Rail</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-obstruct">
+        <div class="modal-card">
+            <div class="modal-icon" style="color: #FFD045;"><i class="fas fa-hand-holding"></i></div>
+            <div class="modal-title">Obstruction Detected</div>
+            <div class="modal-text">Please remove any tags, wires, or debris blocking the camera lens.</div>
+            <div class="modal-btn-group">
+                <button class="modal-btn btn-primary" onclick="resolveObstruction()">OK, I did it</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-clean">
+        <div class="modal-card">
+            <div class="modal-icon" style="color: #2196F3;"><i class="fas fa-sparkles"></i></div>
+            <div class="modal-title">Lens Needs Cleaning</div>
+            <div class="modal-text">Please gently wipe the camera lens with a microfiber cloth.</div>
+            <div class="modal-btn-group">
+                <button class="modal-btn btn-primary" onclick="resolveDirty()">OK, Cleaned</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-recommend">
+        <div class="modal-card">
+            <div class="modal-icon" style="color: #2196F3;"><i class="fas fa-microchip"></i></div>
+            <div class="modal-title">Recommendation</div>
+            <div class="modal-text">
+                Based on these diagnostics, we haven't found any physical issues.
+                <br><br>
+                We recommend a <strong>Device Reset</strong> to clear potential software errors.
+            </div>
+            <div class="modal-btn-group">
+                <button class="modal-btn btn-secondary" onclick="closeModal('modal-recommend')">Cancel</button>
+                <button class="modal-btn btn-blue" onclick="goToReset()">Let's Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="modal-redirect">
+        <div class="modal-card">
+            <div class="spinner"></div>
+            <div class="modal-title">Verifying Fix...</div>
+            <div class="modal-text">Redirecting you to the system dashboard to re-test the camera.</div>
+        </div>
+    </div>
+
+    <script>
+        function runDiagnostics() {
+            const q1 = document.querySelector('input[name="q1"]:checked').value;
+            const q2 = document.querySelector('input[name="q2"]:checked').value;
+            const q3 = document.querySelector('input[name="q3"]:checked').value;
+
+            // 1. Damage Check (Highest Priority)
+            if (q1 === 'yes') {
+                document.getElementById('modal-swap').style.display = 'flex';
+                return;
+            }
+
+            // 2. Obstruction Check (Priority 2)
+            if (q2 === 'yes') {
+                document.getElementById('modal-obstruct').style.display = 'flex';
+                // We stop here. The user must click "OK, I did it" to trigger the next check.
+                return;
+            }
+
+            // 3. Dirty Check (Priority 3 - only if Q2 was NO)
+            if (q3 === 'yes') {
+                document.getElementById('modal-clean').style.display = 'flex';
+                return;
+            }
+
+            // 4. No Physical Issues -> Bridge to Reset
+            document.getElementById('modal-recommend').style.display = 'flex';
+        }
+
+        // Called when user clicks "OK, I did it" on Obstruction Modal
+        function resolveObstruction() {
+            // Close Obstruction Modal
+            document.getElementById('modal-obstruct').style.display = 'none';
+
+            // SEQUENTIAL CHECK: Check if Q3 (Dirty) was ALSO yes
+            const q3 = document.querySelector('input[name="q3"]:checked').value;
+            
+            if (q3 === 'yes') {
+                // If yes, immediately open the next modal
+                setTimeout(() => {
+                    document.getElementById('modal-clean').style.display = 'flex';
+                }, 300); // Slight delay for smoother transition
+            } else {
+                // If no, we are done -> Go to Test
+                returnToTest();
+            }
+        }
+
+        // Called when user clicks "OK, Cleaned" on Dirty Modal
+        function resolveDirty() {
+            document.getElementById('modal-clean').style.display = 'none';
+            // This is the end of the physical fix chain
+            returnToTest();
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // New Logic: Show Redirect Modal -> Wait -> Go to Page 15
+        function returnToTest() {
+            document.getElementById('modal-redirect').style.display = 'flex';
+            
+            setTimeout(() => {
+                window.location.href = "page15.html";
+            }, 2500); // 2.5 second wait
+        }
+
+        function goToReset() {
+            window.location.href = "camerareset.html";
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion - Select Aisle</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        
+        body {
+            background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            margin-top: 10px;
+        }
+        .back-icon { font-size: 24px; color: #000; text-decoration: none; }
+        .user-pill {
+            background-color: white;
+            padding: 8px 16px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 12px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* --- CONTENT --- */
+        .content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 0 25px;
+            text-align: center;
+            padding-bottom: 40px;
+        }
+
+        .logo-box {
+            width: 60px; height: 60px;
+            border: 3px solid #1a1a1a;
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 20px;
+        }
+        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; }
+
+        h2 { font-size: 22px; margin-bottom: 15px; color: #000; line-height: 1.3; }
+        
+        .instruction-text {
+            font-size: 14px;
+            color: #000;
+            margin-bottom: 20px;
+            line-height: 1.4;
+            max-width: 90%;
+        }
+
+        /* --- IMAGE SECTION --- */
+        .aisle-image-container {
+            width: 100%;
+            max-width: 320px;
+            margin-bottom: 10px;
+        }
+        .aisle-img {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px; /* Optional rounded corners */
+        }
+        .caption { font-size: 12px; font-weight: 500; margin-bottom: 30px; }
+
+        /* --- DROPDOWNS --- */
+        .dropdown-row {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            width: 100%;
+            max-width: 350px;
+            margin-bottom: 40px;
+        }
+
+        select {
+            appearance: none; /* Removes default OS styling */
+            -webkit-appearance: none;
+            background-color: white;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            padding: 12px 20px;
+            font-size: 14px;
+            font-weight: 500;
+            width: 48%; /* Split width evenly */
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            text-align: center;
+            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 10px auto;
+        }
+
+        /* --- NAVIGATION BUTTONS --- */
+        .nav-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 350px;
+            margin-top: auto; /* Push to bottom if space permits */
+        }
+
+        .nav-btn {
+            background-color: #FDD757;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 14px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: black;
+            text-decoration: none;
+            transition: transform 0.1s;
+        }
+        .nav-btn:active { transform: scale(0.95); background-color: #eebf28; }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <a href="page2.html" class="back-icon"><i class="fas fa-chevron-left"></i></a>
+        <div class="user-pill">
+            <i class="fas fa-user"></i>
+            <span>installer01@email.com</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <div class="logo-box"><span class="logo-text">V</span></div>
+
+        <h2>Please Select the Aisle where<br>you are installing</h2>
+        
+        <p class="instruction-text">
+            You will find a location marker on the edge of the top shelf (see image below). Please note the alphanumeric aisle code on the label.
+        </p>
+
+        <div class="aisle-image-container">
+            <img src="aisle.png" alt="Aisle Diagram" class="aisle-img" onerror="this.style.display='none'">
+        </div>
+        <div class="caption">Note: Each side is a different Aisle</div>
+
+        <div class="dropdown-row">
+            <select id="letterSelect">
+                <option value="" disabled selected>Select Letter</option>
+                <option>A</option><option>B</option><option>C</option><option>D</option><option>E</option>
+                <option>F</option><option>G</option><option>H</option><option>I</option><option>J</option>
+                <option>K</option><option>L</option><option>M</option><option>N</option><option>O</option>
+                <option>P</option><option>Q</option><option>R</option><option>S</option><option>T</option>
+                <option>U</option><option>V</option><option>W</option><option>X</option><option>Y</option><option>Z</option>
+            </select>
+
+            <select id="numberSelect">
+                <option value="" disabled selected>Select Number</option>
+                <option>01</option><option>02</option><option>03</option><option>04</option><option>05</option>
+                <option>06</option><option>07</option><option>08</option><option>09</option><option>10</option>
+                <option>11</option><option>12</option><option>13</option><option>14</option><option>15</option>
+                <option>16</option><option>17</option><option>18</option><option>19</option><option>20</option>
+                <option>21</option><option>22</option><option>23</option><option>24</option><option>25</option>
+                <option>26</option><option>27</option><option>28</option><option>29</option><option>30</option>
+            </select>
+        </div>
+
+        <div class="nav-row">
+            <a href="page2.html" class="nav-btn">
+                <i class="fas fa-caret-left"></i> BACK
+            </a>
+            
+            <button class="nav-btn" onclick="validateAndGo()">
+                NEXT <i class="fas fa-caret-right"></i>
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function validateAndGo() {
+            const letter = document.getElementById('letterSelect').value;
+            const number = document.getElementById('numberSelect').value;
+
+            if(letter === "" || number === "") {
+                alert("Please select both a Letter and a Number.");
+            } else {
+                // Success - Go to Page 4 (We will build this next)
+                window.location.href = 'page4.html';
+            }
+        }
+    </script>
+
+</body>
+</html>

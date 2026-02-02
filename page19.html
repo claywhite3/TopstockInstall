@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Status - A12.2</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: #f5f5f5;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            background: linear-gradient(180deg, #FFD045 0%, #FFF5D6 100%);
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid #e0c040;
+        }
+
+        .header-title {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1a1a1a;
+            text-align: center;
+        }
+
+        /* --- CONTAINER --- */
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+            flex: 1;
+            padding-bottom: 100px;
+        }
+
+        /* --- LENS CARD --- */
+        .lens-card {
+            background: white;
+            border-radius: 20px; /* Softer, rounder corners */
+            padding: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.06); /* Modern, soft diffusion shadow */
+            border-left: 6px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Status Colors for the card border */
+        .border-red { border-left-color: #ff6b6b; }
+        .border-green { border-left-color: #51cf66; }
+
+        .lens-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+
+        /* Data Rows */
+        .data-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 12px;
+        }
+
+        .data-label {
+            font-size: 14px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Status Pills */
+        .status-pill {
+            width: 150px;
+            padding: 6px 0;
+            border-radius: 15px; /* Rounded pills */
+            font-size: 12px;
+            font-weight: 700;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .status-pill.readonly-box {
+            background: #f8f9fa;
+            color: #adb5bd;
+            font-weight: 500;
+        }
+
+        /* Soft Pastel Colors for Indicators */
+        .pill-orange { background-color: #fff3bf; color: #f08c00; } 
+        .pill-red { background-color: #ffe3e3; color: #fa5252; } 
+        .pill-green { background-color: #d3f9d8; color: #2b8a3e; } 
+        .pill-gray { background-color: #e9ecef; color: #495057; } 
+
+        /* --- BUTTON ROW (Svelte & Bubble-like) --- */
+        .button-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+            padding-top: 5px;
+        }
+
+        /* The Bubble Button Style */
+        .bubble-btn {
+            flex: 1; /* All buttons take equal width */
+            display: flex;
+            flex-direction: column; /* Stack Icon on top of text for "App" feel? Or Row? Let's do Row for compactness */
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 12px 5px;
+            background: white;
+            border: none;
+            border-radius: 18px; /* High radius for bubble effect */
+            
+            /* The "Svelte" feel comes from the shadow lifting it off the page */
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08); 
+            
+            color: #444;
+            font-size: 11px;
+            font-weight: 600;
+            text-decoration: none;
+            cursor: pointer;
+            transition: transform 0.1s, box-shadow 0.1s, background 0.2s;
+        }
+
+        .bubble-btn:active {
+            transform: scale(0.96);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        /* Hover state */
+        .bubble-btn:hover {
+            background-color: #fafafa;
+        }
+
+        /* Specific icon colors to help differentiation */
+        .icon-blue { color: #228be6; font-size: 16px; }
+        .icon-dark { color: #333; font-size: 16px; }
+        
+        /* Flex row inside button to keep it centered */
+        .bubble-btn i { margin-bottom: 2px; }
+
+        /* Spinner */
+        .spinner {
+            border: 2px solid rgba(0,0,0,0.1);
+            border-left-color: #333;
+            border-radius: 50%;
+            width: 12px;
+            height: 12px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* --- BOTTOM NAV --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            padding: 15px 20px;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.05);
+            display: flex;
+            justify-content: center;
+        }
+
+        .back-button-footer {
+            width: 100%;
+            max-width: 600px;
+            padding: 15px;
+            background-color: #FFD045;
+            color: #1a1a1a;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none;
+            box-shadow: 0 4px 15px rgba(255, 208, 69, 0.4); /* Glow effect */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-title">Camera Status - A12.2</div>
+    </div>
+
+    <div class="container">
+
+        <div class="lens-card border-red" id="card-left">
+            <div class="lens-title">Left lens</div>
+            
+            <div class="data-row">
+                <span class="data-label">Image quality</span>
+                <div class="status-pill pill-orange" id="left-qual">BLURRY</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Topstock detected</span>
+                <div class="status-pill pill-red" id="left-det">KO</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Last check</span>
+                <div class="status-pill pill-orange" id="left-check">BLURRY</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Last successful check</span>
+                <div class="status-pill readonly-box">2026/01/25 12:06pm</div>
+            </div>
+
+            <div class="button-row">
+                <a href="left_pic.jpg" target="_blank" class="bubble-btn">
+                    <i class="fa-regular fa-image icon-blue"></i>
+                    <span>View Image</span>
+                </a>
+                
+                <button class="bubble-btn" onclick="runRetest('left', 'bad')">
+                    <i class="fas fa-rotate icon-dark"></i>
+                    <span>Retest</span>
+                </button>
+
+                <a href="camerarepair.html" class="bubble-btn">
+                    <i class="fas fa-wrench icon-dark"></i>
+                    <span>Fix This</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="lens-card border-green" id="card-center">
+            <div class="lens-title">Center lens</div>
+            
+            <div class="data-row">
+                <span class="data-label">Image quality</span>
+                <div class="status-pill pill-green" id="center-qual">OK</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Topstock detected</span>
+                <div class="status-pill pill-green" id="center-det">OK</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Last check</span>
+                <div class="status-pill pill-green" id="center-check">2026/01/27 01:05pm</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Last successful check</span>
+                <div class="status-pill readonly-box">2026/01/27 01:05pm</div>
+            </div>
+
+            <div class="button-row">
+                <a href="center_pic.jpg" target="_blank" class="bubble-btn">
+                    <i class="fa-regular fa-image icon-blue"></i>
+                    <span>View Image</span>
+                </a>
+                
+                <button class="bubble-btn" onclick="runRetest('center', 'good')">
+                    <i class="fas fa-rotate icon-dark"></i>
+                    <span>Retest</span>
+                </button>
+
+                <a href="camerarepair.html" class="bubble-btn">
+                    <i class="fas fa-wrench icon-dark"></i>
+                    <span>Fix This</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="lens-card border-red" id="card-right">
+            <div class="lens-title">Right lens</div>
+            
+            <div class="data-row">
+                <span class="data-label">Image quality</span>
+                <div class="status-pill pill-orange" id="right-qual">BLURRY</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Topstock detected</span>
+                <div class="status-pill pill-red" id="right-det">KO</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Last check</span>
+                <div class="status-pill pill-orange" id="right-check">BLURRY</div>
+            </div>
+            <div class="data-row">
+                <span class="data-label">Last successful check</span>
+                <div class="status-pill readonly-box">2026/01/25 12:06pm</div>
+            </div>
+
+            <div class="button-row">
+                <a href="right_pic.jpg" target="_blank" class="bubble-btn">
+                    <i class="fa-regular fa-image icon-blue"></i>
+                    <span>View Image</span>
+                </a>
+                
+                <button class="bubble-btn" onclick="runRetest('right', 'bad')">
+                    <i class="fas fa-rotate icon-dark"></i>
+                    <span>Retest</span>
+                </button>
+
+                <a href="camerarepair.html" class="bubble-btn">
+                    <i class="fas fa-wrench icon-dark"></i>
+                    <span>Fix This</span>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <a href="page15.html" class="back-button-footer">
+            <i class="fas fa-caret-left"></i> BACK
+        </a>
+    </div>
+
+    <script>
+        function setPill(elementId, type, text, spin = false) {
+            const el = document.getElementById(elementId);
+            el.className = 'status-pill';
+            el.classList.add(`pill-${type}`);
+            if (spin) {
+                el.innerHTML = `${text} <div class="spinner"></div>`;
+            } else {
+                el.innerHTML = text;
+            }
+        }
+
+        function runRetest(lens, outcome) {
+            // Loading state
+            setPill(`${lens}-qual`, 'gray', 'TESTING', true);
+            setPill(`${lens}-det`, 'gray', 'TESTING', true);
+            setPill(`${lens}-check`, 'gray', 'TESTING', true);
+
+            setTimeout(() => {
+                if (outcome === 'bad') {
+                    // Revert to Errors
+                    setPill(`${lens}-qual`, 'orange', 'BLURRY');
+                    setPill(`${lens}-det`, 'red', 'KO');
+                    setPill(`${lens}-check`, 'orange', 'BLURRY');
+                } else {
+                    // Revert to Good
+                    setPill(`${lens}-qual`, 'green', 'OK');
+                    setPill(`${lens}-det`, 'green', 'OK');
+                    const now = new Date();
+                    const timeStr = now.toLocaleDateString() + ' ' + now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                    setPill(`${lens}-check`, 'green', timeStr);
+                }
+            }, 3000);
+        }
+    </script>
+
+</body>
+</html>
