@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vusion - Insert Battery</title>
+    <title>Vusion - Scan Rail</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -61,28 +61,51 @@
 
         h2 { font-size: 22px; margin-bottom: 20px; color: #000; }
 
-        /* --- IMAGES & TEXT --- */
-        .img-wrapper {
+        /* --- SCAN INPUT FIELD --- */
+        .scan-container {
+            position: relative;
             width: 100%;
             max-width: 350px;
-            margin-bottom: 15px;
+            margin-bottom: 25px;
         }
-        
-        .instruction-img {
+        .scan-input {
             width: 100%;
-            height: auto;
-            border-radius: 8px;
-            /* Optional: subtle shadow to make the product pop */
-            /* box-shadow: 0 4px 10px rgba(0,0,0,0.1); */
+            padding: 15px 40px 15px 50px; 
+            border-radius: 12px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            outline: none;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        .scan-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #333;
+            cursor: pointer;
+            padding: 5px; 
+        }
+        .clear-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 16px;
+            color: #999;
+            cursor: pointer;
+            background: #eee;
+            border-radius: 50%;
+            width: 24px; height: 24px;
+            display: flex; align-items: center; justify-content: center;
         }
 
-        .mid-text {
-            font-size: 18px;
-            font-weight: 500;
-            margin: 20px 0; /* Space above and below the text */
-            line-height: 1.4;
-            color: #000;
-        }
+        /* --- INSTRUCTION IMAGES --- */
+        .instruction-title { font-size: 18px; font-weight: 500; margin-bottom: 10px; }
+        .img-wrapper { width: 100%; max-width: 350px; margin-bottom: 15px; }
+        .flip-img { width: 100%; height: auto; border-radius: 8px; }
+        .wrong-img { width: 80%; height: auto; border-radius: 8px; margin-top: 10px; }
 
         /* --- NAV BUTTONS --- */
         .nav-row {
@@ -111,6 +134,75 @@
         }
         .nav-btn:active { transform: scale(0.95); background-color: #eebf28; }
 
+        /* --- FAKE CAMERA OVERLAY --- */
+        #camera-overlay {
+            display: none; 
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 9999;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            
+            /* SOLID BLACK BACKGROUND */
+            background-color: #000; 
+        }
+
+        .camera-text {
+            color: white;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 500;
+            z-index: 2;
+        }
+
+        .viewfinder {
+            width: 300px;
+            height: 180px;
+            border: 3px solid rgba(255,255,255,0.8);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden; 
+            
+            /* IMAGE IS INSIDE THE BOX */
+            background: url('camera-bg.jpg') no-repeat center center;
+            background-size: cover;
+            background-color: #333; 
+            
+            /* Standard Shadow */
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        /* The moving red laser line */
+        .laser-line {
+            width: 100%;
+            height: 2px;
+            background-color: red;
+            position: absolute;
+            top: 0;
+            animation: scan 2s infinite linear;
+            box-shadow: 0 0 5px red;
+            opacity: 0.8;
+        }
+
+        @keyframes scan {
+            0% { top: 0%; }
+            100% { top: 100%; }
+        }
+
+        .cancel-scan {
+            margin-top: 30px;
+            color: white;
+            font-size: 16px;
+            padding: 10px 30px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.5);
+            border-radius: 30px;
+            cursor: pointer;
+        }
+
     </style>
 </head>
 <body>
@@ -126,30 +218,85 @@
     <div class="content">
         <div class="logo-box"><span class="logo-text">V</span></div>
 
-        <h2>Please Plug in the Battery</h2>
+        <h2>Please Scan the Rail ID</h2>
 
-        <div class="img-wrapper">
-            <img src="battery-insert.jpg" alt="Insert Battery" class="instruction-img" onerror="this.style.display='none'">
+        <div class="scan-container">
+            <i class="fas fa-barcode scan-icon" onclick="openScanner()"></i>
+            <input type="text" id="railID" class="scan-input" placeholder="Scan Rail ID" autocomplete="off">
+            <div class="clear-icon" onclick="clearInput()">
+                <i class="fas fa-times"></i>
+            </div>
         </div>
 
-        <p class="mid-text">
-            When plug is fully seated <br>all lights will blink briefly
-        </p>
+        <div class="instruction-title">Please Scan the Rail ID</div>
 
         <div class="img-wrapper">
-            <img src="lights-blink.jpg" alt="Blinking Lights" class="instruction-img" onerror="this.style.display='none'">
+            <img src="scan-rail-front.png" alt="Rotate Rail" class="flip-img" onerror="this.style.display='none'">
+        </div>
+
+        <div class="img-wrapper">
+            <img src="scan-rail-top.png" alt="Do Not Scan Front" class="wrong-img" onerror="this.style.display='none'">
         </div>
 
         <div class="nav-row">
             <a href="page5.html" class="nav-btn">
                 <i class="fas fa-caret-left"></i> BACK
             </a>
-            
-            <button class="nav-btn" onclick="window.location.href='page7.html'">
+            <button class="nav-btn" onclick="validateAndGo()">
                 NEXT <i class="fas fa-caret-right"></i>
             </button>
         </div>
     </div>
+
+    <div id="camera-overlay">
+        <div class="camera-text">Align barcode in window</div>
+        <div class="viewfinder" id="viewfinder">
+            <div class="laser-line"></div>
+        </div>
+        <div class="cancel-scan" onclick="closeScanner()">Cancel</div>
+    </div>
+
+    <script>
+        function openScanner() {
+            const overlay = document.getElementById('camera-overlay');
+            const viewfinder = document.getElementById('viewfinder');
+            
+            overlay.style.display = 'flex';
+            // Reset to default white border
+            viewfinder.style.borderColor = 'rgba(255,255,255,0.8)';
+            viewfinder.style.boxShadow = '0 0 20px rgba(0,0,0,0.5)';
+
+            // Wait 2.5 seconds, then "success"
+            setTimeout(() => {
+                // Visual Beep: Turn box green with a glow
+                viewfinder.style.borderColor = '#00FF00';
+                viewfinder.style.boxShadow = '0 0 30px #00FF00';
+                
+                setTimeout(() => {
+                    closeScanner();
+                    const inputField = document.getElementById('railID');
+                    inputField.value = "RL-8842-XJ"; 
+                }, 500); 
+            }, 2500);
+        }
+
+        function closeScanner() {
+            document.getElementById('camera-overlay').style.display = 'none';
+        }
+
+        function clearInput() {
+            document.getElementById('railID').value = "";
+        }
+
+        function validateAndGo() {
+            const val = document.getElementById('railID').value;
+            if(val.trim() === "") {
+                alert("Please scan or enter a Rail ID.");
+            } else {
+                window.location.href = 'page7.html';
+            }
+        }
+    </script>
 
 </body>
 </html>
