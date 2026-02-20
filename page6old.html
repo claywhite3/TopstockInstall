@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vusion - Insert Battery</title>
+    <title>Vusion - Scan Rail</title>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
@@ -18,138 +18,284 @@
             overflow-y: auto;
         }
 
-        /* --- HEADER --- */
-        .header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-            margin-top: 10px;
-        }
-        .back-icon { font-size: 24px; color: #000; text-decoration: none; }
-        .user-pill {
-            background-color: white;
-            padding: 8px 16px;
-            border-radius: 50px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 12px;
-            font-weight: 500;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        /* --- SCANNER WINDOW (Top 1/3) --- */
+        .scanner-view-container {
+            width: 100%;
+            height: 33vh; 
+            padding: 20px 25px 0 25px;
+            flex-shrink: 0;
         }
 
-        /* --- CONTENT --- */
-        .content {
+        .viewfinder {
+            width: 100%;
+            height: 100%;
+            background: #000;
+            border-radius: 20px;
+            position: relative;
+            overflow: hidden;
+            border: 3px solid rgba(0,0,0,0.1);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        }
+
+        /* Active phase: displays the rail image */
+        .viewfinder.active { 
+            background: url('scan-rail.png') no-repeat center center;
+            background-size: cover;
+        }
+
+        .viewfinder.success { 
+            background: #4CAF50 !important; 
+            border-color: #2e7d32; 
+        }
+
+        .laser-line {
+            width: 100%;
+            height: 3px;
+            background-color: #ff0000;
+            position: absolute;
+            top: 0;
+            animation: scan 2s infinite linear;
+            box-shadow: 0 0 12px #ff0000;
+            display: none; 
+        }
+
+        @keyframes scan {
+            0% { top: 10%; }
+            100% { top: 90%; }
+        }
+
+        .btn-done-overlay {
+            width: 100%;
+            height: 100%;
+            background: transparent;
+            color: white;
+            border: none;
+            font-size: 28px;
+            font-weight: 800;
+            display: none;
+            cursor: pointer;
+            z-index: 10;
+            letter-spacing: 2px;
+        }
+
+        /* --- UTILITY BUTTONS --- */
+        .scanner-utility-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px 30px;
+            width: 100%;
+        }
+
+        .btn-text-link {
+            background: none;
+            border: none;
+            color: #444;
+            font-size: 14px;
+            font-weight: 500;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* --- CONTENT BODY --- */
+        .content-body {
             flex: 1;
             display: flex;
             flex-direction: column;
             align-items: center;
             padding: 0 25px;
             text-align: center;
-            padding-bottom: 40px;
         }
 
-        .logo-box {
-            width: 60px; height: 60px;
-            border: 3px solid #1a1a1a;
-            border-radius: 12px;
-            display: flex; justify-content: center; align-items: center;
-            margin-bottom: 20px;
-        }
-        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; }
-
-        h2 { font-size: 22px; margin-bottom: 20px; color: #000; }
-
-        /* --- IMAGES & TEXT --- */
-        .img-wrapper {
+        .status-card-container {
             width: 100%;
-            max-width: 350px;
-            margin-bottom: 15px;
+            max-width: 360px;
+            margin-top: 10px;
+            transition: all 0.4s ease;
         }
-        
-        .instruction-img {
+
+        .status-card-img {
             width: 100%;
             height: auto;
-            border-radius: 8px;
-            /* Optional: subtle shadow to make the product pop */
-            /* box-shadow: 0 4px 10px rgba(0,0,0,0.1); */
+            border-radius: 20px;
         }
 
-        .mid-text {
-            font-size: 18px;
-            font-weight: 500;
-            margin: 20px 0; /* Space above and below the text */
-            line-height: 1.4;
-            color: #000;
-        }
-
-        /* --- NAV BUTTONS --- */
-        .nav-row {
+        /* --- INSTRUCTION IMAGES --- */
+        .instruction-section {
+            width: 100%;
+            max-width: 320px;
+            margin: 20px 0;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .instruction-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 5px;
+        }
+
+        .helper-img {
+            width: 100%;
+            height: auto;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            background: rgba(255,255,255,0.5);
+            padding: 10px;
+        }
+
+        /* --- NAVIGATION --- */
+        .nav-row {
+            margin-top: auto;
+            padding-bottom: 30px;
             width: 100%;
             max-width: 350px;
-            margin-top: auto; 
-        }
-
-        .nav-btn {
-            background-color: #FDD757;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 30px;
-            font-weight: 700;
-            font-size: 14px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
-            cursor: pointer;
             display: flex;
-            align-items: center;
-            gap: 10px;
-            color: black;
-            text-decoration: none;
-            transition: transform 0.1s;
+            gap: 15px;
         }
-        .nav-btn:active { transform: scale(0.95); background-color: #eebf28; }
 
+        .btn-primary {
+            background: #1a1a1a;
+            color: #FDD757;
+            border: none;
+            padding: 18px;
+            border-radius: 50px;
+            font-weight: 700;
+            flex: 1;
+            text-decoration: none;
+            text-align: center;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        /* --- PROMPT MODAL --- */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: 28px;
+            width: 85%;
+            max-width: 340px;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <a href="page5.html" class="back-icon"><i class="fas fa-chevron-left"></i></a>
-        <div class="user-pill">
-            <i class="fas fa-user"></i>
-            <span>installer01@email.com</span>
+    <div id="installModal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 style="margin-bottom: 15px;">Final Placement</h2>
+            <p style="color: #666; margin-bottom: 30px;">Please install the rail in its <b>final location</b> before scanning.</p>
+            <button class="btn-primary" style="width:100%" onclick="closeModal()">I'M READY</button>
         </div>
     </div>
 
-    <div class="content">
-        <div class="logo-box"><span class="logo-text">V</span></div>
+    <div class="scanner-view-container">
+        <div class="viewfinder" id="scannerBox">
+            <div id="laser" class="laser-line"></div>
+            <button id="doneBtn" class="btn-done-overlay" onclick="validateAndGo()">DONE</button>
+        </div>
+        <div class="scanner-utility-row">
+            <button id="rescanBtn" class="btn-text-link" style="visibility:hidden;" onclick="startSequence()">Rescan</button>
+            <button class="btn-text-link">Manual Entry</button>
+        </div>
+    </div>
 
-        <h2>Please Insert the Battery</h2>
-
-        <div class="img-wrapper">
-            <img src="battery-insert.jpg" alt="Insert Battery" class="instruction-img" onerror="this.style.display='none'">
+    <div class="content-body">
+        <div class="status-card-container" id="statusCardWrapper">
+            <img src="need-to-scan.png" class="status-card-img" id="statusCardImg">
         </div>
 
-        <p class="mid-text">
-            When inserted correctly all<br>lights will blink briefly
-        </p>
-
-        <div class="img-wrapper">
-            <img src="lights-blink.jpg" alt="Blinking Lights" class="instruction-img" onerror="this.style.display='none'">
+        <div class="instruction-section">
+            <div class="instruction-title">Scan the Rail ID</div>
+            <img src="scan-rail-front.png" class="helper-img" alt="Front Scan Instruction">
+            <img src="scan-rail-top.png" class="helper-img" alt="Top Scan Instruction">
         </div>
 
         <div class="nav-row">
-            <a href="page5.html" class="nav-btn">
-                <i class="fas fa-caret-left"></i> BACK
-            </a>
-            
-            <button class="nav-btn" onclick="window.location.href='page7.html'">
-                NEXT <i class="fas fa-caret-right"></i>
-            </button>
+            <a href="page5.html" class="btn-primary" style="background:white; color:black; border:1px solid #ddd;">BACK</a>
+            <button class="btn-primary" onclick="validateAndGo()">NEXT</button>
         </div>
     </div>
 
+    <script>
+        const successSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
+
+        function closeModal() {
+            document.getElementById('installModal').style.display = 'none';
+            startSequence();
+        }
+
+        function startSequence() {
+            const box = document.getElementById('scannerBox');
+            const laser = document.getElementById('laser');
+            const doneBtn = document.getElementById('doneBtn');
+            const rescanBtn = document.getElementById('rescanBtn');
+            const cardImg = document.getElementById('statusCardImg');
+
+            // 1. Initial State: Pitch Black (3s)
+            box.className = "viewfinder";
+            box.style.background = "#000"; // Forced inline black
+            laser.style.display = "none";
+            doneBtn.style.display = "none";
+            rescanBtn.style.visibility = "hidden";
+            cardImg.src = "need-to-scan.png";
+
+            setTimeout(() => {
+                // 2. Active State: Clear inline black to allow scan-rail.png to show
+                box.style.background = ""; 
+                box.classList.add('active');
+                laser.style.display = "block";
+
+                // Scan duration (2s)
+                setTimeout(() => {
+                    completeScan();
+                }, 2000);
+            }, 3000);
+        }
+
+        function completeScan() {
+            const box = document.getElementById('scannerBox');
+            const laser = document.getElementById('laser');
+            const doneBtn = document.getElementById('doneBtn');
+            const rescanBtn = document.getElementById('rescanBtn');
+            const cardImg = document.getElementById('statusCardImg');
+            const wrapper = document.getElementById('statusCardWrapper');
+
+            successSound.play();
+            if (navigator.vibrate) navigator.vibrate(150);
+            
+            laser.style.display = "none";
+            box.classList.remove('active');
+            box.classList.add('success');
+            doneBtn.style.display = "block";
+            rescanBtn.style.visibility = "visible";
+
+            // Recognized card swap
+            wrapper.style.transform = "scale(1.05)";
+            cardImg.src = "scan-complete.png";
+            setTimeout(() => wrapper.style.transform = "scale(1)", 200);
+        }
+
+        function validateAndGo() {
+            window.location.href = 'page7.html';
+        }
+    </script>
 </body>
 </html>
