@@ -18,11 +18,23 @@
             overflow-y: auto;
         }
 
-        /* --- SCANNER WINDOW (Top 1/3) --- */
+        /* --- TOP HEADER --- */
+        .instruction-header {
+            width: 100%;
+            padding: 25px 0 10px 0;
+            font-size: 32px;
+            font-weight: 900;
+            color: #1a1a1a;
+            text-transform: uppercase;
+            text-align: center;
+            letter-spacing: -0.5px;
+        }
+
+        /* --- SCANNER WINDOW --- */
         .scanner-view-container {
             width: 100%;
             height: 33vh; 
-            padding: 20px 25px 0 25px;
+            padding: 10px 25px;
             flex-shrink: 0;
         }
 
@@ -46,16 +58,57 @@
             background-size: cover;
         }
 
-        @keyframes pulse-shimmer {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.02); }
-            100% { transform: scale(1); }
+        /* --- BUILT-IN COMPLETE SCREEN --- */
+        .complete-ui {
+            display: none; /* Shown on success */
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 20;
         }
 
-        .viewfinder.success { 
-            background: #4CAF50 !important; 
-            border-color: #2e7d32; 
-            animation: pulse-shimmer 1.5s infinite ease-in-out;
+        .checkmark-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 6px solid #8cc63f;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .checkmark-circle i {
+            color: #8cc63f;
+            font-size: 40px;
+        }
+
+        .complete-text {
+            font-size: 34px;
+            font-weight: 900;
+            font-style: italic;
+            color: #000;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+        }
+
+        .next-btn-inner {
+            background: #000;
+            color: #FDD757;
+            border: none;
+            padding: 15px 45px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 4px 4px 0px #8cc63f; /* Stylized shadow from your ref */
         }
 
         .laser-line {
@@ -69,27 +122,7 @@
             display: none; 
         }
 
-        @keyframes scan {
-            0% { top: 10%; }
-            100% { top: 90%; }
-        }
-
-        .btn-done-overlay {
-            width: 100%;
-            height: 100%;
-            background: transparent;
-            color: white;
-            border: none;
-            font-size: 28px;
-            font-weight: 800;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-            cursor: pointer;
-            z-index: 10;
-            letter-spacing: 2px;
-        }
+        @keyframes scan { 0% { top: 10%; } 100% { top: 90%; } }
 
         .scanner-utility-row {
             display: flex;
@@ -115,26 +148,15 @@
             flex-direction: column;
             align-items: center;
             padding: 0 25px;
-            text-align: center;
-        }
-
-        /* --- PROMINENT HEADER --- */
-        .instruction-header {
-            margin-top: 15px;
-            font-size: 28px;
-            font-weight: 900;
-            color: #1a1a1a;
-            text-transform: uppercase;
-            letter-spacing: -0.5px;
         }
 
         .instruction-section {
             width: 100%;
             max-width: 320px;
-            margin: 15px 0;
+            margin: 10px 0;
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 10px;
             align-items: center;
         }
 
@@ -147,21 +169,14 @@
             padding: 8px;
         }
 
-        /* --- SUCCESS CARD AT BOTTOM --- */
         .status-card-container {
             width: 100%;
             max-width: 360px;
             margin: 10px 0 20px 0;
-            transition: all 0.4s ease;
         }
 
-        .status-card-img {
-            width: 100%;
-            height: auto;
-            border-radius: 20px;
-        }
+        .status-card-img { width: 100%; border-radius: 20px; }
 
-        /* --- NAVIGATION --- */
         .nav-row {
             margin-top: auto;
             padding-bottom: 30px;
@@ -179,10 +194,8 @@
             border-radius: 50px;
             font-weight: 700;
             flex: 1;
-            text-decoration: none;
             text-align: center;
-            font-size: 14px;
-            text-transform: uppercase;
+            text-decoration: none;
         }
 
         .modal-overlay {
@@ -210,18 +223,27 @@
 
     <div id="installModal" class="modal-overlay">
         <div class="modal-card">
-            <h2 style="margin-bottom: 15px;">Final Placement</h2>
-            <p style="color: #666; margin-bottom: 30px;">Please install the rail in its <b>final location</b> before scanning.</p>
+            <h2>Final Placement</h2>
+            <p style="color: #666; margin: 15px 0 30px;">Please install the rail in its <b>final location</b> before scanning.</p>
             <button class="btn-primary" style="width:100%" onclick="closeModal()">I'M READY</button>
         </div>
     </div>
 
+    <div class="instruction-header">Scan the Rail</div>
+
     <div class="scanner-view-container">
         <div class="viewfinder" id="scannerBox">
             <div id="laser" class="laser-line"></div>
-            <button id="doneBtn" class="btn-done-overlay" onclick="validateAndGo()">
-                DONE <i class="fas fa-arrow-right"></i>
-            </button>
+            
+            <div id="completeScreen" class="complete-ui">
+                <div class="checkmark-circle">
+                    <i class="fas fa-check"></i>
+                </div>
+                <div class="complete-text">Complete</div>
+                <button class="next-btn-inner" onclick="validateAndGo()">
+                    NEXT <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
         </div>
         <div class="scanner-utility-row">
             <button id="rescanBtn" class="btn-text-link" style="visibility:hidden;" onclick="startSequence()">Rescan</button>
@@ -230,8 +252,6 @@
     </div>
 
     <div class="content-body">
-        <div class="instruction-header">Scan the Rail</div>
-
         <div class="instruction-section">
             <img src="scan-rail-front.png" class="helper-img" alt="Front Scan">
             <img src="scan-rail-top.png" class="helper-img" alt="Top Scan">
@@ -258,14 +278,13 @@
         function startSequence() {
             const box = document.getElementById('scannerBox');
             const laser = document.getElementById('laser');
-            const doneBtn = document.getElementById('doneBtn');
+            const completeScreen = document.getElementById('completeScreen');
             const rescanBtn = document.getElementById('rescanBtn');
             const cardImg = document.getElementById('statusCardImg');
 
-            box.className = "viewfinder";
             box.style.background = "#000"; 
             laser.style.display = "none";
-            doneBtn.style.display = "none";
+            completeScreen.style.display = "none";
             rescanBtn.style.visibility = "hidden";
             cardImg.src = "need-to-scan.png";
 
@@ -281,26 +300,18 @@
         }
 
         function completeScan() {
-            const box = document.getElementById('scannerBox');
+            const completeScreen = document.getElementById('completeScreen');
             const laser = document.getElementById('laser');
-            const doneBtn = document.getElementById('doneBtn');
             const rescanBtn = document.getElementById('rescanBtn');
             const cardImg = document.getElementById('statusCardImg');
-            const wrapper = document.getElementById('statusCardWrapper');
 
             successSound.play();
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]); 
             
             laser.style.display = "none";
-            box.classList.remove('active');
-            box.classList.add('success'); 
-            
-            doneBtn.style.display = "flex"; 
+            completeScreen.style.display = "flex"; 
             rescanBtn.style.visibility = "visible";
-
-            wrapper.style.transform = "scale(1.05)";
             cardImg.src = "scan-complete.png";
-            setTimeout(() => wrapper.style.transform = "scale(1)", 200);
         }
 
         function validateAndGo() {
