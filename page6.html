@@ -15,10 +15,10 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            overflow-x: hidden;
         }
 
-        /* --- TOP HEADER --- */
+        /* --- HEADER --- */
         .instruction-header {
             width: 100%;
             padding: 25px 0 10px 0;
@@ -42,25 +42,37 @@
             width: 100%;
             height: 100%;
             background: #000;
-            border-radius: 20px;
+            border-radius: 40px;
             position: relative;
             overflow: hidden;
             border: 3px solid rgba(0,0,0,0.1);
-            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
             box-shadow: 0 10px 30px rgba(0,0,0,0.15);
         }
 
-        .viewfinder.active { 
-            background: url('scan-rail.png') no-repeat center center;
-            background-size: cover;
+        .viewfinder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
-        /* --- BUILT-IN COMPLETE SCREEN --- */
+        /* --- SCAN ANIMATION --- */
+        .laser-line {
+            width: 100%;
+            height: 4px;
+            background-color: #ff0000;
+            position: absolute;
+            top: 0;
+            z-index: 10;
+            animation: scan 2s infinite linear;
+            box-shadow: 0 0 15px #ff0000;
+            display: none; 
+        }
+
+        @keyframes scan { 0% { top: 10%; } 100% { top: 90%; } }
+
+        /* --- COMPLETE SCREEN --- */
         .complete-ui {
-            display: none; /* Shown on success */
+            display: none;
             flex-direction: column;
             align-items: center;
             justify-content: center;
@@ -70,139 +82,62 @@
             position: absolute;
             top: 0; left: 0;
             z-index: 20;
+            border: 12px solid #8cc63f;
+            border-radius: 35px;
         }
 
         .checkmark-circle {
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             border: 6px solid #8cc63f;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
-        .checkmark-circle i {
-            color: #8cc63f;
-            font-size: 40px;
-        }
+        .checkmark-circle i { color: #8cc63f; font-size: 35px; }
 
         .complete-text {
-            font-size: 34px;
+            font-size: 42px;
             font-weight: 900;
             font-style: italic;
             color: #000;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             text-transform: uppercase;
         }
 
         .next-btn-inner {
-            background: #000;
-            color: #FDD757;
-            border: none;
-            padding: 15px 45px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 18px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            box-shadow: 4px 4px 0px #8cc63f; /* Stylized shadow from your ref */
-        }
-
-        .laser-line {
-            width: 100%;
-            height: 3px;
-            background-color: #ff0000;
-            position: absolute;
-            top: 0;
-            animation: scan 2s infinite linear;
-            box-shadow: 0 0 12px #ff0000;
-            display: none; 
-        }
-
-        @keyframes scan { 0% { top: 10%; } 100% { top: 90%; } }
-
-        .scanner-utility-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 10px 30px;
-            width: 100%;
-        }
-
-        .btn-text-link {
-            background: none;
-            border: none;
-            color: #444;
-            font-size: 14px;
-            font-weight: 500;
-            text-decoration: underline;
-            cursor: pointer;
-        }
-
-        /* --- CONTENT BODY --- */
-        .content-body {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 0 25px;
-        }
-
-        .instruction-section {
-            width: 100%;
-            max-width: 320px;
-            margin: 10px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .helper-img {
-            width: 100%;
-            height: auto;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            background: rgba(255,255,255,0.5);
-            padding: 8px;
-        }
-
-        .status-card-container {
-            width: 100%;
-            max-width: 360px;
-            margin: 10px 0 20px 0;
-        }
-
-        .status-card-img { width: 100%; border-radius: 20px; }
-
-        .nav-row {
-            margin-top: auto;
-            padding-bottom: 30px;
-            width: 100%;
-            max-width: 350px;
-            display: flex;
-            gap: 15px;
-        }
-
-        .btn-primary {
             background: #1a1a1a;
             color: #FDD757;
             border: none;
-            padding: 18px;
-            border-radius: 50px;
+            padding: 15px 60px;
+            border-radius: 40px;
             font-weight: 700;
-            flex: 1;
-            text-align: center;
-            text-decoration: none;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            box-shadow: 0 6px 0px #8cc63f;
         }
 
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-8px); }
+            50% { transform: translateX(8px); }
+            75% { transform: translateX(-8px); }
+            100% { transform: translateX(0); }
+        }
+
+        .shake-trigger { animation: shake 0.5s ease-in-out; }
+
+        /* --- MODAL --- */
         .modal-overlay {
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.4);
-            backdrop-filter: blur(8px);
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(10px);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -211,11 +146,45 @@
 
         .modal-card {
             background: white;
-            padding: 40px 30px;
-            border-radius: 28px;
-            width: 85%;
-            max-width: 340px;
+            padding: 35px 25px;
+            border-radius: 50px;
+            width: 90%;
+            max-width: 380px;
             text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+
+        /* --- NAVIGATION --- */
+        .nav-row {
+            margin-top: auto;
+            padding: 20px 30px 40px;
+            width: 100%;
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-primary {
+            background: #1a1a1a;
+            color: #FDD757;
+            border: none;
+            padding: 20px;
+            border-radius: 50px;
+            font-weight: 900;
+            flex: 1;
+            text-align: center;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }
+
+        .btn-text-link {
+            background: none;
+            border: none;
+            color: #444;
+            font-size: 14px;
+            font-weight: 700;
+            text-decoration: underline;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -223,8 +192,17 @@
 
     <div id="installModal" class="modal-overlay">
         <div class="modal-card">
-            <h2>Final Placement</h2>
-            <p style="color: #666; margin: 15px 0 30px;">Please install the rail in its <b>final location</b> before scanning.</p>
+            <h2 style="font-weight: 900; font-size: 30px; margin-bottom: 10px;">Final Placement</h2>
+            <p style="color: #666; margin-bottom: 20px; line-height: 1.4;">Please install the rail in its <b>final location</b> before scanning.</p>
+            
+            <div style="background: #eee; border-radius: 25px; overflow: hidden; margin-bottom: 15px;">
+                <img src="installed-rail.png" alt="Installed Rail" style="width: 100%; display: block;">
+            </div>
+
+            <button class="btn-text-link" style="margin-bottom: 20px; display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%;">
+                <i class="fa-solid fa-circle-info"></i> View Installation Guide
+            </button>
+
             <button class="btn-primary" style="width:100%" onclick="closeModal()">I'M READY</button>
         </div>
     </div>
@@ -233,38 +211,38 @@
 
     <div class="scanner-view-container">
         <div class="viewfinder" id="scannerBox">
+            <img src="blurry-image.png" id="blurryPlaceholder">
+            <img src="rail-scanning.png" id="scanningImage" style="display:none;">
+            
             <div id="laser" class="laser-line"></div>
             
             <div id="completeScreen" class="complete-ui">
-                <div class="checkmark-circle">
-                    <i class="fas fa-check"></i>
-                </div>
-                <div class="complete-text">Complete</div>
-                <button class="next-btn-inner" onclick="validateAndGo()">
+                <div class="checkmark-circle"><i class="fas fa-check"></i></div>
+                <div class="complete-text">COMPLETE</div>
+                <button class="next-btn-inner" id="nextBtnShake" onclick="validateAndGo()">
                     NEXT <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
         </div>
-        <div class="scanner-utility-row">
+        <div style="display: flex; justify-content: space-between; padding: 10px 25px;">
             <button id="rescanBtn" class="btn-text-link" style="visibility:hidden;" onclick="startSequence()">Rescan</button>
             <button class="btn-text-link">Manual Entry</button>
         </div>
     </div>
 
-    <div class="content-body">
-        <div class="instruction-section">
-            <img src="scan-rail-front.png" class="helper-img" alt="Front Scan">
-            <img src="scan-rail-top.png" class="helper-img" alt="Top Scan">
-        </div>
+    <div style="display:flex; justify-content:center; margin: 20px 0;">
+        <img src="rail-id-empty.png" id="railIdStatus" style="width: 280px; transition: transform 0.3s ease;">
+    </div>
 
-        <div class="status-card-container" id="statusCardWrapper">
-            <img src="need-to-scan.png" class="status-card-img" id="statusCardImg">
+    <div class="content-body" id="instructionBody" style="padding: 0 25px; flex: 1;">
+        <div style="text-align: center;">
+            <img src="simplified-scan-location.png" style="width: 100%; max-width: 300px;" alt="Scan here">
         </div>
+    </div>
 
-        <div class="nav-row">
-            <a href="page5.html" class="btn-primary" style="background:white; color:black; border:1px solid #ddd;">BACK</a>
-            <button class="btn-primary" onclick="validateAndGo()">NEXT</button>
-        </div>
+    <div class="nav-row">
+        <button class="btn-primary" style="background:white; color:black; border:1px solid #ddd;">BACK</button>
+        <button class="btn-primary" onclick="validateAndGo()">NEXT</button>
     </div>
 
     <script>
@@ -276,23 +254,30 @@
         }
 
         function startSequence() {
-            const box = document.getElementById('scannerBox');
             const laser = document.getElementById('laser');
+            const blurry = document.getElementById('blurryPlaceholder');
+            const scanningImg = document.getElementById('scanningImage');
             const completeScreen = document.getElementById('completeScreen');
             const rescanBtn = document.getElementById('rescanBtn');
-            const cardImg = document.getElementById('statusCardImg');
+            const railIdImg = document.getElementById('railIdStatus');
+            const instructionBody = document.getElementById('instructionBody');
 
-            box.style.background = "#000"; 
+            // Reset UI for scanning/rescan
+            blurry.style.display = "block";
+            scanningImg.style.display = "none";
             laser.style.display = "none";
             completeScreen.style.display = "none";
             rescanBtn.style.visibility = "hidden";
-            cardImg.src = "need-to-scan.png";
+            railIdImg.src = "rail-id-empty.png";
+            if(instructionBody) instructionBody.style.display = "block";
 
+            // 1. Hold on Blurry Image for 3 seconds
             setTimeout(() => {
-                box.style.background = ""; 
-                box.classList.add('active'); 
+                blurry.style.display = "none";
+                scanningImg.style.display = "block";
                 laser.style.display = "block";
 
+                // 2. Emulate scan for 2 seconds
                 setTimeout(() => {
                     completeScan();
                 }, 2000);
@@ -302,16 +287,30 @@
         function completeScan() {
             const completeScreen = document.getElementById('completeScreen');
             const laser = document.getElementById('laser');
-            const rescanBtn = document.getElementById('rescanBtn');
-            const cardImg = document.getElementById('statusCardImg');
+            const instructionBody = document.getElementById('instructionBody');
+            const railIdImg = document.getElementById('railIdStatus');
+            const nextBtn = document.getElementById('nextBtnShake');
 
+            // Feedback
             successSound.play();
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]); 
             
+            // Transitions
             laser.style.display = "none";
             completeScreen.style.display = "flex"; 
-            rescanBtn.style.visibility = "visible";
-            cardImg.src = "scan-complete.png";
+            
+            // Cognitive Unlock: Remove instruction image
+            if(instructionBody) instructionBody.style.display = "none";
+            
+            // Update Status Bubble to filled state
+            railIdImg.src = "rail-id-filled.png";
+            
+            // Shake Animation for the new 'Next' button
+            setTimeout(() => {
+                nextBtn.classList.add('shake-trigger');
+            }, 300);
+
+            document.getElementById('rescanBtn').style.visibility = "visible";
         }
 
         function validateAndGo() {
