@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion - Battery Issues List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        
+        body {
+            background-color: #F4F6F8; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding-bottom: 80px; 
+        }
+
+        /* --- HEADER --- */
+        .top-header {
+            background-color: #FDD757;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+        }
+        .back-icon {
+            font-size: 20px;
+            color: #000;
+            text-decoration: none;
+        }
+        .top-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #000;
+        }
+        .user-pill {
+            background-color: white;
+            padding: 6px 14px;
+            border-radius: 50px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            font-weight: 500;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .user-pill i { color: #555; }
+
+        /* --- SUB-HEADER / STATUS BANNER --- */
+        .status-banner {
+            background-color: #FEF0B2; 
+            padding: 15px 20px;
+            border-bottom: 1px solid #EAEAEA;
+        }
+        .status-top-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        .status-top-row h2 {
+            font-size: 20px;
+            font-weight: 500;
+            color: #000;
+            max-width: 65%;
+            line-height: 1.2;
+        }
+        .status-badges {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        .badge-count {
+            background-color: white;
+            border: 1px solid #CCC;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 14px;
+        }
+        .filter-icon { font-size: 20px; color: #333; }
+
+        .progress-row {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            color: #333;
+        }
+        .progress-bar-visual {
+            display: flex;
+            gap: 2px; 
+        }
+        .prog-step {
+            width: 10px; 
+            height: 12px;
+            background-color: #D1D5DB;
+            border-radius: 2px;
+            transition: background-color 0.3s ease;
+        }
+        .prog-step.completed {
+            background-color: #61B15A;
+        }
+
+        /* --- LIST CONTAINER --- */
+        .list-container {
+            padding: 15px 20px;
+            flex: 1;
+            max-width: 600px;
+            margin: 0 auto;
+            width: 100%;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #2C5282;
+            margin-bottom: 10px;
+            margin-top: 10px;
+        }
+        .section-icon {
+            background-color: #2C5282;
+            color: white;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+
+        /* --- CARDS --- */
+        .card {
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            margin-bottom: 12px;
+            overflow: hidden;
+            display: flex;
+            transition: all 0.3s ease;
+        }
+
+        .card.active { padding-right: 15px; }
+        .card-indicator {
+            width: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-shrink: 0;
+        }
+        .indicator-red { background-color: #F56565; }
+        .indicator-orange { background-color: #F6AD55; }
+        
+        .custom-checkbox {
+            width: 22px;
+            height: 22px;
+            background-color: white;
+            border-radius: 4px;
+            border: 2px solid rgba(0,0,0,0.1);
+        }
+
+        .card-content {
+            padding: 15px;
+            flex: 1;
+        }
+        .card-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        .card-status {
+            font-size: 14px;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 12px;
+        }
+        .status-red { color: #E53E3E; }
+        .status-orange { color: #DD6B20; }
+        .status-yellow { color: #D69E2E; }
+        
+        .card-meta {
+            font-size: 12px;
+            color: #888;
+        }
+
+        .card-actions {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 0;
+            width: 120px;
+        }
+
+        /* Action Buttons */
+        .btn-help {
+            background: linear-gradient(180deg, #FADBD8, #F5B7B1);
+            border: 1px solid #E6A8A3;
+            color: #C0392B;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            text-decoration: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-shadow: 0 1px 0 rgba(255,255,255,0.5);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .btn-check-now {
+            background: linear-gradient(180deg, #58D68D, #2ECC71);
+            border: 1px solid #27AE60;
+            color: white;
+            padding: 8px;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 700;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            box-shadow: 0 3px 6px rgba(46,204,113,0.3);
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            transition: all 0.2s;
+        }
+        
+        .btn-check-now:disabled {
+            background: #82E0AA;
+            border: 1px solid #82E0AA;
+            cursor: not-allowed;
+            box-shadow: none;
+        }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .fa-spin-custom { animation: spin 1s linear infinite; }
+
+        /* Simple/Completed Card Styling */
+        .card.simple {
+            padding: 15px;
+            align-items: center;
+            gap: 15px;
+        }
+        .simple-checkbox {
+            font-size: 24px;
+            color: #CBD5E0;
+        }
+        .simple-checkbox.checked {
+            color: #48BB78;
+        }
+        .card.simple .card-content {
+            padding: 0;
+            margin-bottom: 0;
+        }
+        .card.simple .card-status { margin-bottom: 4px; }
+        .card.simple .card-title { margin-bottom: 2px; }
+        .text-green { color: #48BB78; }
+        .simple-right {
+            font-size: 12px;
+            color: #718096;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .simple-right i { font-size: 14px; }
+
+        /* --- BOTTOM NAVIGATION --- */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: #F4F6F8;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            box-shadow: 0 -4px 10px rgba(0,0,0,0.05);
+            z-index: 10;
+        }
+        .bottom-nav-inner {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .btn-bottom {
+            background-color: white;
+            padding: 12px 15px;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 500;
+            color: #000;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.08);
+            border: 1px solid #E2E8F0;
+            flex: 1;
+        }
+        .btn-bottom.see-all {
+            flex: 0.9;
+            font-weight: 600;
+        }
+        .btn-bottom.view-map {
+            flex: 1.1;
+            font-weight: 500;
+        }
+        .btn-bottom i { font-size: 18px; color: #4A5568; }
+        
+        .stacked-icon-wrapper {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .stacked-icon-wrapper i.fa-layer-group { color: #4A5568; }
+        .stacked-icon-wrapper i.fa-exclamation-circle {
+            position: absolute;
+            top: -4px;
+            right: -6px;
+            color: #E53E3E;
+            background: white;
+            border-radius: 50%;
+            font-size: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="top-header">
+        <a href="assigned_work_landing.html" class="back-icon"><i class="fas fa-arrow-left"></i></a>
+        <h1>Store 100</h1>
+        <div class="user-pill">
+            <i class="fas fa-user"></i>
+            <span>installer01@email.com</span>
+        </div>
+    </div>
+
+    <div class="status-banner">
+        <div class="status-top-row">
+            <h2>13 Rails Need Battery Replacement</h2>
+            <div class="status-badges">
+                <div class="badge-count"><i class="fas fa-battery-empty" style="color: #666;"></i> 13</div>
+                <i class="fas fa-filter filter-icon"></i>
+            </div>
+        </div>
+        <div class="progress-row">
+            <span>Progress: <span id="progress-count">3</span> / 13</span>
+            <div class="progress-bar-visual">
+                <div class="prog-step completed"></div>
+                <div class="prog-step completed"></div>
+                <div class="prog-step completed"></div>
+                <div class="prog-step"></div>
+                <div class="prog-step"></div>
+                <div class="prog-step"></div>
+                <div class="prog-step"></div>
+                <div class="prog-step"></div>
+                <div class="prog-step"></div>
+                <div class="prog-step"></div>
+                <div class="prog-step"></div>
+                <div class="prog-step"></div>
+                <div class="prog-step"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="list-container">
+        
+        <div class="section-header">
+            <div class="section-icon">A</div> A secton
+        </div>
+
+        <div class="card active" id="item-A8-12">
+            <div class="card-indicator indicator-red">
+                <div class="custom-checkbox"></div>
+            </div>
+            <div class="card-content">
+                <div class="card-title">A8.12 - Replace Battery</div>
+                <div class="card-status status-red">
+                    <i class="fas fa-battery-quarter"></i> Critical)
+                </div>
+                <div class="card-meta">Last seen: Feb 09 - 11:28</div>
+            </div>
+            <div class="card-actions">
+                <a href="batt_helpme.html" class="btn-help">Help Me! <i class="fas fa-caret-right"></i></a>
+                <button class="btn-check-now" onclick="markCompleted('item-A8-12', this)">
+                    <i class="fas fa-sync-alt"></i> Check now
+                </button>
+            </div>
+        </div>
+
+        <div class="card active" id="item-A8-13">
+            <div class="card-indicator indicator-orange">
+                <div class="custom-checkbox"></div>
+            </div>
+            <div class="card-content">
+                <div class="card-title">A8.13 - Replace Battery</div>
+                <div class="card-status status-orange">
+                    <i class="fas fa-battery-quarter"></i> Urgent (7%)
+                </div>
+                <div class="card-meta">Last seen: Feb 09 - 13:29</div>
+            </div>
+            <div class="card-actions">
+                <a href="batt_helpme.html" class="btn-help">Help Me! <i class="fas fa-caret-right"></i></a>
+                <button class="btn-check-now" onclick="markCompleted('item-A8-13', this)">
+                    <i class="fas fa-sync-alt"></i> Check now
+                </button>
+            </div>
+        </div>
+
+        <div class="card active" id="item-A11-16">
+            <div class="card-indicator indicator-orange">
+                <div class="custom-checkbox"></div>
+            </div>
+            <div class="card-content">
+                <div class="card-title">A11.16 - Replace Battery</div>
+                <div class="card-status status-orange">
+                    <i class="fas fa-battery-quarter"></i> 14%
+                </div>
+                <div class="card-meta">Last seen: Feb 07 - 16:29</div>
+            </div>
+            <div class="card-actions">
+                <a href="batt_helpme.html" class="btn-help">Help Me! <i class="fas fa-caret-right"></i></a>
+                <button class="btn-check-now" onclick="markCompleted('item-A11-16', this)">
+                    <i class="fas fa-sync-alt"></i> Check now
+                </button>
+            </div>
+        </div>
+
+        <div class="card simple">
+            <i class="fas fa-check-square simple-checkbox checked"></i>
+            <div class="card-content">
+                <div class="card-title">A16.2 - <span class="text-green">Completed (100%)</span></div>
+                <div class="card-meta">Last seen: Feb 07 - 16:29</div>
+            </div>
+            <div class="simple-right">
+                Feb 07 - 16:29 <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <div class="card simple">
+            <i class="far fa-square simple-checkbox"></i>
+            <div class="card-content">
+                <div class="card-title">A20.3 - <span class="status-orange">Urgent (7%)</span></div>
+                <div class="card-meta">Last seen: Feb 07 - 13:29</div>
+            </div>
+            <div class="simple-right">
+                Feb 07 - 13:29 <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <div class="card simple">
+            <i class="far fa-square simple-checkbox"></i>
+            <div class="card-content">
+                <div class="card-title">A21.13 - <span class="status-yellow">Low (14%)</span></div>
+                <div class="card-meta">Last seen: Feb 09 - 13:30</div>
+            </div>
+            <div class="simple-right">
+                Feb 09 - 13:30 <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+
+        <div class="card simple">
+            <i class="far fa-square simple-checkbox"></i>
+            <div class="card-content">
+                <div class="card-title">H5.3 - <span class="status-yellow">Low (12%)</span></div>
+                <div class="card-meta">Last seen: Feb 03 - 23:27</div>
+            </div>
+            <div class="simple-right">
+                Feb 03 - 23:27 <i class="fas fa-chevron-right"></i>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="bottom-nav">
+        <div class="bottom-nav-inner">
+            <a href="assigned_work_landing.html" class="btn-bottom see-all">
+                <div class="stacked-icon-wrapper">
+                    <i class="fas fa-layer-group"></i>
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                See all Work
+            </a>
+
+            <a href="batt_issues_map.html" class="btn-bottom view-map">
+                VIEW BY MAP <i class="fas fa-map"></i>
+            </a>
+        </div>
+    </div>
+
+    <script>
+        let currentProgress = 3;
+
+        function markCompleted(cardId, buttonElement) {
+            const card = document.getElementById(cardId);
+            if (!card) return;
+
+            // 1. Set the button to a loading state
+            const originalWidth = buttonElement.offsetWidth;
+            buttonElement.style.width = originalWidth + 'px'; 
+            buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin-custom"></i> Checking...';
+            buttonElement.disabled = true;
+
+            // 2. Simulate a network request (1.5 seconds)
+            setTimeout(() => {
+                const titleElement = card.querySelector('.card-title');
+                const fullTitle = titleElement.innerText;
+                const locationCode = fullTitle.split(' - ')[0]; 
+                
+                const metaElement = card.querySelector('.card-meta');
+                const lastSeenText = metaElement.innerText.replace('Last seen: ', '');
+
+                // Transform card
+                card.className = 'card simple';
+                card.innerHTML = `
+                    <i class="fas fa-check-square simple-checkbox checked"></i>
+                    <div class="card-content">
+                        <div class="card-title">${locationCode} - <span class="text-green">Completed (100%)</span></div>
+                        <div class="card-meta">Last seen: ${lastSeenText}</div>
+                    </div>
+                    <div class="simple-right">
+                        Just now <i class="fas fa-chevron-right"></i>
+                    </div>
+                `;
+
+                // Update Progress Tracker
+                currentProgress++;
+                document.getElementById('progress-count').innerText = currentProgress;
+                
+                const emptySteps = document.querySelectorAll('.prog-step:not(.completed)');
+                if (emptySteps.length > 0) {
+                    emptySteps[0].classList.add('completed');
+                }
+            }, 1500);
+        }
+    </script>
+
+</body>
+</html>

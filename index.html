@@ -9,7 +9,7 @@
             margin: 0;
             padding: 0;
             font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background: linear-gradient(180deg, #FFD045 0%, #FFF5D6 100%); /* Vusion Yellow Gradient */
+            background-color: #FFD54F; /* Adjusted to solid yellow to match mockup */
             height: 100vh;
             display: flex;
             flex-direction: column;
@@ -25,20 +25,21 @@
         }
 
         .back-icon {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
             cursor: pointer;
+            color: #000;
         }
 
         .user-pill {
             background-color: white;
-            padding: 8px 16px;
+            padding: 6px 14px;
             border-radius: 20px;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
@@ -52,58 +53,59 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding-top: 40px;
+            padding-top: 20px;
         }
 
         /* Vusion Logo Box */
         .logo-box {
-            width: 60px;
-            height: 60px;
-            border: 4px solid #1a1a1a;
+            width: 45px;
+            height: 45px;
+            border: 2px solid #000;
             border-radius: 8px;
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            background-color: transparent;
         }
 
         .logo-text {
-            font-size: 32px;
+            font-size: 24px;
             font-weight: bold;
-            color: #1a1a1a;
+            color: #000;
         }
 
         h1 {
-            font-size: 28px;
-            font-weight: 400;
+            font-size: 22px;
+            font-weight: 500;
             text-align: center;
             margin: 0;
             line-height: 1.3;
-            color: #1a1a1a;
+            color: #000;
         }
 
         p.subtitle {
-            font-size: 16px;
-            color: #333;
-            margin-top: 15px;
-            margin-bottom: 40px;
+            font-size: 13px;
+            color: #000;
+            margin-top: 10px;
+            margin-bottom: 30px;
         }
 
         /* Action Buttons */
         .action-btn {
             background: white;
             width: 85%;
-            max-width: 350px;
-            padding: 20px;
-            margin-bottom: 20px;
-            border-radius: 15px;
+            max-width: 320px;
+            padding: 18px 20px;
+            margin-bottom: 15px;
+            border-radius: 12px;
             border: none;
             display: flex;
             align-items: center;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             cursor: pointer;
             transition: transform 0.1s;
-            text-decoration: none; /* For the anchor tag wrap */
+            text-decoration: none; 
         }
 
         .action-btn:active {
@@ -111,15 +113,15 @@
         }
 
         .btn-icon {
-            width: 50px;
-            height: 50px;
+            width: 30px;
+            height: 30px;
             object-fit: contain;
             margin-right: 20px;
         }
 
         .btn-text {
-            font-size: 20px;
-            font-weight: 600;
+            font-size: 16px;
+            font-weight: 700;
             color: #000;
         }
     </style>
@@ -127,7 +129,8 @@
 <body>
 
     <div class="header">
-        <div class="back-icon">&#10094;</div> <div class="user-pill">
+        <div class="back-icon">&#10094;</div>
+        <div class="user-pill">
             <span class="icon">&#128100;</span> installer01@email.com
         </div>
     </div>
@@ -147,8 +150,13 @@
         </a>
 
         <a href="page11.html" class="action-btn">
-            <img src="monitoring.png" alt="Gear Icon" class="btn-icon">
+            <img src="monitoring.png" alt="Monitoring Icon" class="btn-icon">
             <span class="btn-text">Monitoring</span>
+        </a>
+
+        <a href="maint_location.html" class="action-btn">
+            <img src="maintenance.png" alt="Maintenance Icon" class="btn-icon">
+            <span class="btn-text">Maintenance</span>
         </a>
 
     </div>
