@@ -11,12 +11,11 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
         
         body {
-            /* Vusion Yellow Gradient */
             background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-y: hidden; 
+            overflow-x: hidden; 
         }
 
         /* --- HEADER --- */
@@ -59,7 +58,7 @@
         }
         .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; }
 
-        h2 { font-size: 22px; margin-bottom: 20px; color: #000; }
+        h2 { font-size: 22px; margin-bottom: 20px; color: #000; transition: all 0.3s ease; }
 
         /* --- LOCATION CARD --- */
         .location-card {
@@ -73,43 +72,47 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            overflow: hidden; /* Ensures image corners stay rounded */
+            transition: all 0.4s ease;
         }
 
         .map-icon-large {
             font-size: 50px;
-            color: #d93025; /* Google Maps Red */
+            color: #d93025; 
             margin-bottom: 15px;
             filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
         }
 
-        .store-name {
-            font-size: 20px;
-            font-weight: 700;
-            color: #000;
-            margin-bottom: 5px;
-        }
-        .store-address {
-            font-size: 16px;
-            color: #555;
-            margin-bottom: 20px;
-            line-height: 1.4;
-        }
+        .store-name { font-size: 20px; font-weight: 700; color: #000; margin-bottom: 5px; }
+        .store-address { font-size: 16px; color: #555; margin-bottom: 20px; line-height: 1.4; }
         
-        /* Map Image Container */
         .map-img-container {
             width: 100%;
-            height: 140px; /* Slightly taller for better view */
+            height: 140px;
             border-radius: 12px;
             overflow: hidden;
             border: 1px solid #ddd;
         }
         
-        .map-img {
+        .map-img { width: 100%; height: 100%; object-fit: cover; }
+
+        /* --- STATUS PILL (GPS FAILSAFE) --- */
+        .gps-pill {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 12px;
             width: 100%;
-            height: 100%;
-            object-fit: cover; /* Zooms in to fill the box */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
         }
+        .gps-pill:active { background: #ececec; }
+        .gps-label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: 700; text-align: left; }
+        .gps-value { font-family: 'Courier New', Courier, monospace; font-size: 16px; font-weight: 700; color: #333; }
+        .copy-hint { font-size: 12px; color: #FDD757; }
 
         /* --- BUTTONS --- */
         .action-row {
@@ -150,7 +153,7 @@
             color: black;
         }
 
-        /* --- FAKE LOADING OVERLAY --- */
+        /* --- LOADING OVERLAY --- */
         .overlay {
             position: fixed;
             top: 0; left: 0;
@@ -170,11 +173,7 @@
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
         }
-        .overlay-text {
-            color: white;
-            font-size: 18px;
-            font-weight: 500;
-        }
+        .overlay-text { color: white; font-size: 18px; font-weight: 500; }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -193,9 +192,9 @@
     <div class="content">
         <div class="logo-box"><span class="logo-text">V</span></div>
 
-        <h2>Is this your location?</h2>
+        <h2 id="pageTitle">Is this your location?</h2>
 
-        <div class="location-card">
+        <div class="location-card" id="mainCard">
             <i class="fas fa-map-marker-alt map-icon-large"></i>
             <div class="store-name">Walmart Store #100</div>
             <div class="store-address">406 S Walton Blvd<br>Bentonville, AR 72712</div>
@@ -205,7 +204,7 @@
             </div>
         </div>
 
-        <div class="action-row">
+        <div class="action-row" id="actionRow">
             <button class="btn-confirm" onclick="window.location.href='page3.html'">
                 Yes, Confirm Location
             </button>
@@ -222,14 +221,59 @@
     </div>
 
     <script>
+        let retryCount = 0;
+
         function triggerRetry() {
+            retryCount++;
             const overlay = document.getElementById('loadingOverlay');
+            const mainCard = document.getElementById('mainCard');
+            const pageTitle = document.getElementById('pageTitle');
+            const actionRow = document.getElementById('actionRow');
+
             overlay.style.display = 'flex';
 
-            // Fake a 2.5 second load
             setTimeout(() => {
                 overlay.style.display = 'none';
+
+                if (retryCount >= 2) {
+                    // Update Title
+                    pageTitle.innerText = "Location Not Found";
+
+                    // Replace Card Content with Coordinate Pill
+                    mainCard.innerHTML = `
+                        <i class="fas fa-satellite-dish" style="font-size: 40px; color: #555; margin-bottom: 15px;"></i>
+                        <p style="font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.4;">
+                            Sorry, we can't find the store associated with your location. We will use your raw coordinates instead.
+                        </p>
+                        <div class="gps-pill" onclick="copyCoords()">
+                            <div style="text-align: left;">
+                                <div class="gps-label">Raw GPS Data</div>
+                                <div class="gps-value" id="coordValue">36.3729, -94.2088</div>
+                            </div>
+                            <i class="far fa-copy copy-hint"></i>
+                        </div>
+                    `;
+
+                    // Update Action Button
+                    actionRow.innerHTML = `
+                        <button class="btn-confirm" onclick="window.location.href='page3.html'">
+                            Continue with Coordinates
+                        </button>
+                    `;
+                }
             }, 2500);
+        }
+
+        function copyCoords() {
+            const coords = document.getElementById('coordValue').innerText;
+            navigator.clipboard.writeText(coords);
+            
+            // Visual feedback for cognitive ergonomics
+            const hint = document.querySelector('.copy-hint');
+            hint.className = "fas fa-check copy-hint";
+            setTimeout(() => {
+                hint.className = "far fa-copy copy-hint";
+            }, 2000);
         }
     </script>
 

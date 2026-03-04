@@ -48,14 +48,17 @@
             padding-top: 20px;
         }
 
+        /* LOGO BOX as the hidden trigger */
         .logo-box {
             width: 60px; height: 60px;
             border: 3px solid #1a1a1a;
             border-radius: 12px;
             display: flex; justify-content: center; align-items: center;
             margin-bottom: 30px;
+            cursor: default; /* Keeps it looking non-interactive */
+            -webkit-tap-highlight-color: transparent;
         }
-        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; }
+        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; pointer-events: none; }
 
         h2 { font-size: 24px; margin-bottom: 30px; color: #000; font-weight: 500; }
 
@@ -122,7 +125,7 @@
             color: #FF8C00;
             font-family: 'Orbitron', sans-serif;
             text-align: center;
-            pointer-events: none; /* Let clicks pass through to container */
+            pointer-events: none;
         }
         .main-status {
             font-size: 18px;
@@ -153,7 +156,9 @@
     </div>
 
     <div class="content">
-        <div class="logo-box"><span class="logo-text">V</span></div>
+        <div class="logo-box" onclick="triggerThirdFailure()">
+            <span class="logo-text">V</span>
+        </div>
 
         <h2>Please Wait</h2>
 
@@ -173,22 +178,25 @@
     </div>
 
     <script>
-        // Default destination is Success (Page 8)
         let nextPage = 'page8.html';
 
-        // Timer always runs for exactly 4 seconds
+        // Auto-redirect after 4 seconds
         window.onload = function() {
             setTimeout(function() {
-                // When time is up, go to whatever nextPage is currently set to
                 window.location.href = nextPage;
             }, 4000); 
         };
 
-        // If clicked, we silently switch the destination to Page 9
-        // No visual changes, so the audience suspects nothing.
+        // Standard hidden failure path (to standard troubleshooting)
         function setFailurePath() {
             nextPage = 'page9.html';
-            console.log("Failure path activated."); // For your debugging only
+            console.log("Standard failure path activated.");
+        }
+
+        // Intervention trigger: Navigate immediately to intervention page
+        function triggerThirdFailure() {
+            console.log("Emulating 3rd failure: Redirecting to intervention.");
+            window.location.href = 'fail-intervention.html';
         }
     </script>
 

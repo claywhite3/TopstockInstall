@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion - Rail Troubleshooting</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        
+        body {
+            background: #FDD757; 
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            padding: 40px 25px;
+            align-items: center;
+            text-align: center;
+        }
+
+        .logo-box {
+            width: 60px; height: 60px;
+            border: 3px solid #1a1a1a;
+            border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+            margin-bottom: 30px;
+        }
+        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; }
+
+        .alert-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            width: 100%;
+            max-width: 360px;
+        }
+
+        .white-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            margin-bottom: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .fa-exclamation-triangle { 
+            font-size: 60px; 
+            color: #d93025; 
+            margin-bottom: 20px;
+        }
+        
+        h2 { 
+            font-size: 24px; 
+            font-weight: 900; 
+            color: #1a1a1a;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .rail-tag {
+            font-size: 14px;
+            background: #f0f0f0;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-weight: 700;
+            color: #555;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .instruction-text {
+            font-size: 16px;
+            line-height: 1.5;
+            color: #333;
+            font-weight: 400;
+        }
+
+        .bold-instruct { font-weight: 700; color: #000; }
+
+        /* --- BUTTONS --- */
+        .action-row {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-skip {
+            background-color: #1a1a1a;
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 16px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-retry-final {
+            background-color: transparent;
+            border: 2px solid #1a1a1a;
+            padding: 15px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 15px;
+            cursor: pointer;
+            color: #1a1a1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="logo-box"><span class="logo-text">V</span></div>
+
+    <div class="alert-container">
+        
+        <div class="white-card">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h2>Persistent Failure</h2>
+            <div class="rail-tag">RAIL ID: 4Z1-9S8TW</div>
+
+            <p class="instruction-text">
+                This rail has failed to connect <span class="bold-instruct">3 times</span>. 
+                Please set this unit aside and proceed with a new rail.
+            </p>
+        </div>
+
+        <div class="action-row">
+            <button class="btn-skip" onclick="window.location.href='page6.html'">
+                <span>Skip & Scan New Rail</span>
+                <i class="fas fa-caret-right"></i>
+            </button>
+
+            <button class="btn-retry-final" onclick="window.location.href='page7.html'">
+                <i class="fas fa-sync-alt"></i>
+                <span>Wait, I found the issue. Try again.</span>
+            </button>
+        </div>
+    </div>
+
+</body>
+</html>
