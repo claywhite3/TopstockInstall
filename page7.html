@@ -9,61 +9,79 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        /* Base styles consistent with your new clean aesthetic */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        }
         
         body {
-            background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
+            background-color: #f0f2f5; /* Consistent light-grey/blue background */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            color: #000;
             overflow: hidden;
         }
 
+        /* --- HEADER --- */
         .header {
+            width: 100%;
             display: flex;
             justify-content: flex-end;
             align-items: center;
             padding: 20px;
-            margin-top: 10px;
         }
+
         .user-pill {
             background-color: white;
-            padding: 8px 16px;
-            border-radius: 50px;
+            padding: 6px 14px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
-        .content {
-            flex: 1;
+        /* --- CONTENT --- */
+        .container {
+            width: 100%;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0 25px;
+            padding: 20px;
             text-align: center;
-            padding-top: 20px;
         }
 
         /* LOGO BOX as the hidden trigger */
         .logo-box {
-            width: 60px; height: 60px;
-            border: 3px solid #1a1a1a;
-            border-radius: 12px;
-            display: flex; justify-content: center; align-items: center;
+            width: 80px;
+            height: 80px;
             margin-bottom: 30px;
-            cursor: default; /* Keeps it looking non-interactive */
+            cursor: default;
             -webkit-tap-highlight-color: transparent;
         }
-        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; pointer-events: none; }
+        .logo-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+        }
 
-        h2 { font-size: 24px; margin-bottom: 30px; color: #000; font-weight: 500; }
+        h2 { 
+            font-size: 26px; 
+            font-weight: 700; 
+            margin-bottom: 40px; 
+            color: #000; 
+        }
 
         .rail-display {
-            width: 100%;
+            width: 90%;
             max-width: 320px;
             height: auto;
             margin-bottom: 50px;
@@ -75,7 +93,7 @@
             100% { transform: translateY(0px); }
         }
 
-        /* --- SPINNER --- */
+        /* --- SPINNER (Restored Style with Clean Background) --- */
         .spinner-container {
             position: relative;
             width: 220px;
@@ -85,16 +103,19 @@
             align-items: center;
             cursor: pointer;
             -webkit-tap-highlight-color: transparent;
+            /* Added padding to ensure the ring doesn't feel "tight" against other elements */
+            margin-bottom: 40px; 
         }
 
         .spinner-bg {
             position: absolute;
             width: 180px;
             height: 180px;
-            background: #111;
+            background: #ffffff; /* Swapped for white to match new theme */
             border-radius: 50%;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
             z-index: 1;
+            border: 3px solid #f9d976; /* Yellow border for continuity */
         }
 
         .spinner-ring {
@@ -102,8 +123,7 @@
             width: 220px;
             height: 220px;
             border-radius: 50%;
-            border: 8px dashed #FF8C00;
-            box-shadow: 0 0 15px rgba(255, 140, 0, 0.5);
+            border: 8px dashed #f9d976; /* Signature yellow */
             animation: spin 6s linear infinite;
             z-index: 2;
         }
@@ -113,8 +133,8 @@
             width: 200px;
             height: 200px;
             border-radius: 50%;
-            border: 2px solid rgba(255, 140, 0, 0.3);
-            border-top: 2px solid #FFD700;
+            border: 2px solid rgba(249, 217, 118, 0.3);
+            border-top: 2px solid #000;
             animation: spin-reverse 3s linear infinite;
             z-index: 2;
         }
@@ -122,7 +142,7 @@
         .spinner-text {
             position: relative;
             z-index: 3;
-            color: #FF8C00;
+            color: #000;
             font-family: 'Orbitron', sans-serif;
             text-align: center;
             pointer-events: none;
@@ -132,13 +152,13 @@
             text-transform: uppercase;
             letter-spacing: 1px;
             margin-bottom: 5px;
-            color: #FFA500;
-            text-shadow: 0 0 5px rgba(255, 165, 0, 0.5);
+            font-weight: 700;
         }
         .sub-status {
-            font-size: 12px;
-            color: #aaa;
-            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+            color: #666;
+            font-family: 'Segoe UI', sans-serif;
+            font-weight: 600;
         }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -151,16 +171,16 @@
     <div class="header">
         <div class="user-pill">
             <i class="fas fa-user"></i>
-            <span>installer01@email.com</span>
+            <span>installer01...</span>
         </div>
     </div>
 
-    <div class="content">
+    <div class="container">
         <div class="logo-box" onclick="triggerThirdFailure()">
-            <span class="logo-text">V</span>
+            <img src="topstock_logo.png" alt="Vusion Logo">
         </div>
 
-        <h2>Please Wait</h2>
+        <h2>Registering Rail</h2>
 
         <img src="rail-loading.jpg" alt="Rail" class="rail-display" onerror="this.style.display='none'">
 
@@ -170,7 +190,7 @@
             <div class="spinner-bg"></div>
             
             <div class="spinner-text">
-                <div class="main-status">Registering<br>the Rail</div>
+                <div class="main-status">Processing</div>
                 <div class="sub-status">Please wait...</div>
             </div>
         </div>
@@ -187,7 +207,7 @@
             }, 4000); 
         };
 
-        // Standard hidden failure path (to standard troubleshooting)
+        // Standard hidden failure path
         function setFailurePath() {
             nextPage = 'page9.html';
             console.log("Standard failure path activated.");

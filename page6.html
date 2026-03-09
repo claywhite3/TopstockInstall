@@ -8,31 +8,52 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        /* Base styles matching the high-contrast aesthetic */
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         
         body {
-            background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
+            background-color: #f0f2f5; 
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
             overflow-x: hidden;
         }
 
         /* --- HEADER --- */
+        .header-top {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .user-pill {
+            background-color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
         .instruction-header {
             width: 100%;
-            padding: 25px 0 10px 0;
-            font-size: 32px;
-            font-weight: 900;
+            padding: 10px 0;
+            font-size: 28px;
+            font-weight: 700;
             color: #1a1a1a;
-            text-transform: uppercase;
             text-align: center;
-            letter-spacing: -0.5px;
         }
 
         /* --- SCANNER WINDOW --- */
         .scanner-view-container {
             width: 100%;
+            max-width: 400px;
             height: 33vh; 
             padding: 10px 25px;
             flex-shrink: 0;
@@ -45,17 +66,12 @@
             border-radius: 40px;
             position: relative;
             overflow: hidden;
-            border: 3px solid rgba(0,0,0,0.1);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border: 3px solid #f9d976; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
         }
 
-        .viewfinder img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
+        .viewfinder img { width: 100%; height: 100%; object-fit: cover; }
 
-        /* --- SCAN ANIMATION --- */
         .laser-line {
             width: 100%;
             height: 4px;
@@ -70,7 +86,6 @@
 
         @keyframes scan { 0% { top: 10%; } 100% { top: 90%; } }
 
-        /* --- COMPLETE SCREEN --- */
         .complete-ui {
             display: none;
             flex-direction: column;
@@ -82,44 +97,30 @@
             position: absolute;
             top: 0; left: 0;
             z-index: 20;
-            border: 12px solid #8cc63f;
+            border: 10px solid #8cc63f;
             border-radius: 35px;
         }
 
         .checkmark-circle {
-            width: 70px;
-            height: 70px;
+            width: 70px; height: 70px;
             border-radius: 50%;
             border: 6px solid #8cc63f;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            display: flex; align-items: center; justify-content: center;
             margin-bottom: 15px;
         }
-
         .checkmark-circle i { color: #8cc63f; font-size: 35px; }
 
-        .complete-text {
-            font-size: 42px;
-            font-weight: 900;
-            font-style: italic;
-            color: #000;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-        }
-
         .next-btn-inner {
-            background: #1a1a1a;
-            color: #FDD757;
-            border: none;
-            padding: 15px 60px;
-            border-radius: 40px;
+            background: white;
+            border: 3px solid #f9d976;
+            padding: 15px 40px;
+            border-radius: 18px;
             font-weight: 700;
             font-size: 20px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
             display: flex;
             align-items: center;
             gap: 15px;
-            box-shadow: 0 6px 0px #8cc63f;
         }
 
         @keyframes shake {
@@ -129,29 +130,20 @@
             75% { transform: translateX(-8px); }
             100% { transform: translateX(0); }
         }
-
         .shake-trigger { animation: shake 0.5s ease-in-out; }
 
         /* --- MODAL --- */
         .modal-overlay {
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(10px);
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(4px);
+            display: flex; justify-content: center; align-items: center;
             z-index: 9999;
         }
-
         .modal-card {
-            background: white;
-            padding: 35px 25px;
-            border-radius: 50px;
-            width: 90%;
-            max-width: 380px;
-            text-align: center;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            background: white; padding: 30px 25px; border-radius: 40px;
+            width: 90%; max-width: 380px; text-align: center;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
         }
 
         /* --- NAVIGATION --- */
@@ -159,43 +151,39 @@
             margin-top: auto;
             padding: 20px 30px 40px;
             width: 100%;
+            max-width: 400px;
             display: flex;
             gap: 15px;
         }
 
-        .btn-primary {
-            background: #1a1a1a;
-            color: #FDD757;
-            border: none;
-            padding: 20px;
-            border-radius: 50px;
-            font-weight: 900;
+        .btn-confirm {
+            background: white;
+            border: 3px solid #f9d976;
+            padding: 16px;
+            border-radius: 18px;
+            font-weight: 700;
             flex: 1;
             text-align: center;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
             text-decoration: none;
-            text-transform: uppercase;
-            font-size: 16px;
+            color: #000;
         }
 
         .btn-text-link {
-            background: none;
-            border: none;
-            color: #444;
-            font-size: 14px;
-            font-weight: 700;
-            text-decoration: underline;
-            cursor: pointer;
+            background: none; border: none; color: #666; font-size: 14px;
+            font-weight: 700; text-decoration: underline; cursor: pointer;
         }
+
     </style>
 </head>
 <body>
 
     <div id="installModal" class="modal-overlay">
         <div class="modal-card">
-            <h2 style="font-weight: 900; font-size: 30px; margin-bottom: 10px;">Final Placement</h2>
-            <p style="color: #666; margin-bottom: 20px; line-height: 1.4;">Please install the rail in its <b>final location</b> before scanning.</p>
+            <h2 style="font-weight: 700; font-size: 26px; margin-bottom: 15px;">Final Placement</h2>
+            <p style="color: #666; margin-bottom: 20px; line-height: 1.4;">Install the rail in its <b>final location</b> before scanning.</p>
             
-            <div style="background: #eee; border-radius: 25px; overflow: hidden; margin-bottom: 15px;">
+            <div style="background: #eee; border-radius: 20px; overflow: hidden; margin-bottom: 15px; border: 1px solid #ddd;">
                 <img src="installed-rail.png" alt="Installed Rail" style="width: 100%; display: block;">
             </div>
 
@@ -203,7 +191,14 @@
                 <i class="fa-solid fa-circle-info"></i> View Installation Guide
             </button>
 
-            <button class="btn-primary" style="width:100%" onclick="closeModal()">Rail is Installed</button>
+            <button class="btn-confirm" style="width:100%" onclick="closeModal()">Rail is Installed</button>
+        </div>
+    </div>
+
+    <div class="header-top">
+        <div class="user-pill">
+            <i class="fas fa-user"></i>
+            <span>installer01...</span>
         </div>
     </div>
 
@@ -213,36 +208,35 @@
         <div class="viewfinder" id="scannerBox">
             <img src="blurry-image.png" id="blurryPlaceholder">
             <img src="rail-scanning.png" id="scanningImage" style="display:none;">
-            
             <div id="laser" class="laser-line"></div>
             
             <div id="completeScreen" class="complete-ui">
                 <div class="checkmark-circle"><i class="fas fa-check"></i></div>
-                <div class="complete-text">COMPLETE</div>
+                <div class="complete-text" style="font-size: 32px; font-weight: 800; margin-bottom: 20px;">COMPLETE</div>
                 <button class="next-btn-inner" id="nextBtnShake" onclick="validateAndGo()">
                     NEXT <i class="fas fa-chevron-right"></i>
                 </button>
             </div>
         </div>
-        <div style="display: flex; justify-content: space-between; padding: 10px 25px;">
+        <div style="display: flex; justify-content: space-between; padding: 10px 10px;">
             <button id="rescanBtn" class="btn-text-link" style="visibility:hidden;" onclick="startSequence()">Rescan</button>
             <button class="btn-text-link">Manual Entry</button>
         </div>
     </div>
 
-    <div style="display:flex; justify-content:center; margin: 20px 0;">
-        <img src="rail-id-empty.png" id="railIdStatus" style="width: 280px; transition: transform 0.3s ease;">
+    <div style="display:flex; justify-content:center; margin: 20px 0; width: 100%; padding: 0 25px;">
+        <img src="rail-id-empty.png" id="railIdStatus" style="width: 100%; max-width: 300px; transition: transform 0.3s ease;">
     </div>
 
-    <div class="content-body" id="instructionBody" style="padding: 0 25px; flex: 1;">
-        <div style="text-align: center;">
-            <img src="simplified-scan-location.png" style="width: 100%; max-width: 300px;" alt="Scan here">
+    <div id="instructionBody" style="padding: 0 25px; flex: 1; text-align: center; width: 100%; max-width: 400px;">
+        <div style="background: white; padding: 15px; border-radius: 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
+            <img src="simplified-scan-location.png" style="width: 100%; max-width: 280px;" alt="Scan here">
         </div>
     </div>
 
     <div class="nav-row">
-        <button class="btn-primary" style="background:white; color:black; border:1px solid #ddd;">BACK</button>
-        <button class="btn-primary" onclick="validateAndGo()">NEXT</button>
+        <button class="btn-text-link" style="flex: 1;" onclick="window.history.back()">BACK</button>
+        <button class="btn-confirm" style="flex: 2;" onclick="validateAndGo()">NEXT</button>
     </div>
 
     <script>
@@ -262,7 +256,6 @@
             const railIdImg = document.getElementById('railIdStatus');
             const instructionBody = document.getElementById('instructionBody');
 
-            // Reset UI for scanning/rescan
             blurry.style.display = "block";
             scanningImg.style.display = "none";
             laser.style.display = "none";
@@ -271,41 +264,27 @@
             railIdImg.src = "rail-id-empty.png";
             if(instructionBody) instructionBody.style.display = "block";
 
-            // 1. Hold on Blurry Image for 3 seconds
             setTimeout(() => {
                 blurry.style.display = "none";
                 scanningImg.style.display = "block";
                 laser.style.display = "block";
-
-                // 2. Emulate scan for 2 seconds
-                setTimeout(() => {
-                    completeScan();
-                }, 2000);
+                setTimeout(() => { completeScan(); }, 2000);
             }, 3000);
         }
 
         function completeScan() {
             const completeScreen = document.getElementById('completeScreen');
             const laser = document.getElementById('laser');
-            const instructionBody = document.getElementById('instructionBody');
             const railIdImg = document.getElementById('railIdStatus');
             const nextBtn = document.getElementById('nextBtnShake');
 
-            // Feedback
             successSound.play();
             if (navigator.vibrate) navigator.vibrate([100, 50, 100]); 
             
-            // Transitions
             laser.style.display = "none";
             completeScreen.style.display = "flex"; 
-            
-            // Cognitive Unlock: Remove instruction image
-            if(instructionBody) instructionBody.style.display = "none";
-            
-            // Update Status Bubble to filled state
             railIdImg.src = "rail-id-filled.png";
             
-            // Shake Animation for the new 'Next' button
             setTimeout(() => {
                 nextBtn.classList.add('shake-trigger');
             }, 300);

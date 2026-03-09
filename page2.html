@@ -8,157 +8,162 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
         
         body {
-            background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
+            /* Clean light-grey/blue from index.html */
+            background-color: #f0f2f5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-x: hidden; 
+            align-items: center;
+            color: #000;
         }
 
         /* --- HEADER --- */
         .header {
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-            margin-top: 10px;
         }
         .back-icon { font-size: 24px; color: #000; text-decoration: none; cursor: pointer; }
         .user-pill {
             background-color: white;
-            padding: 8px 16px;
-            border-radius: 50px;
+            padding: 6px 14px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         /* --- CONTENT --- */
-        .content {
-            flex: 1;
+        .container {
+            width: 100%;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 20px 25px;
-            text-align: center;
+            padding: 20px;
         }
 
+        /* Consistent Logo Box from Home Page */
         .logo-box {
-            width: 60px; height: 60px;
-            border: 3px solid #1a1a1a;
-            border-radius: 12px;
-            display: flex; justify-content: center; align-items: center;
+            width: 100px;
+            height: 100px;
             margin-bottom: 20px;
         }
-        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; }
+        .logo-box img { width: 100%; height: 100%; object-fit: contain; }
 
-        h2 { font-size: 22px; margin-bottom: 20px; color: #000; transition: all 0.3s ease; }
+        h2 { 
+            font-size: 24px; 
+            font-weight: 700; 
+            margin-bottom: 25px; 
+            color: #000; 
+            text-align: center;
+        }
 
         /* --- LOCATION CARD --- */
         .location-card {
             background-color: white;
             width: 100%;
-            max-width: 320px;
-            border-radius: 20px;
-            padding: 25px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             margin-bottom: 30px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: all 0.4s ease;
         }
 
         .map-icon-large {
-            font-size: 50px;
+            font-size: 40px;
             color: #d93025; 
-            margin-bottom: 15px;
-            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.2));
+            margin-bottom: 12px;
         }
 
-        .store-name { font-size: 20px; font-weight: 700; color: #000; margin-bottom: 5px; }
-        .store-address { font-size: 16px; color: #555; margin-bottom: 20px; line-height: 1.4; }
+        .store-name { font-size: 22px; font-weight: 700; color: #000; margin-bottom: 4px; }
+        .store-address { font-size: 16px; color: #666; margin-bottom: 20px; line-height: 1.4; text-align: center; }
         
         .map-img-container {
             width: 100%;
-            height: 140px;
-            border-radius: 12px;
+            height: 160px;
+            border-radius: 15px;
             overflow: hidden;
-            border: 1px solid #ddd;
+            border: 1px solid #eee;
         }
-        
         .map-img { width: 100%; height: 100%; object-fit: cover; }
-
-        /* --- STATUS PILL (GPS FAILSAFE) --- */
-        .gps-pill {
-            background: #f8f9fa;
-            border: 1px solid #e0e0e0;
-            border-radius: 12px;
-            padding: 12px;
-            width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: background 0.2s;
-            position: relative;
-        }
-        .gps-pill:active { background: #ececec; }
-        .gps-label { font-size: 10px; color: #888; text-transform: uppercase; font-weight: 700; text-align: left; }
-        .gps-value { font-family: 'Courier New', Courier, monospace; font-size: 16px; font-weight: 700; color: #333; }
-        .copy-hint { font-size: 12px; color: #FDD757; }
 
         /* --- BUTTONS --- */
         .action-row {
             width: 100%;
-            max-width: 320px;
             display: flex;
             flex-direction: column;
             gap: 15px;
+            align-items: center;
         }
 
+        /* Updated with heavier drop shadow */
         .btn-confirm {
-            background-color: #FDD757;
-            border: none;
-            padding: 15px;
-            border-radius: 40px;
+            background-color: white;
+            border: 3px solid #f9d976;
+            padding: 16px;
+            border-radius: 18px;
             font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: 18px;
+            /* Heavier box-shadow */
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
             cursor: pointer;
-            width: 100%;
+            width: 90%;
             color: black;
             text-decoration: none;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .btn-confirm:active { 
+            transform: scale(0.97);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Reduced shadow on click */
         }
 
         .btn-retry {
-            background-color: white;
-            border: 2px solid #FDD757;
-            padding: 15px;
-            border-radius: 40px;
-            font-weight: 700;
+            background: transparent;
+            border: none;
+            font-weight: 600;
             font-size: 16px;
             cursor: pointer;
-            width: 100%;
-            color: black;
+            color: #666;
+            text-decoration: underline;
         }
+
+        /* GPS Pill Style Update */
+        .gps-pill {
+            background: #ffffff;
+            border: 2px solid #f9d976;
+            border-radius: 15px;
+            padding: 15px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            /* Added shadow to GPS pill too */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+        }
+        .gps-label { font-size: 10px; color: #999; text-transform: uppercase; font-weight: 700; }
+        .gps-value { font-family: monospace; font-size: 18px; font-weight: 700; color: #333; }
 
         /* --- LOADING OVERLAY --- */
         .overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.7);
+            background-color: rgba(255,255,255,0.9);
             display: none; 
             flex-direction: column;
             justify-content: center;
@@ -167,13 +172,13 @@
         }
         .spinner {
             width: 50px; height: 50px;
-            border: 5px solid rgba(255,255,255,0.3);
-            border-top: 5px solid #FDD757;
+            border: 5px solid #eee;
+            border-top: 5px solid #f9d976;
             border-radius: 50%;
             animation: spin 1s linear infinite;
             margin-bottom: 20px;
         }
-        .overlay-text { color: white; font-size: 18px; font-weight: 500; }
+        .overlay-text { color: #000; font-size: 18px; font-weight: 600; }
 
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
@@ -189,8 +194,10 @@
         </div>
     </div>
 
-    <div class="content">
-        <div class="logo-box"><span class="logo-text">V</span></div>
+    <div class="container">
+        <div class="logo-box">
+            <img src="topstock_logo.png" alt="Vusion Logo">
+        </div>
 
         <h2 id="pageTitle">Is this your location?</h2>
 
@@ -236,44 +243,34 @@
                 overlay.style.display = 'none';
 
                 if (retryCount >= 2) {
-                    // Update Title
                     pageTitle.innerText = "Location Not Found";
-
-                    // Replace Card Content with Coordinate Pill
                     mainCard.innerHTML = `
                         <i class="fas fa-satellite-dish" style="font-size: 40px; color: #555; margin-bottom: 15px;"></i>
-                        <p style="font-size: 14px; color: #666; margin-bottom: 20px; line-height: 1.4;">
-                            Sorry, we can't find the store associated with your location. We will use your raw coordinates instead.
+                        <p style="font-size: 15px; color: #666; margin-bottom: 20px; line-height: 1.4; text-align: center;">
+                            We can't find a store at your current location. Please use your raw coordinates to proceed.
                         </p>
                         <div class="gps-pill" onclick="copyCoords()">
                             <div style="text-align: left;">
                                 <div class="gps-label">Raw GPS Data</div>
                                 <div class="gps-value" id="coordValue">36.3729, -94.2088</div>
                             </div>
-                            <i class="far fa-copy copy-hint"></i>
+                            <i class="far fa-copy" style="color: #f9d976;"></i>
                         </div>
                     `;
 
-                    // Update Action Button
                     actionRow.innerHTML = `
                         <button class="btn-confirm" onclick="window.location.href='page3.html'">
                             Continue with Coordinates
                         </button>
                     `;
                 }
-            }, 2500);
+            }, 2000);
         }
 
         function copyCoords() {
             const coords = document.getElementById('coordValue').innerText;
             navigator.clipboard.writeText(coords);
-            
-            // Visual feedback for cognitive ergonomics
-            const hint = document.querySelector('.copy-hint');
-            hint.className = "fas fa-check copy-hint";
-            setTimeout(() => {
-                hint.className = "far fa-copy copy-hint";
-            }, 2000);
+            alert("Coordinates copied!");
         }
     </script>
 

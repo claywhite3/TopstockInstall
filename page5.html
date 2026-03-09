@@ -8,119 +8,149 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        /* Base styles consistent with new high-contrast aesthetic */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        }
         
         body {
-            background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
+            background-color: #f0f2f5; 
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            color: #000;
         }
 
         /* --- HEADER --- */
         .header {
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 15px 20px;
-            flex-shrink: 0;
-        }
-        .back-icon { 
-            font-size: 20px; color: #1a1a1a; 
-            width: 40px; height: 40px; 
-            display: flex; align-items: center; justify-content: center;
-            background: rgba(255,255,255,0.5); border-radius: 50%;
-            text-decoration: none;
-        }
-        .user-pill {
-            background-color: white; padding: 6px 14px; border-radius: 50px;
-            display: flex; align-items: center; gap: 8px;
-            font-size: 12px; font-weight: 500; color: #333;
-        }
-
-        /* --- MAIN SCROLL AREA --- */
-        .main-container {
-            flex: 1; 
-            display: flex; 
-            flex-direction: column;
-            padding: 10px 20px 20px 20px;
-            max-width: 480px; 
-            margin: 0 auto; 
-            width: 100%;
-            overflow-y: auto; /* Allows scrolling if screens are small */
-        }
-
-        .instruction-card {
-            background: white; 
-            border-radius: 20px; 
             padding: 20px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-            display: flex; 
-            flex-direction: column; 
+        }
+
+        .back-icon { 
+            font-size: 24px; 
+            color: #000; 
+            text-decoration: none; 
+            cursor: pointer; 
+        }
+
+        .user-pill {
+            background-color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: flex;
             align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        /* --- CONTENT --- */
+        .container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
             text-align: center;
-            /* Ensure card grows to fit content but doesn't force scroll on body unless needed */
-            min-height: min-content; 
+        }
+
+        .logo-box {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 20px;
+        }
+        .logo-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
         }
 
         h2 { 
-            font-size: 20px; 
-            margin-bottom: 15px; 
-            color: #1a1a1a; 
+            font-size: 24px; 
             font-weight: 700; 
+            margin-bottom: 12px; 
+            color: #000; 
         }
 
-        /* --- IMAGES --- */
+        /* --- IMAGE CARDS --- */
+        .instruction-card {
+            width: 100%;
+            background: white;
+            padding: 20px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+        }
+
         .img-container {
-            width: 100%; 
-            border-radius: 12px; 
+            width: 100%;
+            border-radius: 15px;
             overflow: hidden;
             background: #f9f9f9;
-            display: flex; 
-            align-items: center; 
-            justify-content: center;
             margin-bottom: 15px;
         }
-
-        .primary-img { min-height: 180px; }
-        .secondary-img { min-height: 140px; margin-bottom: 5px; border: 1px solid #eee; }
         
         .instruction-img { width: 100%; height: auto; display: block; }
 
         .instruction-text {
-            font-size: 15px; 
+            font-size: 16px; 
             color: #444; 
             line-height: 1.5; 
-            margin: 5px 0 15px 0;
-            max-width: 90%;
+            margin-bottom: 15px;
         }
 
-        .instruction-text strong { color: #000; }
-
-        /* --- BUTTONS --- */
-        .nav-footer {
-            margin-top: 20px; 
+        /* --- NAVIGATION BUTTONS --- */
+        .nav-row {
+            display: flex;
+            justify-content: space-between;
             width: 100%;
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center;
+            margin-top: 10px;
         }
-        .btn {
-            border: none; padding: 12px 20px; border-radius: 30px;
-            font-weight: 700; font-size: 14px; cursor: pointer;
-            display: flex; align-items: center; gap: 8px;
-            text-decoration: none; transition: transform 0.1s;
-        }
-        .btn:active { transform: scale(0.96); }
-        
-        .btn-back { background: transparent; color: #666; padding-left: 0; }
-        .btn-next { background: #1a1a1a; color: #FDD757; box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
 
-        /* --- MODALS (POP-UPS) --- */
+        .btn-confirm {
+            background-color: white;
+            border: 3px solid #f9d976; 
+            padding: 14px 20px;
+            border-radius: 18px;
+            font-weight: 700;
+            font-size: 16px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+            cursor: pointer;
+            color: black;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.1s;
+        }
+
+        .btn-confirm:active { transform: scale(0.97); }
+
+        .btn-back {
+            background: transparent;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            color: #666;
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
+        /* --- MODALS --- */
         .modal-overlay {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            display: none; /* Hidden by default */
+            background: rgba(0,0,0,0.4);
+            display: none; 
             align-items: center; justify-content: center;
             z-index: 1000;
             padding: 20px;
@@ -128,69 +158,62 @@
         }
 
         .modal-box {
-            background: white; width: 100%; max-width: 340px;
-            border-radius: 20px; padding: 30px 20px;
+            background: white; width: 100%; max-width: 320px;
+            border-radius: 25px; padding: 30px 20px;
             text-align: center;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
-            animation: popIn 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        @keyframes popIn {
-            0% { transform: scale(0.8); opacity: 0; }
-            100% { transform: scale(1); opacity: 1; }
-        }
-
-        .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 15px; color: #000; }
-        .modal-text { font-size: 15px; color: #555; margin-bottom: 25px; line-height: 1.4; }
+        .modal-title { font-size: 22px; font-weight: 700; margin-bottom: 15px; color: #000; }
+        .modal-text { font-size: 16px; color: #555; margin-bottom: 25px; line-height: 1.4; }
         
-        .modal-actions { display: flex; gap: 10px; justify-content: center; }
+        .modal-actions { display: flex; gap: 15px; justify-content: center; }
         
         .btn-modal { 
-            flex: 1; justify-content: center; 
-            padding: 12px; font-size: 16px; border-radius: 12px; border: none; cursor: pointer; font-weight: bold;
+            flex: 1; padding: 14px; font-size: 16px; border-radius: 15px; 
+            border: 3px solid #f9d976; background: white; font-weight: 700; cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
         }
-        .btn-yes { background: #4CAF50; color: white; }
-        .btn-no { background: #F44336; color: white; }
-        .btn-yellow { background: #FDD757; color: black; width: 100%; }
-        .btn-outline { border: 2px solid #ddd; background: white; color: #333; }
-
-        .fail-icon { font-size: 40px; color: #F44336; margin-bottom: 15px; }
+        .btn-modal.danger { border-color: #ffcccc; color: #d93025; }
 
     </style>
 </head>
 <body>
 
     <div class="header">
-        <a href="page4.html" class="back-icon"><i class="fas fa-arrow-left"></i></a>
+        <a href="page4.html" class="back-icon"><i class="fas fa-chevron-left"></i></a>
         <div class="user-pill">
-            <i class="fas fa-user-circle"></i>
+            <i class="fas fa-user"></i>
             <span>installer01...</span>
         </div>
     </div>
 
-    <div class="main-container">
-        <div class="instruction-card">
-            <h2>Plug in Battery</h2>
+    <div class="container">
+        <div class="logo-box">
+            <img src="topstock_logo.png" alt="Vusion Logo">
+        </div>
 
-            <div class="img-container primary-img">
-                <img src="battery-insert.jpg" alt="Insert Battery Molex" class="instruction-img" onerror="this.src='https://placehold.co/600x400/f0f0f0/666666?text=IMG:battery-insert.jpg'">
+        <h2>Plug in Battery</h2>
+
+        <div class="instruction-card">
+            <div class="img-container">
+                <img src="battery-insert.jpg" alt="Insert Battery" class="instruction-img" onerror="this.src='https://placehold.co/600x400/f9f9f9/666666?text=Battery+Insert'">
             </div>
 
             <p class="instruction-text">
-                Connect the <strong>Molex plug</strong> firmly. <br>
-                Look for the rail to flash momentarily to confirm power.
+                Connect the <strong>Molex plug</strong> firmly. Look for the rail to flash momentarily to confirm power.
             </p>
 
-            <div class="img-container secondary-img">
-                <img src="rail-flash.jpg" alt="Rail lighting up" class="instruction-img" onerror="this.src='https://placehold.co/600x200/FFF9E1/F5A623?text=IMG:rail-flash.jpg'">
+            <div class="img-container" style="margin-bottom: 0;">
+                <img src="rail-flash.jpg" alt="Rail Flash" class="instruction-img" onerror="this.src='https://placehold.co/600x200/f9f9f9/666666?text=Rail+Flash'">
             </div>
+        </div>
 
-            <div class="nav-footer">
-                <a href="page4.html" class="btn btn-back">BACK</a>
-                <button class="btn btn-next" onclick="startVerification()">
-                    VERIFY & NEXT <i class="fas fa-arrow-right"></i>
-                </button>
-            </div>
+        <div class="nav-row">
+            <button class="btn-back" onclick="window.location.href='page4.html'">BACK</button>
+            <button class="btn-confirm" onclick="startVerification()">
+                VERIFY & NEXT <i class="fas fa-chevron-right"></i>
+            </button>
         </div>
     </div>
 
@@ -199,8 +222,8 @@
             <h3 class="modal-title">Verification</h3>
             <p class="modal-text">Did the rail lights flash?</p>
             <div class="modal-actions">
-                <button class="btn-modal btn-no" onclick="handleNo()">NO</button>
-                <button class="btn-modal btn-yes" onclick="handleYes()">YES</button>
+                <button class="btn-modal danger" onclick="handleNo()">NO</button>
+                <button class="btn-modal" onclick="handleYes()">YES</button>
             </div>
         </div>
     </div>
@@ -209,65 +232,51 @@
         <div class="modal-box">
             <h3 class="modal-title">Troubleshooting</h3>
             <p class="modal-text">
-                1. Unplug the battery.<br>
-                2. Wait <strong>20 seconds</strong>.<br>
+                1. Unplug battery.<br>
+                2. Wait 20 seconds.<br>
                 3. Plug it back in.
             </p>
-            <button class="btn-modal btn-yellow" onclick="handleRetryDone()">I'VE DONE IT</button>
+            <button class="btn-modal" style="width: 100%;" onclick="handleRetryDone()">I'VE DONE IT</button>
         </div>
     </div>
 
     <div id="modal-fail" class="modal-overlay">
         <div class="modal-box">
-            <i class="fas fa-exclamation-triangle fail-icon"></i>
+            <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: #d93025; margin-bottom: 15px;"></i>
             <h3 class="modal-title">Battery Defective</h3>
-            <p class="modal-text">
-                This unit has failed to power on 3 times. Please acquire a different battery pack.
-            </p>
-            <button class="btn-modal btn-outline" onclick="window.location.reload()">RESTART PROCESS</button>
+            <p class="modal-text">This unit has failed 3 times. Please acquire a different battery pack.</p>
+            <button class="btn-modal danger" style="width: 100%;" onclick="window.location.reload()">RESTART PROCESS</button>
         </div>
     </div>
 
     <script>
-        // State tracking
         let failureCount = 0;
         const MAX_FAILURES = 3;
 
-        // DOM Elements
         const modalQuestion = document.getElementById('modal-question');
         const modalRetry = document.getElementById('modal-retry');
         const modalFail = document.getElementById('modal-fail');
 
-        // 1. User clicks "Next/Verify"
         function startVerification() {
-            // Reset modal display in case we loop back
-            modalRetry.style.display = 'none';
             modalQuestion.style.display = 'flex';
         }
 
-        // 2. User answers "YES" -> Success
         function handleYes() {
             window.location.href = 'page6.html';
         }
 
-        // 3. User answers "NO" -> Logic Check
         function handleNo() {
             failureCount++;
             modalQuestion.style.display = 'none';
-
             if (failureCount >= MAX_FAILURES) {
-                // Strike 3: Show failure modal
                 modalFail.style.display = 'flex';
             } else {
-                // Strike 1 or 2: Show retry instructions
                 modalRetry.style.display = 'flex';
             }
         }
 
-        // 4. User clicks "I've done it" (Retry)
         function handleRetryDone() {
             modalRetry.style.display = 'none';
-            // Loop back to the question
             modalQuestion.style.display = 'flex';
         }
     </script>

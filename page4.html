@@ -8,85 +8,113 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        /* Base styles consistent with your high-contrast aesthetic */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        }
         
         body {
-            background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
+            background-color: #f0f2f5; 
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow-y: auto;
+            align-items: center;
+            color: #000;
         }
 
         /* --- HEADER --- */
         .header {
+            width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 20px;
-            margin-top: 10px;
         }
-        .back-icon { font-size: 24px; color: #000; text-decoration: none; }
+
+        .back-icon { 
+            font-size: 24px; 
+            color: #000; 
+            text-decoration: none; 
+            cursor: pointer; 
+        }
+
         .user-pill {
             background-color: white;
-            padding: 8px 16px;
-            border-radius: 50px;
+            padding: 6px 14px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         /* --- CONTENT --- */
-        .content {
-            flex: 1;
+        .container {
+            width: 100%;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0 25px;
+            padding: 20px;
             text-align: center;
-            padding-bottom: 40px;
         }
 
         .logo-box {
-            width: 60px; height: 60px;
-            border: 3px solid #1a1a1a;
-            border-radius: 12px;
-            display: flex; justify-content: center; align-items: center;
+            width: 80px;
+            height: 80px;
             margin-bottom: 20px;
         }
-        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; }
+        .logo-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+        }
 
-        h2 { font-size: 22px; margin-bottom: 15px; color: #000; line-height: 1.3; }
+        h2 { 
+            font-size: 24px; 
+            font-weight: 700; 
+            margin-bottom: 12px; 
+            color: #000; 
+            line-height: 1.2;
+        }
         
         .instruction-text {
-            font-size: 14px;
-            color: #000;
-            margin-bottom: 20px;
-            line-height: 1.4;
+            font-size: 15px;
+            color: #444;
+            margin-bottom: 25px;
+            line-height: 1.5;
             max-width: 90%;
         }
 
-        /* --- IMAGE SECTION (Reverted to Boxed Style) --- */
+        /* --- IMAGE SECTION --- */
         .image-container {
             width: 100%;
-            max-width: 350px; /* Limits width so it doesn't touch edges */
-            margin-bottom: 10px;
-            /* No overflow hidden needed if image is cropped correctly */
+            max-width: 320px;
+            margin-bottom: 8px;
+            background: white;
+            padding: 10px;
+            border-radius: 20px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
         }
         .instruction-img {
             width: 100%;
             height: auto;
             display: block;
-            border-radius: 8px;
-            /* Optional: keep shadow if you like the pop, or remove it */
-             /* box-shadow: 0 4px 10px rgba(0,0,0,0.1); */
+            border-radius: 12px;
         }
-        .caption { font-size: 14px; font-weight: 500; margin-bottom: 30px; margin-top: 10px; }
+        .caption { 
+            font-size: 13px; 
+            font-weight: 600; 
+            color: #666; 
+            margin-bottom: 35px; 
+        }
 
-        /* --- DROPDOWNS --- */
+        /* --- DROPDOWN --- */
         .dropdown-row {
             display: flex;
             justify-content: center;
@@ -94,23 +122,25 @@
             margin-bottom: 40px;
         }
 
+        /* Using the corrected spacing from page 3 */
         select {
             appearance: none;
             -webkit-appearance: none;
             background-color: white;
-            border: 1px solid #ddd;
-            border-radius: 30px;
-            padding: 12px 40px 12px 20px; 
+            border: 3px solid #f9d976; 
+            border-radius: 30px; 
+            padding: 14px 40px 14px 20px; 
             font-size: 16px;
-            font-weight: 500;
-            width: auto; 
-            min-width: 200px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            font-weight: 700;
+            width: 70%; /* Slightly wider for the modular select */
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12); 
             text-align: center;
             background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
             background-repeat: no-repeat;
-            background-position: right 15px top 50%;
+            background-position: calc(100% - 15px) center; 
             background-size: 12px auto;
+            color: #000;
+            cursor: pointer;
         }
 
         /* --- NAVIGATION BUTTONS --- */
@@ -118,27 +148,30 @@
             display: flex;
             justify-content: space-between;
             width: 100%;
-            max-width: 350px;
-            margin-top: auto; 
+            margin-top: 20px;
         }
 
         .nav-btn {
-            background-color: #FDD757;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 30px;
+            background-color: white;
+            border: 3px solid #f9d976;
+            padding: 14px 25px;
+            border-radius: 18px;
             font-weight: 700;
-            font-size: 14px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            font-size: 16px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 10px;
             color: black;
             text-decoration: none;
-            transition: transform 0.1s;
+            transition: transform 0.1s, box-shadow 0.1s;
         }
-        .nav-btn:active { transform: scale(0.95); background-color: #eebf28; }
+
+        .nav-btn:active { 
+            transform: scale(0.97); 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
 
     </style>
 </head>
@@ -152,19 +185,21 @@
         </div>
     </div>
 
-    <div class="content">
-        <div class="logo-box"><span class="logo-text">V</span></div>
+    <div class="container">
+        <div class="logo-box">
+            <img src="topstock_logo.png" alt="Vusion Logo">
+        </div>
 
-        <h2>Please Select the Modular Section<br>where you are installing</h2>
+        <h2>Modular Section</h2>
         
         <p class="instruction-text">
-            You will find a location marker on the edge of the top shelf (see image below). Please note the alphanumeric aisle code on the label.
+            Select the modular section where you are currently installing the rail.
         </p>
 
         <div class="image-container">
             <img src="modular.jpg" alt="Modular Diagram" class="instruction-img" onerror="this.style.display='none'">
         </div>
-        <div class="caption">Note: Each Modular Section will have its own rail</div>
+        <div class="caption">Note: Each section requires its own rail</div>
 
         <div class="dropdown-row">
             <select id="modularSelect">

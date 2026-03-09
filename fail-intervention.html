@@ -8,45 +8,75 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        /* Base styles consistent with your new clean aesthetic */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        }
         
         body {
-            background: #FDD757; 
+            background-color: #f0f2f5; /* Clean light-grey/blue background */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            padding: 40px 25px;
             align-items: center;
-            text-align: center;
+            color: #000;
+            padding: 20px;
+        }
+
+        /* --- HEADER --- */
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: flex-end;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+
+        .user-pill {
+            background-color: white;
+            padding: 6px 14px;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         .logo-box {
-            width: 60px; height: 60px;
-            border: 3px solid #1a1a1a;
-            border-radius: 12px;
-            display: flex; justify-content: center; align-items: center;
+            width: 80px;
+            height: 80px;
             margin-bottom: 30px;
         }
-        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; }
+        .logo-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+        }
 
+        /* --- ALERT CARD --- */
         .alert-container {
-            flex: 1;
+            width: 100%;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            width: 100%;
-            max-width: 360px;
+            align-items: center;
         }
 
         .white-card {
             background: white;
-            border-radius: 20px;
-            padding: 30px 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 25px;
+            padding: 30px 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             margin-bottom: 40px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            text-align: center;
         }
 
         .fa-exclamation-triangle { 
@@ -56,77 +86,87 @@
         }
         
         h2 { 
-            font-size: 24px; 
-            font-weight: 900; 
-            color: #1a1a1a;
-            text-transform: uppercase;
-            margin-bottom: 8px;
+            font-size: 26px; 
+            font-weight: 700; 
+            color: #000;
+            margin-bottom: 10px;
         }
 
         .rail-tag {
             font-size: 14px;
-            background: #f0f0f0;
-            padding: 4px 12px;
+            background: #f9f9f9;
+            padding: 6px 16px;
             border-radius: 50px;
             font-weight: 700;
-            color: #555;
-            margin-bottom: 20px;
+            color: #666;
+            margin-bottom: 25px;
             letter-spacing: 1px;
+            border: 1px solid #eee;
         }
 
         .instruction-text {
             font-size: 16px;
             line-height: 1.5;
-            color: #333;
-            font-weight: 400;
+            color: #444;
         }
 
-        .bold-instruct { font-weight: 700; color: #000; }
+        .bold-instruct { font-weight: 700; color: #d93025; }
 
-        /* --- BUTTONS --- */
+        /* --- BUTTONS (Yellow Border Style) --- */
         .action-row {
             width: 100%;
             display: flex;
             flex-direction: column;
             gap: 15px;
+            align-items: center;
         }
 
-        .btn-skip {
-            background-color: #1a1a1a;
-            color: white;
-            border: none;
-            padding: 18px;
-            border-radius: 12px;
+        .btn-main {
+            background-color: white;
+            border: 3px solid #f9d976; /* Signature yellow border */
+            width: 90%;
+            padding: 16px 20px;
+            border-radius: 18px;
             font-weight: 700;
             font-size: 16px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
             cursor: pointer;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            color: black;
+            text-decoration: none;
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 12px;
+            transition: transform 0.1s;
         }
 
-        .btn-retry-final {
-            background-color: transparent;
-            border: 2px solid #1a1a1a;
-            padding: 15px;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 15px;
+        .btn-main:active { transform: scale(0.97); }
+
+        .btn-link {
+            background: none;
+            border: none;
+            color: #666;
+            font-size: 14px;
+            font-weight: 600;
+            text-decoration: underline;
             cursor: pointer;
-            color: #1a1a1a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
+            margin-top: 10px;
         }
 
     </style>
 </head>
 <body>
 
-    <div class="logo-box"><span class="logo-text">V</span></div>
+    <div class="header">
+        <div class="user-pill">
+            <i class="fas fa-user"></i>
+            <span>installer01...</span>
+        </div>
+    </div>
+
+    <div class="logo-box">
+        <img src="topstock_logo.png" alt="Vusion Logo">
+    </div>
 
     <div class="alert-container">
         
@@ -142,14 +182,12 @@
         </div>
 
         <div class="action-row">
-            <button class="btn-skip" onclick="window.location.href='page6.html'">
-                <span>Skip & Scan New Rail</span>
-                <i class="fas fa-caret-right"></i>
+            <button class="btn-main" onclick="window.location.href='page6.html'">
+                Skip & Scan New Rail <i class="fas fa-chevron-right"></i>
             </button>
 
-            <button class="btn-retry-final" onclick="window.location.href='page7.html'">
-                <i class="fas fa-sync-alt"></i>
-                <span>Wait, I found the issue. Try again.</span>
+            <button class="btn-link" onclick="window.location.href='page7.html'">
+                Wait, I found the issue. Try again.
             </button>
         </div>
     </div>

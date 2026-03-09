@@ -8,86 +8,103 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        /* Base styles consistent with your high-contrast aesthetic */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        }
         
         body {
-            background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
+            background-color: #f0f2f5; /* Clean light-grey/blue background */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            color: #000;
             overflow-y: auto;
         }
 
         /* --- HEADER --- */
         .header {
+            width: 100%;
             display: flex;
             justify-content: flex-end;
             align-items: center;
             padding: 20px;
-            margin-top: 10px;
         }
+
         .user-pill {
             background-color: white;
-            padding: 8px 16px;
-            border-radius: 50px;
+            padding: 6px 14px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         /* --- CONTENT --- */
-        .content {
-            flex: 1;
+        .container {
+            width: 100%;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0 25px;
+            padding: 20px;
             text-align: center;
-            padding-bottom: 40px;
         }
 
         .logo-box {
-            width: 60px; height: 60px;
-            border: 3px solid #1a1a1a;
-            border-radius: 12px;
-            display: flex; justify-content: center; align-items: center;
-            margin-bottom: 20px;
+            width: 80px;
+            height: 80px;
+            margin-bottom: 25px;
         }
-        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; }
+        .logo-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+        }
 
-        /* --- TROUBLESHOOTING SECTION --- */
-        .text-container {
+        /* --- TROUBLESHOOTING CARD --- */
+        .troubleshoot-card {
             width: 100%;
-            max-width: 320px; /* Matches the button width */
-            text-align: left; /* Left justify the text inside the block */
+            background: white;
+            padding: 20px 25px;
+            border-radius: 25px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
             margin-bottom: 30px;
+            text-align: left;
         }
 
         .troubleshoot-title {
             font-size: 18px;
-            margin-bottom: 10px;
+            font-weight: 700;
+            margin-bottom: 15px;
             color: #000;
-            padding-left: 5px; /* Slight offset */
+            text-transform: uppercase;
         }
         .troubleshoot-list {
             list-style: none;
         }
         .troubleshoot-list li {
-            font-size: 20px;
-            margin-bottom: 5px;
-            line-height: 1.3;
-            color: #000;
+            font-size: 18px;
+            margin-bottom: 12px;
+            line-height: 1.4;
+            color: #444;
             position: relative;
-            padding-left: 20px;
+            padding-left: 25px;
         }
         .troubleshoot-list li::before {
             content: "•";
             position: absolute;
             left: 0;
-            font-weight: bold;
+            color: #f9d976;
+            font-size: 24px;
+            line-height: 18px;
         }
 
         /* --- FAILURE GRAPHIC --- */
@@ -105,56 +122,69 @@
             75% { transform: translateX(10px); }
         }
 
-        .icon-x {
-            font-size: 100px;
-            color: #C62828; /* Deep Red */
-            margin-bottom: 10px;
-            text-shadow: 0 5px 15px rgba(198, 40, 40, 0.3);
+        .icon-circle-red {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #ffffff;
+            border: 8px solid #C62828; /* Deep Red */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 10px 25px rgba(198, 40, 40, 0.15);
+        }
+
+        .fa-times {
+            font-size: 50px;
+            color: #C62828;
         }
 
         .fail-text-main {
             font-size: 28px;
-            font-weight: 900;
-            color: #C62828;
-            text-transform: uppercase;
+            font-weight: 800;
+            color: #000;
             line-height: 1;
         }
         .fail-text-sub {
-            font-size: 24px;
-            font-weight: 900;
+            font-size: 22px;
+            font-weight: 700;
             color: #C62828;
-            text-transform: uppercase;
+            margin-top: 5px;
         }
 
-        /* --- BUTTON STACK --- */
+        /* --- BUTTON STACK (Yellow Border Style) --- */
         .btn-stack {
             width: 100%;
-            max-width: 320px;
             display: flex;
             flex-direction: column;
             gap: 15px;
-            margin-top: auto;
+            align-items: center;
         }
 
         .fail-btn {
-            background-color: #FDD757;
-            border: none;
+            background-color: white;
+            border: 3px solid #f9d976; /* Signature yellow border */
+            width: 90%;
             padding: 15px 20px;
-            border-radius: 40px;
+            border-radius: 18px;
             font-weight: 700;
-            font-size: 14px;
-            box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+            font-size: 16px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
             cursor: pointer;
             color: black;
             text-decoration: none;
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             transition: transform 0.1s;
         }
-        .fail-btn:active { transform: scale(0.97); background-color: #eebf28; }
-        .fail-btn i { font-size: 14px; }
+        
+        .fail-btn:active { 
+            transform: scale(0.97); 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
 
     </style>
 </head>
@@ -163,38 +193,43 @@
     <div class="header">
         <div class="user-pill">
             <i class="fas fa-user"></i>
-            <span>installer01@email.com</span>
+            <span>installer01...</span>
         </div>
     </div>
 
-    <div class="content">
-        <div class="logo-box"><span class="logo-text">V</span></div>
+    <div class="container">
+        <div class="logo-box">
+            <img src="topstock_logo.png" alt="Vusion Logo">
+        </div>
 
-        <div class="text-container">
-            <div class="troubleshoot-title">Please Troubleshoot:</div>
+        <div class="troubleshoot-card">
+            <div class="troubleshoot-title">Troubleshooting:</div>
             <ul class="troubleshoot-list">
-                <li>Check Rail ID</li>
-                <li>Unplug battery for 30 seconds and plug back in</li>
+                <li>Check Rail ID is correct</li>
+                <li>Unplug battery for 30 seconds</li>
+                <li>Plug battery back in firmly</li>
             </ul>
         </div>
 
         <div class="failure-wrapper">
-            <i class="fas fa-times icon-x"></i>
+            <div class="icon-circle-red">
+                <i class="fas fa-times"></i>
+            </div>
             <div class="fail-text-main">RAIL FAILED</div>
             <div class="fail-text-sub">TO CONNECT</div>
         </div>
 
         <div class="btn-stack">
             <button class="fail-btn" onclick="window.location.href='page5.html'">
-                <i class="fas fa-caret-left"></i> Back to Rail ID
+                <i class="fas fa-chevron-left"></i> Back to Rail ID
             </button>
 
             <button class="fail-btn" onclick="window.location.href='page6.html'">
-                <i class="fas fa-caret-left"></i> Back to Battery Instructions
+                <i class="fas fa-chevron-left"></i> Battery Instructions
             </button>
 
             <button class="fail-btn" onclick="window.location.href='page7.html'">
-                Retry
+                Retry Connection <i class="fas fa-redo-alt"></i>
             </button>
         </div>
 

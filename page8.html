@@ -8,57 +8,68 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
+        /* Base styles consistent with your high-contrast aesthetic */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        }
         
         body {
-            background: linear-gradient(180deg, #FDD757 0%, #FEE597 45%, #FFFFFF 100%);
+            background-color: #f0f2f5; /* Clean light-grey/blue background */
             min-height: 100vh;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            color: #000;
             overflow-y: auto;
         }
 
         /* --- HEADER --- */
         .header {
+            width: 100%;
             display: flex;
-            justify-content: flex-end; /* Only user pill */
+            justify-content: flex-end;
             align-items: center;
             padding: 20px;
-            margin-top: 10px;
         }
+
         .user-pill {
             background-color: white;
-            padding: 8px 16px;
-            border-radius: 50px;
+            padding: 6px 14px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             font-size: 12px;
-            font-weight: 500;
+            font-weight: 600;
             box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
 
         /* --- CONTENT --- */
-        .content {
-            flex: 1;
+        .container {
+            width: 100%;
+            max-width: 400px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 0 25px;
+            padding: 20px;
             text-align: center;
-            padding-bottom: 40px;
         }
 
         .logo-box {
-            width: 60px; height: 60px;
-            border: 3px solid #1a1a1a;
-            border-radius: 12px;
-            display: flex; justify-content: center; align-items: center;
+            width: 80px;
+            height: 80px;
             margin-bottom: 40px;
         }
-        .logo-text { font-size: 36px; font-weight: 700; color: #1a1a1a; line-height: 1; }
+        .logo-box img { 
+            width: 100%; 
+            height: 100%; 
+            object-fit: contain; 
+        }
 
-        /* --- SUCCESS GRAPHIC --- */
+        /* --- SUCCESS GRAPHIC (Animated) --- */
         .success-wrapper {
             display: flex;
             flex-direction: column;
@@ -71,65 +82,72 @@
             width: 120px;
             height: 120px;
             border-radius: 50%;
-            background-color: #dcedc8; /* Very light green */
+            background-color: #ffffff;
+            border: 8px solid #8cc63f; /* Deep Success Green */
             display: flex;
             justify-content: center;
             align-items: center;
-            margin-bottom: 20px;
-            box-shadow: 0 10px 20px rgba(46, 125, 50, 0.15);
+            margin-bottom: 25px;
+            box-shadow: 0 10px 25px rgba(140, 198, 63, 0.2);
         }
         
         .fa-check {
             font-size: 60px;
-            color: #2E7D32; /* Deep Success Green */
+            color: #8cc63f;
         }
 
         .success-text {
-            font-size: 32px;
-            font-weight: 900; /* Extra bold */
-            color: #2E7D32;
-            text-transform: uppercase;
+            font-size: 36px;
+            font-weight: 800;
+            color: #000;
+            letter-spacing: 1px;
             line-height: 1;
         }
         .success-sub {
             font-size: 24px;
             font-weight: 700;
-            color: #2E7D32;
-            text-transform: uppercase;
+            color: #8cc63f;
+            margin-top: 5px;
         }
 
         @keyframes popIn {
             0% { transform: scale(0.5); opacity: 0; }
-            70% { transform: scale(1.1); }
+            70% { transform: scale(1.05); }
             100% { transform: scale(1); opacity: 1; }
         }
 
-        /* --- BIG ACTION BUTTONS --- */
+        /* --- ACTION BUTTONS (Yellow Border Style) --- */
         .action-container {
             width: 100%;
-            max-width: 320px;
             display: flex;
             flex-direction: column;
             gap: 20px;
-            /* Pushes buttons down a bit if there is extra space, but keeps them grouped */
-            margin-bottom: 50px; 
+            align-items: center;
         }
 
         .big-btn {
-            background-color: #FDD757;
-            border: none;
-            padding: 18px 20px;
-            border-radius: 40px;
+            background-color: white;
+            border: 3px solid #f9d976; /* Signature yellow border */
+            width: 90%;
+            padding: 18px 25px;
+            border-radius: 18px;
             font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            font-size: 18px;
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
             cursor: pointer;
             color: black;
             text-decoration: none;
-            transition: transform 0.1s;
-            display: block; /* Ensures full width click area */
+            transition: transform 0.1s, box-shadow 0.1s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
         }
-        .big-btn:active { transform: scale(0.97); background-color: #eebf28; }
+        
+        .big-btn:active { 
+            transform: scale(0.97); 
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
 
     </style>
 </head>
@@ -138,12 +156,14 @@
     <div class="header">
         <div class="user-pill">
             <i class="fas fa-user"></i>
-            <span>installer01@email.com</span>
+            <span>installer01...</span>
         </div>
     </div>
 
-    <div class="content">
-        <div class="logo-box"><span class="logo-text">V</span></div>
+    <div class="container">
+        <div class="logo-box">
+            <img src="topstock_logo.png" alt="Vusion Logo">
+        </div>
 
         <div class="success-wrapper">
             <div class="icon-circle">
@@ -155,11 +175,11 @@
 
         <div class="action-container">
             <button class="big-btn" onclick="window.location.href='page5.html'">
-                Install Rail A11 - 15
+                Install Rail A11 - 15 <i class="fas fa-plus-circle"></i>
             </button>
 
             <button class="big-btn" onclick="window.location.href='page3.html'">
-                Start New Aisle
+                Start New Aisle <i class="fas fa-arrow-right"></i>
             </button>
         </div>
 
