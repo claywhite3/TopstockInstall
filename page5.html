@@ -4,282 +4,493 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vusion - Plug in Battery</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Base styles consistent with new high-contrast aesthetic */
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         body {
-            background-color: #f0f2f5; 
+            font-family: 'DM Sans', sans-serif;
+            background-color: #F2F3F7;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #000;
+            color: #111827;
         }
 
-        /* --- HEADER --- */
-        .header {
+        .phone-shell {
             width: 100%;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .back-icon { 
-            font-size: 24px; 
-            color: #000; 
-            text-decoration: none; 
-            cursor: pointer; 
-        }
-
-        .user-pill {
-            background-color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        /* --- CONTENT --- */
-        .container {
-            width: 100%;
-            max-width: 400px;
+            max-width: 390px;
+            min-height: 100vh;
+            background: #F2F3F7;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            text-align: center;
         }
 
-        .logo-box {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;
-        }
-        .logo-box img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-        }
-
-        h2 { 
-            font-size: 24px; 
-            font-weight: 700; 
-            margin-bottom: 12px; 
-            color: #000; 
-        }
-
-        /* --- IMAGE CARDS --- */
-        .instruction-card {
-            width: 100%;
-            background: white;
-            padding: 20px;
-            border-radius: 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 25px;
-        }
-
-        .img-container {
-            width: 100%;
-            border-radius: 15px;
-            overflow: hidden;
-            background: #f9f9f9;
-            margin-bottom: 15px;
-        }
-        
-        .instruction-img { width: 100%; height: auto; display: block; }
-
-        .instruction-text {
-            font-size: 16px; 
-            color: #444; 
-            line-height: 1.5; 
-            margin-bottom: 15px;
-        }
-
-        /* --- NAVIGATION BUTTONS --- */
-        .nav-row {
+        /* ── Top bar ── */
+        .top-bar {
             display: flex;
             justify-content: space-between;
-            width: 100%;
-            margin-top: 10px;
+            align-items: center;
+            padding: 16px 20px 8px;
         }
 
-        .btn-confirm {
-            background-color: white;
-            border: 3px solid #f9d976; 
-            padding: 14px 20px;
-            border-radius: 18px;
-            font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-            cursor: pointer;
-            color: black;
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
             text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+        .back-btn svg { width: 18px; height: 18px; color: #111827; }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #2563EB;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            padding: 16px 20px 0;
+            animation: fadeUp 0.4s ease both;
+        }
+        .hero-title { font-size: 24px; font-weight: 700; color: #111827; line-height: 1.2; }
+        .hero-sub { font-size: 14px; color: #6B7280; margin-top: 4px; line-height: 1.5; }
+
+        /* ── Instruction card ── */
+        .instruction-card {
+            margin: 18px 20px 0;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            animation: fadeUp 0.4s 0.1s ease both;
+        }
+
+        .card-text {
+            padding: 18px 20px 16px;
+        }
+
+        .step-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .step-icon {
+            width: 36px;
+            height: 36px;
+            background: #EFF6FF;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+        .step-icon svg { width: 18px; height: 18px; color: #2563EB; }
+
+        .step-text { flex: 1; }
+        .step-title { font-size: 15px; font-weight: 700; color: #111827; }
+        .step-desc  { font-size: 13px; color: #6B7280; margin-top: 3px; line-height: 1.5; }
+
+        .flash-hint {
             display: flex;
             align-items: center;
             gap: 10px;
-            transition: transform 0.1s;
+            background: #FFFBEB;
+            border: 1.5px solid #FDE68A;
+            border-radius: 12px;
+            padding: 11px 14px;
+            margin-top: 14px;
+        }
+        .flash-hint svg { width: 17px; height: 17px; color: #D97706; flex-shrink: 0; }
+        .flash-hint span { font-size: 13px; color: #92400E; font-weight: 500; line-height: 1.4; }
+
+        /* ── Battery image ── */
+        .image-card {
+            margin: 14px 20px 0;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            animation: fadeUp 0.4s 0.15s ease both;
         }
 
-        .btn-confirm:active { transform: scale(0.97); }
-
-        .btn-back {
-            background: transparent;
-            border: none;
-            font-weight: 600;
-            font-size: 16px;
-            color: #666;
-            text-decoration: underline;
-            cursor: pointer;
+        .image-card img {
+            width: 100%;
+            height: auto;
+            display: block;
         }
 
-        /* --- MODALS --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.4);
-            display: none; 
-            align-items: center; justify-content: center;
-            z-index: 1000;
-            padding: 20px;
-            backdrop-filter: blur(4px);
+        .img-placeholder {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #e0e7ef, #c7d2e0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
+        .img-placeholder svg  { width: 36px; height: 36px; color: #94A3B8; }
+        .img-placeholder span { font-size: 12px; color: #94A3B8; font-weight: 500; }
 
-        .modal-box {
-            background: white; width: 100%; max-width: 320px;
-            border-radius: 25px; padding: 30px 20px;
+        .image-caption {
+            padding: 10px 16px 12px;
+            font-size: 12px;
+            color: #9CA3AF;
+            font-weight: 500;
             text-align: center;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
         }
 
-        .modal-title { font-size: 22px; font-weight: 700; margin-bottom: 15px; color: #000; }
-        .modal-text { font-size: 16px; color: #555; margin-bottom: 25px; line-height: 1.4; }
-        
-        .modal-actions { display: flex; gap: 15px; justify-content: center; }
-        
-        .btn-modal { 
-            flex: 1; padding: 14px; font-size: 16px; border-radius: 15px; 
-            border: 3px solid #f9d976; background: white; font-weight: 700; cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        /* ── Nav area ── */
+        .nav-area {
+            padding: 20px 20px 32px;
+            display: flex;
+            gap: 12px;
+            animation: fadeUp 0.4s 0.2s ease both;
+            margin-top: auto;
         }
-        .btn-modal.danger { border-color: #ffcccc; color: #d93025; }
 
+        .btn-back-nav {
+            padding: 15px 20px;
+            background: #fff;
+            color: #6B7280;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: transform 0.15s;
+            flex-shrink: 0;
+        }
+        .btn-back-nav:active { transform: scale(0.975); }
+        .btn-back-nav svg { width: 16px; height: 16px; }
+
+        .btn-verify {
+            flex: 1;
+            padding: 15px;
+            background: #2563EB;
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+        }
+        .btn-verify:active { transform: scale(0.975); box-shadow: 0 2px 6px rgba(37,99,235,0.2); }
+        .btn-verify svg { width: 18px; height: 18px; }
+
+        /* ── Modal overlay ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(17, 24, 39, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            padding: 24px;
+            padding-bottom: 80px;
+        }
+
+        .modal-sheet {
+            background: #fff;
+            width: 100%;
+            max-width: 360px;
+            border-radius: 24px;
+            padding: 24px 20px 28px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            transform: scale(0.92) translateY(12px);
+            opacity: 0;
+            transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.28s ease;
+        }
+
+        .modal-overlay.open .modal-sheet {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .sheet-handle { display: none; }
+
+        /* Rail flash image inside modal */
+        .sheet-img {
+            width: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            background: #F8FAFC;
+        }
+        .sheet-img img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        .sheet-img-placeholder {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #e0e7ef, #c7d2e0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            border-radius: 14px;
+        }
+        .sheet-img-placeholder svg  { width: 32px; height: 32px; color: #94A3B8; }
+        .sheet-img-placeholder span { font-size: 12px; color: #94A3B8; font-weight: 500; }
+
+        .sheet-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+
+        .sheet-text {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+        .sheet-text strong { color: #111827; }
+
+        .sheet-actions { display: flex; gap: 12px; }
+
+        .btn-sheet {
+            flex: 1;
+            padding: 15px;
+            border-radius: 14px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.15s;
+        }
+        .btn-sheet:active { transform: scale(0.975); }
+        .btn-sheet.primary   { background: #2563EB; color: #fff; box-shadow: 0 4px 14px rgba(37,99,235,0.3); }
+        .btn-sheet.secondary { background: #F3F4F6; color: #374151; }
+        .btn-sheet.danger    { background: #FEF2F2; color: #DC2626; }
+        .btn-sheet.full      { flex: unset; width: 100%; }
+
+        /* Troubleshoot steps */
+        .trouble-steps {
+            background: #F8FAFC;
+            border-radius: 12px;
+            padding: 14px 16px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .trouble-step { display: flex; align-items: center; gap: 12px; }
+        .step-num {
+            width: 26px; height: 26px;
+            background: #2563EB; color: #fff;
+            border-radius: 50%;
+            font-size: 13px; font-weight: 700;
+            display: flex; align-items: center; justify-content: center;
+            flex-shrink: 0;
+        }
+        .trouble-step span { font-size: 14px; color: #374151; font-weight: 500; }
+
+        /* ── Animations ── */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <a href="page4.html" class="back-icon"><i class="fas fa-chevron-left"></i></a>
-        <div class="user-pill">
-            <i class="fas fa-user"></i>
-            <span>installer01...</span>
-        </div>
+<div class="phone-shell">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+        <a href="page4.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="avatar">CW</div>
     </div>
 
-    <div class="container">
-        <div class="logo-box">
-            <img src="topstock_logo.png" alt="Vusion Logo">
-        </div>
-
-        <h2>Plug in Battery</h2>
-
-        <div class="instruction-card">
-            <div class="img-container">
-                <img src="battery-insert.jpg" alt="Insert Battery" class="instruction-img" onerror="this.src='https://placehold.co/600x400/f9f9f9/666666?text=Battery+Insert'">
-            </div>
-
-            <p class="instruction-text">
-                Connect the <strong>Molex plug</strong> firmly. Look for the rail to flash momentarily to confirm power.
-            </p>
-
-            <div class="img-container" style="margin-bottom: 0;">
-                <img src="rail-flash.jpg" alt="Rail Flash" class="instruction-img" onerror="this.src='https://placehold.co/600x200/f9f9f9/666666?text=Rail+Flash'">
-            </div>
-        </div>
-
-        <div class="nav-row">
-            <button class="btn-back" onclick="window.location.href='page4.html'">BACK</button>
-            <button class="btn-confirm" onclick="startVerification()">
-                VERIFY & NEXT <i class="fas fa-chevron-right"></i>
-            </button>
-        </div>
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-title">Plug in Battery</div>
+        <div class="hero-sub">Connect the battery pack, then verify the rail responds.</div>
     </div>
 
-    <div id="modal-question" class="modal-overlay">
-        <div class="modal-box">
-            <h3 class="modal-title">Verification</h3>
-            <p class="modal-text">Did the rail lights flash?</p>
-            <div class="modal-actions">
-                <button class="btn-modal danger" onclick="handleNo()">NO</button>
-                <button class="btn-modal" onclick="handleYes()">YES</button>
+    <!-- Instruction card -->
+    <div class="instruction-card">
+        <div class="card-text">
+            <div class="step-row">
+                <div class="step-icon">
+                    <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" width="22" height="22">
+                        <rect x="2" y="7" width="20" height="10" rx="2" fill="#BFDBFE" stroke="#2563EB" stroke-width="1.5"/>
+                        <rect x="5" y="10" width="3" height="4" rx="0.75" fill="#2563EB" opacity="0.6"/>
+                        <rect x="10.5" y="10" width="3" height="4" rx="0.75" fill="#2563EB" opacity="0.6"/>
+                        <rect x="16" y="10" width="3" height="4" rx="0.75" fill="#2563EB" opacity="0.6"/>
+                        <rect x="9" y="5" width="6" height="3" rx="1" fill="#BFDBFE" stroke="#2563EB" stroke-width="1.5"/>
+                    </svg>
+                </div>
+                <div class="step-text">
+                    <div class="step-title">Connect the Molex Plug</div>
+                    <div class="step-desc">Press the connector firmly into the port until it clicks securely into place.</div>
+                </div>
+            </div>
+            <div class="flash-hint">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                <span>The rail LEDs should <strong>flash briefly</strong> to confirm power and a good connection.</span>
             </div>
         </div>
     </div>
 
-    <div id="modal-retry" class="modal-overlay">
-        <div class="modal-box">
-            <h3 class="modal-title">Troubleshooting</h3>
-            <p class="modal-text">
-                1. Unplug battery.<br>
-                2. Wait 20 seconds.<br>
-                3. Plug it back in.
-            </p>
-            <button class="btn-modal" style="width: 100%;" onclick="handleRetryDone()">I'VE DONE IT</button>
-        </div>
+    <!-- Battery insert image -->
+    <div class="image-card">
+        <img src="battery-insert.jpg" alt="Insert Battery"
+             onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'1\' y=\'6\' width=\'18\' height=\'12\' rx=\'2\'/><path d=\'M20 10h2v4h-2z\'/></svg><span>battery-insert.jpg</span></div><div class=\'image-caption\'>Connect the Molex plug firmly</div>'">
+        <div class="image-caption">Connect the Molex plug firmly</div>
     </div>
 
-    <div id="modal-fail" class="modal-overlay">
-        <div class="modal-box">
-            <i class="fas fa-exclamation-triangle" style="font-size: 40px; color: #d93025; margin-bottom: 15px;"></i>
-            <h3 class="modal-title">Battery Defective</h3>
-            <p class="modal-text">This unit has failed 3 times. Please acquire a different battery pack.</p>
-            <button class="btn-modal danger" style="width: 100%;" onclick="window.location.reload()">RESTART PROCESS</button>
-        </div>
+    <!-- Nav Area -->
+    <div class="nav-area">
+        <a href="page4.html" class="btn-back-nav">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            Back
+        </a>
+        <button class="btn-verify" onclick="openModal('modal-question')">
+            Verify & Next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
     </div>
 
-    <script>
-        let failureCount = 0;
-        const MAX_FAILURES = 3;
+</div>
 
-        const modalQuestion = document.getElementById('modal-question');
-        const modalRetry = document.getElementById('modal-retry');
-        const modalFail = document.getElementById('modal-fail');
+<!-- ── Modal: Did the rail flash? ── -->
+<div class="modal-overlay" id="modal-question">
+    <div class="modal-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-img">
+            <img src="rail-flash.jpg" alt="Rail Flash"
+                 onerror="this.parentElement.innerHTML='<div class=\'sheet-img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><path d=\'M13 2L3 14h9l-1 8 10-12h-9l1-8z\'/></svg><span>rail-flash.jpg</span></div>'">
+        </div>
+        <div class="sheet-title">Did the rail LEDs flash?</div>
+        <div class="sheet-text">A brief flash across the top of the rail confirms power and a good battery connection.</div>
+        <div class="sheet-actions">
+            <button class="btn-sheet danger" onclick="handleNo()">No</button>
+            <button class="btn-sheet primary" onclick="handleYes()">Yes</button>
+        </div>
+    </div>
+</div>
 
-        function startVerification() {
-            modalQuestion.style.display = 'flex';
-        }
+<!-- ── Modal: Troubleshooting ── -->
+<div class="modal-overlay" id="modal-retry">
+    <div class="modal-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title">Let's Troubleshoot</div>
+        <div class="sheet-text">Try the following steps, then check again.</div>
+        <div class="trouble-steps">
+            <div class="trouble-step">
+                <div class="step-num">1</div>
+                <span>Unplug the battery</span>
+            </div>
+            <div class="trouble-step">
+                <div class="step-num">2</div>
+                <span>Wait 20 seconds</span>
+            </div>
+            <div class="trouble-step">
+                <div class="step-num">3</div>
+                <span>Plug it back in firmly</span>
+            </div>
+        </div>
+        <div class="sheet-actions">
+            <button class="btn-sheet primary full" onclick="handleRetryDone()">Done — Check Again</button>
+        </div>
+    </div>
+</div>
 
-        function handleYes() {
-            window.location.href = 'page6.html';
-        }
+<!-- ── Modal: Battery Defective ── -->
+<div class="modal-overlay" id="modal-fail">
+    <div class="modal-sheet">
+        <div class="sheet-handle"></div>
+        <div class="sheet-title">Battery Defective</div>
+        <div class="sheet-text">This unit has failed <strong>3 times</strong>. Please acquire a different battery pack and restart the process.</div>
+        <div class="sheet-actions">
+            <button class="btn-sheet danger full" onclick="window.location.reload()">Restart Process</button>
+        </div>
+    </div>
+</div>
 
-        function handleNo() {
-            failureCount++;
-            modalQuestion.style.display = 'none';
+<script>
+    let failureCount = 0;
+    const MAX_FAILURES = 3;
+
+    function openModal(id) {
+        const el = document.getElementById(id);
+        el.style.display = 'flex';
+        requestAnimationFrame(() => requestAnimationFrame(() => el.classList.add('open')));
+    }
+
+    function closeModal(id) {
+        const el = document.getElementById(id);
+        el.classList.remove('open');
+        setTimeout(() => { el.style.display = 'none'; }, 300);
+    }
+
+    function handleYes() {
+        closeModal('modal-question');
+        setTimeout(() => { window.location.href = 'page6.html'; }, 300);
+    }
+
+    function handleNo() {
+        failureCount++;
+        closeModal('modal-question');
+        setTimeout(() => {
             if (failureCount >= MAX_FAILURES) {
-                modalFail.style.display = 'flex';
+                openModal('modal-fail');
             } else {
-                modalRetry.style.display = 'flex';
+                openModal('modal-retry');
             }
-        }
+        }, 320);
+    }
 
-        function handleRetryDone() {
-            modalRetry.style.display = 'none';
-            modalQuestion.style.display = 'flex';
-        }
-    </script>
+    function handleRetryDone() {
+        closeModal('modal-retry');
+        setTimeout(() => { openModal('modal-question'); }, 320);
+    }
+</script>
 
 </body>
 </html>

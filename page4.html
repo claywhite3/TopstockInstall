@@ -4,237 +4,504 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vusion - Select Modular</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Base styles consistent with your high-contrast aesthetic */
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         body {
-            background-color: #f0f2f5; 
+            font-family: 'DM Sans', sans-serif;
+            background-color: #F2F3F7;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #000;
+            color: #111827;
         }
 
-        /* --- HEADER --- */
-        .header {
+        .phone-shell {
             width: 100%;
+            max-width: 390px;
+            min-height: 100vh;
+            background: #F2F3F7;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Top bar ── */
+        .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            padding: 16px 20px 8px;
         }
 
-        .back-icon { 
-            font-size: 24px; 
-            color: #000; 
-            text-decoration: none; 
-            cursor: pointer; 
-        }
-
-        .user-pill {
-            background-color: white;
-            padding: 6px 14px;
-            border-radius: 20px;
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            background: #fff;
+            border-radius: 50%;
             display: flex;
             align-items: center;
-            gap: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            justify-content: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
         }
+        .back-btn svg { width: 18px; height: 18px; color: #111827; }
 
-        /* --- CONTENT --- */
-        .container {
-            width: 100%;
-            max-width: 400px;
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #2563EB;
+            border-radius: 50%;
             display: flex;
-            flex-direction: column;
             align-items: center;
-            padding: 20px;
-            text-align: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
         }
 
-        .logo-box {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 20px;
+        /* ── Hero ── */
+        .hero {
+            padding: 16px 20px 0;
+            animation: fadeUp 0.4s ease both;
         }
-        .logo-box img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-        }
+        .hero-title { font-size: 24px; font-weight: 700; color: #111827; line-height: 1.2; }
+        .hero-sub { font-size: 14px; color: #6B7280; margin-top: 4px; line-height: 1.5; }
 
-        h2 { 
-            font-size: 24px; 
-            font-weight: 700; 
-            margin-bottom: 12px; 
-            color: #000; 
-            line-height: 1.2;
-        }
-        
-        .instruction-text {
-            font-size: 15px;
-            color: #444;
-            margin-bottom: 25px;
-            line-height: 1.5;
-            max-width: 90%;
-        }
-
-        /* --- IMAGE SECTION --- */
-        .image-container {
-            width: 100%;
-            max-width: 320px;
-            margin-bottom: 8px;
-            background: white;
-            padding: 10px;
+        /* ── Image card ── */
+        .image-card {
+            margin: 18px 20px 0;
+            background: #fff;
             border-radius: 20px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            animation: fadeUp 0.4s 0.1s ease both;
         }
+
         .instruction-img {
             width: 100%;
             height: auto;
             display: block;
-            border-radius: 12px;
-        }
-        .caption { 
-            font-size: 13px; 
-            font-weight: 600; 
-            color: #666; 
-            margin-bottom: 35px; 
         }
 
-        /* --- DROPDOWN --- */
-        .dropdown-row {
-            display: flex;
-            justify-content: center;
-            width: 100%;
-            margin-bottom: 40px;
-        }
-
-        /* Using the corrected spacing from page 3 */
-        select {
-            appearance: none;
-            -webkit-appearance: none;
-            background-color: white;
-            border: 3px solid #f9d976; 
-            border-radius: 30px; 
-            padding: 14px 40px 14px 20px; 
-            font-size: 16px;
-            font-weight: 700;
-            width: 70%; /* Slightly wider for the modular select */
-            box-shadow: 0 6px 14px rgba(0,0,0,0.12); 
+        .image-caption {
+            padding: 10px 16px 12px;
+            font-size: 12px;
+            color: #9CA3AF;
+            font-weight: 500;
             text-align: center;
-            background-image: url("data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E");
-            background-repeat: no-repeat;
-            background-position: calc(100% - 15px) center; 
-            background-size: 12px auto;
-            color: #000;
-            cursor: pointer;
         }
 
-        /* --- NAVIGATION BUTTONS --- */
-        .nav-row {
-            display: flex;
-            justify-content: space-between;
+        .image-placeholder {
             width: 100%;
-            margin-top: 20px;
+            height: 140px;
+            background: linear-gradient(135deg, #e0e7ef, #c7d2e0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .image-placeholder svg { width: 36px; height: 36px; color: #94A3B8; }
+        .image-placeholder span { font-size: 12px; color: #94A3B8; font-weight: 500; }
+
+        /* ── Selector section ── */
+        .selector-section {
+            padding: 18px 20px 0;
+            animation: fadeUp 0.4s 0.15s ease both;
         }
 
-        .nav-btn {
-            background-color: white;
-            border: 3px solid #f9d976;
-            padding: 14px 25px;
-            border-radius: 18px;
+        .selector-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .selector-label {
+            font-size: 11px;
             font-weight: 700;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-left: 4px;
+        }
+
+        /* ── Combobox ── */
+        .combobox { position: relative; }
+
+        .combobox-input-wrap {
+            background: #fff;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: border-color 0.15s, box-shadow 0.15s;
+            cursor: text;
+        }
+
+        .combobox-input-wrap.open,
+        .combobox-input-wrap:focus-within {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .combobox-input-wrap.error {
+            border-color: #EF4444;
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+        }
+
+        .combobox-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-family: 'DM Sans', sans-serif;
             font-size: 16px;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+            font-weight: 600;
+            color: #111827;
+            background: transparent;
+            padding: 13px 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .combobox-input::placeholder { color: #9CA3AF; font-weight: 400; }
+
+        .combobox-chevron {
+            width: 18px;
+            height: 18px;
+            color: #9CA3AF;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+        .combobox-chevron.rotated { transform: rotate(180deg); }
+
+        /* ── Dropdown list ── */
+        .combobox-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 100;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            scroll-behavior: smooth;
+        }
+        .combobox-dropdown.open { display: block; }
+
+        .combobox-option {
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #111827;
+            cursor: pointer;
+            transition: background 0.1s;
+            text-align: center;
+        }
+        .combobox-option:first-child { border-radius: 13px 13px 0 0; }
+        .combobox-option:last-child  { border-radius: 0 0 13px 13px; }
+        .combobox-option:hover,
+        .combobox-option.highlighted { background: #EFF6FF; color: #2563EB; }
+        .combobox-option.selected    { background: #2563EB; color: #fff; }
+        .combobox-option.selected:hover { background: #1D4ED8; }
+
+        .combobox-no-results {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #9CA3AF;
+            text-align: center;
+        }
+
+        .combobox-dropdown::-webkit-scrollbar { width: 4px; }
+        .combobox-dropdown::-webkit-scrollbar-track { background: transparent; }
+        .combobox-dropdown::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 4px; }
+
+        /* ── Selected badge ── */
+        .selected-badge {
+            margin-top: 16px;
+            background: #EFF6FF;
+            border: 1.5px solid #BFDBFE;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.25s, transform 0.25s;
+        }
+        .selected-badge.visible { opacity: 1; transform: translateY(0); }
+        .badge-label { font-size: 11px; color: #93C5FD; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-value { font-size: 22px; font-weight: 700; color: #2563EB; letter-spacing: 2px; }
+
+        /* ── Error message ── */
+        .error-msg {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #EF4444;
+            font-weight: 500;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        /* ── Nav buttons ── */
+        .nav-area {
+            padding: 20px 20px 32px;
+            display: flex;
+            gap: 12px;
+            animation: fadeUp 0.4s 0.25s ease both;
+            margin-top: auto;
+        }
+
+        .btn-back {
+            padding: 15px 20px;
+            background: #fff;
+            color: #6B7280;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 10px;
-            color: black;
+            gap: 8px;
             text-decoration: none;
-            transition: transform 0.1s, box-shadow 0.1s;
+            transition: transform 0.15s;
+            flex-shrink: 0;
         }
+        .btn-back:active { transform: scale(0.975); }
+        .btn-back svg { width: 16px; height: 16px; }
 
-        .nav-btn:active { 
-            transform: scale(0.97); 
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        .btn-next {
+            flex: 1;
+            padding: 15px;
+            background: #2563EB;
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 14px rgba(37,99,235,0.3);
         }
+        .btn-next:active { transform: scale(0.975); box-shadow: 0 2px 6px rgba(37,99,235,0.2); }
+        .btn-next:disabled { background: #CBD5E1; box-shadow: none; cursor: not-allowed; }
+        .btn-next svg { width: 18px; height: 18px; }
 
+        /* ── Animations ── */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <a href="page3.html" class="back-icon"><i class="fas fa-chevron-left"></i></a>
-        <div class="user-pill">
-            <i class="fas fa-user"></i>
-            <span>installer01@email.com</span>
-        </div>
+<div class="phone-shell">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+        <a href="page3.html" class="back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="avatar">CW</div>
     </div>
 
-    <div class="container">
-        <div class="logo-box">
-            <img src="topstock_logo.png" alt="Vusion Logo">
-        </div>
-
-        <h2>Modular Section</h2>
-        
-        <p class="instruction-text">
-            Select the modular section where you are currently installing the rail.
-        </p>
-
-        <div class="image-container">
-            <img src="modular.jpg" alt="Modular Diagram" class="instruction-img" onerror="this.style.display='none'">
-        </div>
-        <div class="caption">Note: Each section requires its own rail</div>
-
-        <div class="dropdown-row">
-            <select id="modularSelect">
-                <option value="" disabled selected>Select Number</option>
-                <option>01</option><option>02</option><option>03</option><option>04</option><option>05</option>
-                <option>06</option><option>07</option><option>08</option><option>09</option><option>10</option>
-                <option>11</option><option>12</option><option>13</option><option>14</option><option>15</option>
-                <option>16</option><option>17</option><option>18</option><option>19</option><option>20</option>
-                <option>21</option><option>22</option><option>23</option><option>24</option><option>25</option>
-                <option>26</option><option>27</option><option>28</option><option>29</option><option>30</option>
-            </select>
-        </div>
-
-        <div class="nav-row">
-            <a href="page3.html" class="nav-btn">
-                <i class="fas fa-caret-left"></i> BACK
-            </a>
-            
-            <button class="nav-btn" onclick="validateAndGo()">
-                NEXT <i class="fas fa-caret-right"></i>
-            </button>
-        </div>
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-title">Modular Section</div>
+        <div class="hero-sub">Select the modular section where you are currently installing the rail.</div>
     </div>
 
-    <script>
-        function validateAndGo() {
-            const modular = document.getElementById('modularSelect').value;
+    <!-- Image Card -->
+    <div class="image-card">
+        <img src="modular.jpg" alt="Modular Diagram" class="instruction-img"
+             onerror="this.parentElement.innerHTML='<div class=\'image-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><path d=\'M3 9h18M3 15h18M9 3v18\'/></svg><span>Modular diagram</span></div><div class=\'image-caption\'>Note: Each section requires its own rail</div>'">
+        <div class="image-caption">Note: Each section requires its own rail</div>
+    </div>
 
-            if(modular === "") {
-                alert("Please select a Modular Number.");
-            } else {
-                window.location.href = 'page5.html';
+    <!-- Selector Section -->
+    <div class="selector-section">
+        <div class="selector-group">
+            <div class="selector-label">Section Number</div>
+            <div class="combobox" id="modularCombobox">
+                <div class="combobox-input-wrap" id="modularInputWrap">
+                    <input class="combobox-input" id="modularInput" type="text"
+                           placeholder="1 – 30"
+                           autocomplete="off"
+                           maxlength="2">
+                    <svg class="combobox-chevron" id="modularChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
+                </div>
+                <div class="combobox-dropdown" id="modularDropdown"></div>
+            </div>
+        </div>
+
+        <!-- Selected badge -->
+        <div class="selected-badge" id="selectedBadge">
+            <div class="badge-label">Selected Section</div>
+            <div class="badge-value" id="badgeValue">—</div>
+        </div>
+
+        <!-- Error message -->
+        <div class="error-msg" id="errorMsg"></div>
+    </div>
+
+    <!-- Nav Buttons -->
+    <div class="nav-area">
+        <a href="page3.html" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            Back
+        </a>
+        <button class="btn-next" onclick="validateAndGo()">
+            Next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+    </div>
+
+</div>
+
+<script>
+    const NUMBERS = Array.from({length: 30}, (_, i) => String(i + 1));
+
+    let selectedNumber = '';
+
+    function buildCombobox({ inputId, wrapperId, chevronId, dropdownId, options, onSelect, transform }) {
+        const input    = document.getElementById(inputId);
+        const wrap     = document.getElementById(wrapperId);
+        const chevron  = document.getElementById(chevronId);
+        const dropdown = document.getElementById(dropdownId);
+
+        function renderOptions(filter) {
+            const q = filter.trim();
+            const matches = options.filter(o => o.startsWith(q));
+            dropdown.innerHTML = '';
+
+            if (matches.length === 0) {
+                dropdown.innerHTML = '<div class="combobox-no-results">No matches</div>';
+                return;
             }
+
+            matches.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'combobox-option' + (opt === onSelect._current ? ' selected' : '');
+                div.textContent = opt;
+                div.addEventListener('mousedown', e => {
+                    e.preventDefault();
+                    selectOption(opt);
+                });
+                dropdown.appendChild(div);
+            });
         }
-    </script>
+
+        function openDropdown() {
+            renderOptions(input.value);
+            dropdown.classList.add('open');
+            wrap.classList.add('open');
+            chevron.classList.add('rotated');
+        }
+
+        function closeDropdown() {
+            dropdown.classList.remove('open');
+            wrap.classList.remove('open');
+            chevron.classList.remove('rotated');
+        }
+
+        function selectOption(opt) {
+            onSelect._current = opt;
+            input.value = opt;
+            onSelect(opt);
+            closeDropdown();
+            wrap.classList.remove('error');
+            updateBadge();
+        }
+
+        input.addEventListener('focus', () => openDropdown());
+        input.addEventListener('blur',  () => setTimeout(closeDropdown, 150));
+
+        input.addEventListener('input', () => {
+            const val = transform ? transform(input.value) : input.value;
+            input.value = val;
+            onSelect._current = '';
+            onSelect('');
+            renderOptions(val);
+            if (!dropdown.classList.contains('open')) openDropdown();
+            updateBadge();
+        });
+
+        wrap.addEventListener('click', () => {
+            if (dropdown.classList.contains('open')) {
+                closeDropdown();
+            } else {
+                input.focus();
+                openDropdown();
+            }
+        });
+    }
+
+    function setNumber(val) { selectedNumber = val; }
+    setNumber._current = '';
+
+    buildCombobox({
+        inputId:    'modularInput',
+        wrapperId:  'modularInputWrap',
+        chevronId:  'modularChevron',
+        dropdownId: 'modularDropdown',
+        options:    NUMBERS,
+        onSelect:   setNumber,
+        transform:  v => v.replace(/[^0-9]/g, '').slice(0, 2)
+    });
+
+    function updateBadge() {
+        const badge = document.getElementById('selectedBadge');
+        const value = document.getElementById('badgeValue');
+        if (selectedNumber) {
+            value.textContent = selectedNumber;
+            badge.classList.add('visible');
+        } else {
+            badge.classList.remove('visible');
+        }
+        document.getElementById('errorMsg').textContent = '';
+    }
+
+    function validateAndGo() {
+        const wrap     = document.getElementById('modularInputWrap');
+        const errorMsg = document.getElementById('errorMsg');
+
+        if (!selectedNumber) {
+            wrap.classList.add('error');
+            errorMsg.textContent = 'Please select a valid section number.';
+            return;
+        }
+
+        wrap.classList.remove('error');
+
+        // Save section context for use on the success page
+        sessionStorage.setItem('selectedSection', selectedNumber);
+
+        window.location.href = 'page5.html';
+    }
+</script>
 
 </body>
 </html>

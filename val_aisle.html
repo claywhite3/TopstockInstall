@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion - Aisle Detail</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 32px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; flex-shrink: 0; }
+        .btn-back:active { transform: scale(.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
+        .s-complete { color: #16A34A; } .s-issues { color: #DC2626; } .s-notstarted { color: #9CA3AF; }
+        .issue-pill { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; }
+        .pill-batt { background: #FEF2F2; color: #DC2626; } .pill-net { background: #EFF6FF; color: #2563EB; } .pill-cam { background: #FFF7ED; color: #F97316; }
+        .issue-pill svg { width: 10px; height: 10px; }
+        .summary-card { margin:12px 20px 0; background:#fff; border-radius:20px; padding:16px 18px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
+        .section-list { padding:14px 20px 0; display:flex; flex-direction:column; gap:8px; }
+        .eyebrow { font-size:11px; font-weight:700; color:#2563EB; text-transform:uppercase; letter-spacing:.5px; }
+        .stat-row { display:flex; gap:8px; margin-top:12px; }
+        .stat-chip { flex:1; background:#F9FAFB; border:1.5px solid #E5E7EB; border-radius:10px; padding:8px 10px; display:flex; flex-direction:column; gap:1px; }
+        .stat-chip-val { font-size:18px; font-weight:800; color:#111827; line-height:1; }
+        .stat-chip-lbl { font-size:10px; font-weight:600; color:#9CA3AF; }
+        .btn-install { margin:16px 20px 0; padding:15px; background:#2563EB; color:#fff; border:none; border-radius:16px; font-family:"DM Sans",sans-serif; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:8px; box-shadow:0 4px 14px rgba(37,99,235,0.3); text-decoration:none; transition:transform .15s; }
+        .btn-install:active { transform:scale(.975); }
+        .btn-install svg { width:16px; height:16px; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="top-bar">
+        <a href="val_zone.html" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="avatar">CW</div>
+    </div>
+    <div style="padding:4px 20px 0;">
+        <div class="eyebrow">Aisle Detail</div>
+        <div style="font-size:22px;font-weight:800;color:#111827;margin-top:2px;">Aisle C3</div>
+        <div style="font-size:13px;color:#6B7280;font-weight:500;margin-top:1px;">Zone C · 8 sections</div>
+    </div>
+    <div class="summary-card">
+        <div style="height:8px;background:#E5E7EB;border-radius:10px;overflow:hidden;margin-bottom:10px;">
+            <div style="height:100%;width:50%;background:#2563EB;border-radius:10px;"></div>
+        </div>
+        <div class="stat-row">
+            <div class="stat-chip"><div class="stat-chip-val" style="color:#16A34A;">4</div><div class="stat-chip-lbl">Installed</div></div>
+            <div class="stat-chip"><div class="stat-chip-val" style="color:#9CA3AF;">4</div><div class="stat-chip-lbl">Remaining</div></div>
+            <div class="stat-chip"><div class="stat-chip-val" style="color:#DC2626;">2</div><div class="stat-chip-lbl">With Issues</div></div>
+        </div>
+        <div style="margin-top:10px;display:flex;gap:5px;flex-wrap:wrap;">
+            <span class="issue-pill pill-batt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><path d="M23 13v-2"/></svg>2 battery</span><span class="issue-pill pill-net"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>1 network</span>
+        </div>
+    </div>
+    <a href="page3.html" class="btn-install">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Install Remaining 4 Sections
+    </a>
+    <div class="section-list">
+        <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;">Sections — tap to inspect</div>
+        
+        <a href="rail_detail.html?aisle=C3&section=1&rail=Z001-0121&status=issues" style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.00s ease both;opacity:0;text-decoration:none;cursor:pointer;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#DC2626;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S1</div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 1</span>
+                    <span class="s-issues" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Has Issues</span>
+                </div>
+                <div style="font-size:11px;color:#9CA3AF;margin-top:2px;">Installed Feb 10 · 09:14</div>
+                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;"><span class="issue-pill pill-batt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><path d="M23 13v-2"/></svg>1 battery</span></div>
+            </div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="rail_detail.html?aisle=C3&section=2&rail=Z001-0122&status=issues" style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.06s ease both;opacity:0;text-decoration:none;cursor:pointer;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#DC2626;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S2</div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 2</span>
+                    <span class="s-issues" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Has Issues</span>
+                </div>
+                <div style="font-size:11px;color:#9CA3AF;margin-top:2px;">Installed Feb 10 · 09:31</div>
+                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;"><span class="issue-pill pill-net"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>1 network</span></div>
+            </div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="rail_detail.html?aisle=C3&section=3&rail=Z001-0123&status=ok" style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.12s ease both;opacity:0;text-decoration:none;cursor:pointer;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#16A34A;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S3</div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 3</span>
+                    <span class="s-complete" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>Installed</span>
+                </div>
+                <div style="font-size:11px;color:#9CA3AF;margin-top:2px;">Installed Feb 10 · 09:47</div>
+                
+            </div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <a href="rail_detail.html?aisle=C3&section=4&rail=Z001-0124&status=ok" style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.18s ease both;opacity:0;text-decoration:none;cursor:pointer;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#16A34A;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S4</div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 4</span>
+                    <span class="s-complete" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>Installed</span>
+                </div>
+                <div style="font-size:11px;color:#9CA3AF;margin-top:2px;">Installed Feb 10 · 10:02</div>
+                
+            </div>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+        <div  style="background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.24s ease both;opacity:0;text-decoration:none;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#9CA3AF;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S5</div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:14px;font-weight:700;color:#9CA3AF;">Section 5</span>
+                    <span class="s-notstarted" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Not Installed</span>
+                </div>
+                <div style="font-size:11px;color:#D1D5DB;margin-top:2px;">Awaiting installation</div>
+                
+            </div>
+            
+        </div>
+        <div  style="background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.30s ease both;opacity:0;text-decoration:none;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#9CA3AF;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S6</div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:14px;font-weight:700;color:#9CA3AF;">Section 6</span>
+                    <span class="s-notstarted" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Not Installed</span>
+                </div>
+                <div style="font-size:11px;color:#D1D5DB;margin-top:2px;">Awaiting installation</div>
+                
+            </div>
+            
+        </div>
+        <div  style="background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.36s ease both;opacity:0;text-decoration:none;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#9CA3AF;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S7</div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:14px;font-weight:700;color:#9CA3AF;">Section 7</span>
+                    <span class="s-notstarted" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Not Installed</span>
+                </div>
+                <div style="font-size:11px;color:#D1D5DB;margin-top:2px;">Awaiting installation</div>
+                
+            </div>
+            
+        </div>
+        <div  style="background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.42s ease both;opacity:0;text-decoration:none;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#9CA3AF;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S8</div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:14px;font-weight:700;color:#9CA3AF;">Section 8</span>
+                    <span class="s-notstarted" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Not Installed</span>
+                </div>
+                <div style="font-size:11px;color:#D1D5DB;margin-top:2px;">Awaiting installation</div>
+                
+            </div>
+            
+        </div>
+    </div>
+</div>
+</body>
+</html>

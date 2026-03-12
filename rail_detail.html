@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion - Rail Detail</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 32px; }
+
+        /* ── Top bar ── */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
+        .btn-icon { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; flex-shrink: 0; }
+        .btn-icon:active { transform: scale(.93); }
+        .btn-icon svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
+
+        /* ── Rail identity header ── */
+        .rail-header { padding: 6px 20px 0; }
+        .eyebrow { font-size: 11px; font-weight: 700; color: #6B7280; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+        .rail-id { font-size: 24px; font-weight: 800; color: #111827; line-height: 1.1; }
+        .rail-meta { font-size: 13px; color: #9CA3AF; font-weight: 500; margin-top: 3px; }
+
+        /* ── Main status banner ── */
+        .status-banner { margin: 14px 20px 0; border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; transition: background .3s, border-color .3s; }
+        .status-banner.testing  { background: #FFFBEB; border: 1.5px solid #FDE68A; }
+        .status-banner.ok       { background: #F0FDF4; border: 1.5px solid #86EFAC; }
+        .status-banner.issues   { background: #FFF7ED; border: 1.5px solid #FED7AA; }
+        .status-banner-left { display: flex; flex-direction: column; gap: 2px; }
+        .status-banner-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .4px; }
+        .status-banner-val { font-size: 18px; font-weight: 800; }
+        .status-banner.testing .status-banner-val { color: #D97706; }
+        .status-banner.ok      .status-banner-val { color: #16A34A; }
+        .status-banner.issues  .status-banner-val { color: #F97316; }
+        .status-banner-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
+        .ts-label { font-size: 10px; font-weight: 600; color: #9CA3AF; text-transform: uppercase; }
+        .ts-val   { font-size: 12px; font-weight: 700; color: #374151; }
+
+        /* ── Info card (topstock, sub-modulars, opposing) ── */
+        .info-card { margin: 12px 20px 0; background: #fff; border-radius: 18px; padding: 16px 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; gap: 10px; }
+        .info-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+        .info-label { font-size: 12px; font-weight: 600; color: #9CA3AF; flex-shrink: 0; width: 110px; }
+        .info-val { font-size: 13px; font-weight: 700; color: #111827; text-align: right; }
+        .info-val.mono { font-family: 'DM Mono', 'Courier New', monospace; font-size: 13px; }
+        .divider { height: 1px; background: #F3F4F6; margin: 2px 0; }
+
+        /* ── System check rows ── */
+        .check-card { margin: 12px 20px 0; background: #fff; border-radius: 18px; padding: 6px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
+        .check-section-label { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; padding: 10px 18px 6px; }
+        .check-row { display: flex; align-items: center; padding: 11px 18px; gap: 12px; border-bottom: 1px solid #F3F4F6; transition: background .15s; }
+        .check-row:last-child { border-bottom: none; }
+        .check-row-icon { width: 32px; height: 32px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .check-row-icon svg { width: 16px; height: 16px; }
+        .icon-ble    { background: #F5F3FF; color: #7C3AED; }
+        .icon-wifi   { background: #EFF6FF; color: #2563EB; }
+        .icon-camera { background: #FEF2F2; color: #DC2626; }
+        .icon-led    { background: #FFFBEB; color: #D97706; }
+        .icon-elabel { background: #F0FDF4; color: #16A34A; }
+        .check-row-body { flex: 1; }
+        .check-row-name { font-size: 14px; font-weight: 700; color: #111827; }
+        .check-row-sub  { font-size: 11px; color: #9CA3AF; margin-top: 1px; font-weight: 500; }
+        .check-row-right { display: flex; align-items: center; gap: 8px; }
+
+        /* Status pills */
+        .pill { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 8px; font-size: 12px; font-weight: 700; transition: background .3s, color .3s; white-space: nowrap; }
+        .pill-pending { background: #F3F4F6; color: #9CA3AF; border: 1.5px solid #E5E7EB; }
+        .pill-testing { background: #FFFBEB; color: #D97706; border: 1.5px solid #FDE68A; }
+        .pill-ok      { background: #F0FDF4; color: #16A34A; border: 1.5px solid #86EFAC; }
+        .pill-fail    { background: #FEF2F2; color: #DC2626; border: 1.5px solid #FECACA; }
+        .pill svg     { width: 11px; height: 11px; }
+
+        /* Drill-in button */
+        .drill-btn { width: 30px; height: 30px; background: #F3F4F6; border: 1.5px solid #E5E7EB; border-radius: 8px; display: flex; align-items: center; justify-content: center; cursor: pointer; text-decoration: none; flex-shrink: 0; transition: background .15s; }
+        .drill-btn:active { background: #E5E7EB; }
+        .drill-btn svg { width: 14px; height: 14px; color: #6B7280; }
+        .drill-btn.active { background: #EFF6FF; border-color: #BFDBFE; }
+        .drill-btn.active svg { color: #2563EB; }
+
+        /* ── Action strip ── */
+        .action-strip { margin: 14px 20px 0; display: flex; gap: 10px; }
+        .btn-action { flex: 1; padding: 13px 10px; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; transition: transform .15s, opacity .15s; border: none; }
+        .btn-action:active { transform: scale(.97); }
+        .btn-action:disabled { opacity: .4; cursor: not-allowed; pointer-events: none; }
+        .btn-action svg { width: 14px; height: 14px; }
+        .btn-swap    { background: #fff; color: #374151; border: 1.5px solid #E5E7EB; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .btn-retest  { background: #FFF7ED; color: #C2410C; border: 1.5px solid #FED7AA; }
+        .btn-fulltest{ background: #2563EB; color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
+
+        /* ── Timestamp row ── */
+        .ts-row { margin: 10px 20px 0; display: flex; gap: 10px; }
+        .ts-chip { flex: 1; background: #fff; border-radius: 12px; padding: 10px 14px; box-shadow: 0 1px 6px rgba(0,0,0,0.04); }
+        .ts-chip-label { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .4px; }
+        .ts-chip-val   { font-size: 13px; font-weight: 700; color: #111827; margin-top: 3px; }
+
+        /* ── Spinner ── */
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .spin { animation: spin 1s linear infinite; display: inline-block; }
+        @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+        .shell > * { animation: fadeUp .35s ease both; }
+    </style>
+</head>
+<body>
+<div class="shell">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+        <a href="val_aisle.html" class="btn-icon" id="backBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="avatar">CW</div>
+    </div>
+
+    <!-- Rail identity -->
+    <div class="rail-header">
+        <div class="eyebrow">Section C3 · Rail</div>
+        <div class="rail-id">Z001-0123</div>
+        <div class="rail-meta">Aisle C3 · Section 2 · Store 0100</div>
+    </div>
+
+    <!-- Main status banner -->
+    <div class="status-banner testing" id="mainBanner">
+        <div class="status-banner-left">
+            <div class="status-banner-label">Installation Status</div>
+            <div class="status-banner-val" id="mainStatusVal">
+                <span class="spin">↻</span> Testing…
+            </div>
+        </div>
+        <div class="status-banner-right">
+            <div class="ts-label">Last test</div>
+            <div class="ts-val" id="lastTestVal">—</div>
+        </div>
+    </div>
+
+    <!-- Info card -->
+    <div class="info-card">
+        <div class="info-row">
+            <span class="info-label">Topstock ID</span>
+            <span class="info-val mono">Z001-0123</span>
+        </div>
+        <div class="divider"></div>
+        <div class="info-row">
+            <span class="info-label">Sub-modulars</span>
+            <span class="info-val">C3.3, C3.4</span>
+        </div>
+        <div class="divider"></div>
+        <div class="info-row">
+            <span class="info-label">Opposing Aisle</span>
+            <span class="info-val">C4.2</span>
+        </div>
+        <div class="divider"></div>
+        <div class="info-row">
+            <span class="info-label">Last Failing Test</span>
+            <span class="info-val">2026/01/27 · 1:05 pm</span>
+        </div>
+    </div>
+
+    <!-- System check rows -->
+    <div class="check-card">
+        <div class="check-section-label">System Checks</div>
+
+        <!-- BLE -->
+        <div class="check-row">
+            <div class="check-row-icon icon-ble">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6.5 6.5 17.5 17.5"/><polyline points="17.5 6.5 6.5 17.5"/><polyline points="12 3 12 21"/></svg>
+            </div>
+            <div class="check-row-body">
+                <div class="check-row-name">BLE Connectivity</div>
+                <div class="check-row-sub" id="sub-ble">Checking…</div>
+            </div>
+            <div class="check-row-right">
+                <span class="pill pill-pending" id="pill-ble">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Pending
+                </span>
+                <a href="#" class="drill-btn" id="drill-ble">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Wi-Fi -->
+        <div class="check-row">
+            <div class="check-row-icon icon-wifi">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>
+            </div>
+            <div class="check-row-body">
+                <div class="check-row-name">Wi-Fi</div>
+                <div class="check-row-sub" id="sub-wifi">Checking…</div>
+            </div>
+            <div class="check-row-right">
+                <span class="pill pill-pending" id="pill-wifi">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Pending
+                </span>
+                <a href="#" class="drill-btn" id="drill-wifi">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- Camera -->
+        <div class="check-row">
+            <div class="check-row-icon icon-camera">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            </div>
+            <div class="check-row-body">
+                <div class="check-row-name">Camera</div>
+                <div class="check-row-sub" id="sub-camera">Checking…</div>
+            </div>
+            <div class="check-row-right">
+                <span class="pill pill-pending" id="pill-camera">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Pending
+                </span>
+                <a href="rail_camera.html" class="drill-btn" id="drill-camera">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- LED Strip Status -->
+        <div class="check-row">
+            <div class="check-row-icon icon-led">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="2" y1="12" x2="22" y2="12"/><circle cx="5" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="2" fill="currentColor" stroke="none"/><circle cx="19" cy="12" r="2" fill="currentColor" stroke="none"/><line x1="5" y1="8" x2="5" y2="10"/><line x1="12" y1="8" x2="12" y2="10"/><line x1="19" y1="8" x2="19" y2="10"/></svg>
+            </div>
+            <div class="check-row-body">
+                <div class="check-row-name">LED Strip Status</div>
+                <div class="check-row-sub" id="sub-led">Checking…</div>
+            </div>
+            <div class="check-row-right">
+                <span class="pill pill-pending" id="pill-led">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Pending
+                </span>
+                <a href="#" class="drill-btn" id="drill-led">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <!-- E-Label Status -->
+        <div class="check-row">
+            <div class="check-row-icon icon-elabel">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="9" x2="10" y2="9"/><line x1="6" y1="12" x2="14" y2="12"/><line x1="6" y1="15" x2="11" y2="15"/></svg>
+            </div>
+            <div class="check-row-body">
+                <div class="check-row-name">E-Label Status</div>
+                <div class="check-row-sub" id="sub-elabel">Checking…</div>
+            </div>
+            <div class="check-row-right">
+                <span class="pill pill-pending" id="pill-elabel">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                    Pending
+                </span>
+                <a href="#" class="drill-btn" id="drill-elabel">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Timestamp chips -->
+    <div class="ts-row">
+        <div class="ts-chip">
+            <div class="ts-chip-label">Last Test</div>
+            <div class="ts-chip-val" id="tsLastTest">—</div>
+        </div>
+        <div class="ts-chip">
+            <div class="ts-chip-label">Last Failure</div>
+            <div class="ts-chip-val">2026/01/27 · 1:05 pm</div>
+        </div>
+    </div>
+
+    <!-- Action strip -->
+    <div class="action-strip">
+        <button class="btn-action btn-swap" id="btnSwap" disabled onclick="doSwap()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="5" width="8" height="10" rx="1"/><rect x="10" y="8" width="8" height="10" rx="1"/><path d="M5 11C5 9 6 7 8 7"/><path d="M5 11L7 9"/><path d="M20 12C20 14 19 16 17 16"/><path d="M20 12L18 14"/></svg>
+            Swap Rail
+        </button>
+        <button class="btn-action btn-retest" id="btnRetest" disabled onclick="runRetest()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg>
+            Re-test Failed
+        </button>
+        <button class="btn-action btn-fulltest" id="btnFull" disabled onclick="runFullTest()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Full Test
+        </button>
+    </div>
+
+</div>
+
+<script>
+    // ── DOM refs ─────────────────────────────────────────────────────────────
+    const mainBanner   = document.getElementById('mainBanner');
+    const mainStatusVal= document.getElementById('mainStatusVal');
+    const lastTestVal  = document.getElementById('lastTestVal');
+    const tsLastTest   = document.getElementById('tsLastTest');
+    const btnSwap      = document.getElementById('btnSwap');
+    const btnRetest    = document.getElementById('btnRetest');
+    const btnFull      = document.getElementById('btnFull');
+
+    const CHECKS = ['ble','wifi','camera','led','elabel'];
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+    function now() {
+        const d = new Date();
+        return d.getFullYear() + '/' +
+               String(d.getMonth()+1).padStart(2,'0') + '/' +
+               String(d.getDate()).padStart(2,'0') + ' · ' +
+               String(d.getHours()).padStart(2,'0') + ':' +
+               String(d.getMinutes()).padStart(2,'0');
+    }
+
+    function setTimestamp() {
+        const t = now();
+        lastTestVal.textContent = t;
+        tsLastTest.textContent  = t;
+    }
+
+    function setPill(id, state, subtext) {
+        const pill = document.getElementById('pill-' + id);
+        const sub  = document.getElementById('sub-'  + id);
+        const drill= document.getElementById('drill-' + id);
+
+        pill.className = 'pill';
+        let icon = '';
+
+        if (state === 'pending') {
+            pill.classList.add('pill-pending');
+            icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>';
+            pill.innerHTML = icon + ' Pending';
+        } else if (state === 'testing') {
+            pill.classList.add('pill-testing');
+            pill.innerHTML = '<span class="spin">↻</span> Testing';
+        } else if (state === 'ok') {
+            pill.classList.add('pill-ok');
+            icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>';
+            pill.innerHTML = icon + ' OK';
+            drill.classList.remove('active');
+        } else if (state === 'fail') {
+            pill.classList.add('pill-fail');
+            icon = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
+            pill.innerHTML = icon + ' Fail';
+            drill.classList.add('active');
+        }
+
+        if (sub && subtext !== undefined) sub.textContent = subtext;
+    }
+
+    function setBanner(state) {
+        mainBanner.className = 'status-banner ' + state;
+        if (state === 'testing') {
+            mainStatusVal.innerHTML = '<span class="spin">↻</span> Testing…';
+        } else if (state === 'ok') {
+            mainStatusVal.innerHTML = '✓ Installed';
+        } else if (state === 'issues') {
+            mainStatusVal.innerHTML = '⚠ Needs Attention';
+        }
+    }
+
+    function lockButtons(lock) {
+        btnSwap.disabled   = lock;
+        btnRetest.disabled = lock;
+        btnFull.disabled   = lock;
+    }
+
+    // ── Initial test sequence (on load) ──────────────────────────────────────
+    const SUB_LABELS = {
+        ble:    { ok: 'Signal strong · -68 dBm',        fail: 'No signal detected' },
+        wifi:   { ok: 'Connected · 192.168.1.44',       fail: 'Association timeout' },
+        camera: { ok: '3/3 images received',             fail: 'Image capture failed' },
+        led:    { ok: 'All segments nominal',            fail: 'Strip driver unresponsive' },
+        elabel: { ok: 'Displaying · Aisle C3',          fail: 'Tag not responding' },
+    };
+
+    window.addEventListener('load', () => {
+        setTimestamp();
+        CHECKS.forEach(id => setPill(id, 'testing', 'Running check…'));
+
+        // Stagger results — BLE, wifi pass; camera fails; LED, E-Label pass
+        setTimeout(() => setPill('ble',    'ok',   SUB_LABELS.ble.ok),    1200);
+        setTimeout(() => setPill('wifi',   'ok',   SUB_LABELS.wifi.ok),   2000);
+        setTimeout(() => setPill('camera', 'fail', SUB_LABELS.camera.fail), 2800);
+        setTimeout(() => setPill('led',    'ok',   SUB_LABELS.led.ok),    3600);
+        setTimeout(() => {
+            setPill('elabel', 'ok', SUB_LABELS.elabel.ok);
+            setBanner('issues');
+            setTimestamp();
+            lockButtons(false);
+        }, 4400);
+    });
+
+    // ── Re-test failed only ──────────────────────────────────────────────────
+    function runRetest() {
+        lockButtons(true);
+        setBanner('testing');
+        setPill('camera', 'testing', 'Re-testing…');
+
+        setTimeout(() => {
+            setPill('camera', 'ok', SUB_LABELS.camera.ok);
+            setBanner('ok');
+            setTimestamp();
+            lockButtons(false);
+        }, 3000);
+    }
+
+    // ── Full test ────────────────────────────────────────────────────────────
+    function runFullTest() {
+        lockButtons(true);
+        setBanner('testing');
+        CHECKS.forEach(id => setPill(id, 'testing', 'Running check…'));
+
+        let t = 800;
+        const results = [
+            ['ble',    'ok',   SUB_LABELS.ble.ok],
+            ['wifi',   'ok',   SUB_LABELS.wifi.ok],
+            ['camera', 'ok',   SUB_LABELS.camera.ok],
+            ['led',    'ok',   SUB_LABELS.led.ok],
+            ['elabel', 'ok',   SUB_LABELS.elabel.ok],
+        ];
+        results.forEach(([id, state, sub]) => {
+            setTimeout(() => setPill(id, state, sub), t);
+            t += 700;
+        });
+        setTimeout(() => {
+            setBanner('ok');
+            setTimestamp();
+            lockButtons(false);
+        }, t);
+    }
+
+    // ── Swap Rail ────────────────────────────────────────────────────────────
+    function doSwap() {
+        window.location.href = 'page5.html';
+    }
+</script>
+</body>
+</html>

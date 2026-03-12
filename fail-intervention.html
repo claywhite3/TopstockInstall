@@ -3,194 +3,329 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vusion - Rail Troubleshooting</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <title>Vusion - Persistent Failure</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Base styles consistent with your new clean aesthetic */
-        * { 
-            box-sizing: border-box; 
-            margin: 0; 
-            padding: 0; 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
-        
+
         body {
-            background-color: #f0f2f5; /* Clean light-grey/blue background */
+            font-family: 'DM Sans', sans-serif;
+            background-color: #F2F3F7;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #000;
-            padding: 20px;
+            color: #111827;
         }
 
-        /* --- HEADER --- */
-        .header {
+        .phone-shell {
             width: 100%;
+            max-width: 390px;
+            min-height: 100vh;
+            background: #F2F3F7;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Top bar ── */
+        .top-bar {
             display: flex;
             justify-content: flex-end;
-            padding: 10px 0;
-            margin-bottom: 20px;
+            align-items: center;
+            padding: 16px 20px 8px;
         }
 
-        .user-pill {
-            background-color: white;
-            padding: 6px 14px;
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #2563EB;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Warning graphic ── */
+        .warning-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 32px 20px 0;
+            animation: fadeUp 0.4s ease both;
+        }
+
+        .warning-ring {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: #FFFBEB;
+            border: 4px solid #D97706;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 0 10px rgba(217,119,6,0.07), 0 10px 28px rgba(217,119,6,0.15);
+            margin-bottom: 20px;
+        }
+        .warning-ring svg { width: 44px; height: 44px; color: #D97706; }
+
+        .warning-title {
+            font-size: 26px;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1.1;
+        }
+
+        .warning-badge {
+            margin-top: 10px;
+            background: #FFFBEB;
+            border: 1.5px solid #FDE68A;
             border-radius: 20px;
+            padding: 6px 18px;
+            font-size: 14px;
+            font-weight: 700;
+            color: #92400E;
             display: flex;
             align-items: center;
             gap: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .warning-badge svg { width: 14px; height: 14px; }
+
+        /* ── Main card ── */
+        .intervention-card {
+            margin: 24px 20px 0;
+            background: #fff;
+            border-radius: 20px;
+            padding: 20px;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            animation: fadeUp 0.4s 0.1s ease both;
         }
 
-        .logo-box {
-            width: 80px;
-            height: 80px;
-            margin-bottom: 30px;
-        }
-        .logo-box img { 
-            width: 100%; 
-            height: 100%; 
-            object-fit: contain; 
-        }
-
-        /* --- ALERT CARD --- */
-        .alert-container {
-            width: 100%;
-            max-width: 400px;
-            display: flex;
-            flex-direction: column;
+        /* Rail ID pill */
+        .rail-id-pill {
+            display: inline-flex;
             align-items: center;
+            gap: 8px;
+            background: #F3F4F6;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 20px;
+            padding: 6px 14px;
+            margin-bottom: 16px;
+        }
+        .rail-id-pill svg { width: 14px; height: 14px; color: #6B7280; }
+        .rail-id-pill span {
+            font-size: 13px;
+            font-weight: 700;
+            color: #374151;
+            letter-spacing: 0.5px;
+            font-family: monospace;
         }
 
-        .white-card {
-            background: white;
-            border-radius: 25px;
-            padding: 30px 25px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            margin-bottom: 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-align: center;
-        }
-
-        .fa-exclamation-triangle { 
-            font-size: 60px; 
-            color: #d93025; 
-            margin-bottom: 20px;
-        }
-        
-        h2 { 
-            font-size: 26px; 
-            font-weight: 700; 
-            color: #000;
-            margin-bottom: 10px;
-        }
-
-        .rail-tag {
+        .card-body-text {
             font-size: 14px;
-            background: #f9f9f9;
-            padding: 6px 16px;
-            border-radius: 50px;
+            color: #6B7280;
+            line-height: 1.7;
+        }
+        .card-body-text strong { color: #DC2626; font-weight: 700; }
+
+        /* Divider */
+        .card-divider {
+            height: 1px;
+            background: #F3F4F6;
+            margin: 16px 0;
+        }
+
+        /* What to do next steps */
+        .next-steps-label {
+            font-size: 11px;
             font-weight: 700;
-            color: #666;
-            margin-bottom: 25px;
-            letter-spacing: 1px;
-            border: 1px solid #eee;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
         }
 
-        .instruction-text {
-            font-size: 16px;
-            line-height: 1.5;
-            color: #444;
-        }
-
-        .bold-instruct { font-weight: 700; color: #d93025; }
-
-        /* --- BUTTONS (Yellow Border Style) --- */
-        .action-row {
-            width: 100%;
+        .next-steps {
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            align-items: center;
+            gap: 10px;
         }
 
-        .btn-main {
-            background-color: white;
-            border: 3px solid #f9d976; /* Signature yellow border */
-            width: 90%;
-            padding: 16px 20px;
-            border-radius: 18px;
-            font-weight: 700;
-            font-size: 16px;
-            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-            cursor: pointer;
-            color: black;
-            text-decoration: none;
+        .next-step {
             display: flex;
-            justify-content: center;
             align-items: center;
             gap: 12px;
-            transition: transform 0.1s;
         }
 
-        .btn-main:active { transform: scale(0.97); }
+        .step-num {
+            width: 26px;
+            height: 26px;
+            background: #FEF3C7;
+            border: 1.5px solid #FDE68A;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
+            color: #92400E;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
 
-        .btn-link {
-            background: none;
+        .next-step span {
+            font-size: 14px;
+            color: #374151;
+            font-weight: 500;
+            line-height: 1.4;
+        }
+
+        /* ── Action buttons ── */
+        .action-section {
+            padding: 24px 20px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: auto;
+            animation: fadeUp 0.4s 0.2s ease both;
+        }
+
+        .btn-skip {
+            width: 100%;
+            padding: 17px 20px;
+            background: #2563EB;
+            color: #fff;
             border: none;
-            color: #666;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+            transition: transform 0.15s, box-shadow 0.15s;
+        }
+        .btn-skip:active { transform: scale(0.975); box-shadow: 0 2px 6px rgba(37,99,235,0.2); }
+        .btn-skip svg { width: 17px; height: 17px; }
+
+        .btn-try-again {
+            width: 100%;
+            padding: 15px 20px;
+            background: #fff;
+            color: #6B7280;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
             font-size: 14px;
             font-weight: 600;
-            text-decoration: underline;
             cursor: pointer;
-            margin-top: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s;
         }
+        .btn-try-again:active { transform: scale(0.975); }
+        .btn-try-again svg { width: 15px; height: 15px; }
 
+        /* ── Animations ── */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-    <div class="header">
-        <div class="user-pill">
-            <i class="fas fa-user"></i>
-            <span>installer01...</span>
+<div class="phone-shell">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+        <div class="avatar">CW</div>
+    </div>
+
+    <!-- Warning graphic -->
+    <div class="warning-section">
+        <div class="warning-ring">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/>
+                <line x1="12" y1="9" x2="12" y2="13"/>
+                <line x1="12" y1="17" x2="12.01" y2="17"/>
+            </svg>
+        </div>
+        <div class="warning-title">Persistent Failure</div>
+        <div class="warning-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Failed to connect 3 times
         </div>
     </div>
 
-    <div class="logo-box">
-        <img src="topstock_logo.png" alt="Vusion Logo">
-    </div>
+    <!-- Intervention card -->
+    <div class="intervention-card">
 
-    <div class="alert-container">
-        
-        <div class="white-card">
-            <i class="fas fa-exclamation-triangle"></i>
-            <h2>Persistent Failure</h2>
-            <div class="rail-tag">RAIL ID: 4Z1-9S8TW</div>
-
-            <p class="instruction-text">
-                This rail has failed to connect <span class="bold-instruct">3 times</span>. 
-                Please set this unit aside and proceed with a new rail.
-            </p>
+        <div class="rail-id-pill">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="4" width="18" height="16" rx="2"/>
+                <line x1="7" y1="8" x2="7" y2="16"/>
+                <line x1="10" y1="8" x2="10" y2="16"/>
+                <line x1="13" y1="8" x2="13" y2="12"/>
+                <line x1="16" y1="8" x2="16" y2="16"/>
+                <line x1="13" y1="14" x2="13" y2="16"/>
+            </svg>
+            <span>4Z1-9S8TW</span>
         </div>
 
-        <div class="action-row">
-            <button class="btn-main" onclick="window.location.href='page6.html'">
-                Skip & Scan New Rail <i class="fas fa-chevron-right"></i>
-            </button>
+        <p class="card-body-text">
+            This rail has failed to connect <strong>3 times</strong>. 
+            Set this unit aside and continue with a replacement rail.
+        </p>
 
-            <button class="btn-link" onclick="window.location.href='page7.html'">
-                Wait, I found the issue. Try again.
-            </button>
+        <div class="card-divider"></div>
+
+        <div class="next-steps-label">What to do</div>
+        <div class="next-steps">
+            <div class="next-step">
+                <div class="step-num">1</div>
+                <span>Set this rail aside and label it as defective</span>
+            </div>
+            <div class="next-step">
+                <div class="step-num">2</div>
+                <span>Retrieve a replacement rail from your kit</span>
+            </div>
+            <div class="next-step">
+                <div class="step-num">3</div>
+                <span>Continue from the scan step with the new unit</span>
+            </div>
         </div>
+
     </div>
+
+    <!-- Action buttons -->
+    <div class="action-section">
+
+        <button class="btn-skip" onclick="window.location.href='page6.html'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            Skip &amp; Scan New Rail
+        </button>
+
+        <button class="btn-try-again" onclick="window.location.href='page7.html'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg>
+            I found the issue — try again
+        </button>
+
+    </div>
+
+</div>
 
 </body>
 </html>

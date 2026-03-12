@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion - Select Store</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; }
+
+        /* Top bar */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; }
+        .btn-back:active { transform: scale(.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
+
+        /* Hero */
+        .hero { padding: 28px 20px 0; animation: fadeUp .4s ease both; }
+        .eyebrow { font-size: 11px; font-weight: 700; color: #16A34A; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .eyebrow svg { width: 13px; height: 13px; }
+        .hero-title { font-size: 26px; font-weight: 800; color: #111827; line-height: 1.15; }
+        .hero-sub { font-size: 14px; color: #6B7280; font-weight: 500; margin-top: 6px; line-height: 1.5; }
+
+        /* Search card */
+        .search-card { margin: 24px 20px 0; background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); animation: fadeUp .4s .08s ease both; opacity: 0; }
+        .field-label { font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .4px; }
+
+        /* Search input */
+        .search-wrap { position: relative; margin-bottom: 14px; }
+        .search-input { width: 100%; padding: 13px 16px 13px 42px; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; color: #111827; outline: none; transition: border-color .2s; }
+        .search-input:focus { border-color: #2563EB; background: #fff; }
+        .search-input::placeholder { color: #9CA3AF; }
+        .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; }
+        .search-icon svg { width: 16px; height: 16px; color: #9CA3AF; }
+
+        /* Store list */
+        .store-list { display: flex; flex-direction: column; gap: 8px; max-height: 340px; overflow-y: auto; }
+        .store-list::-webkit-scrollbar { width: 0; }
+        .store-row { display: flex; align-items: center; gap: 12px; padding: 13px 14px; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 14px; cursor: pointer; transition: border-color .18s, background .18s; }
+        .store-row:hover, .store-row.selected { background: #EFF6FF; border-color: #2563EB; }
+        .store-icon { width: 36px; height: 36px; background: #fff; border-radius: 10px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px rgba(0,0,0,0.08); flex-shrink: 0; }
+        .store-icon svg { width: 18px; height: 18px; color: #6B7280; }
+        .store-row.selected .store-icon svg { color: #2563EB; }
+        .store-info { flex: 1; }
+        .store-name { font-size: 14px; font-weight: 700; color: #111827; }
+        .store-addr { font-size: 12px; color: #9CA3AF; font-weight: 500; margin-top: 1px; }
+        .store-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #E5E7EB; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .18s, border-color .18s; }
+        .store-row.selected .store-check { background: #2563EB; border-color: #2563EB; }
+        .store-check svg { width: 11px; height: 11px; color: #fff; opacity: 0; transition: opacity .15s; }
+        .store-row.selected .store-check svg { opacity: 1; }
+
+        /* CTA */
+        .cta-wrap { padding: 20px 20px 0; animation: fadeUp .4s .16s ease both; opacity: 0; }
+        .btn-primary { width: 100%; padding: 16px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: transform .15s, opacity .15s; text-decoration: none; }
+        .btn-primary:active { transform: scale(.975); }
+        .btn-primary:disabled, .btn-primary.disabled { opacity: .45; cursor: not-allowed; pointer-events: none; }
+        .btn-primary svg { width: 16px; height: 16px; }
+
+        /* Info note */
+        .info-note { margin: 16px 20px 0; background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 14px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; animation: fadeUp .4s .22s ease both; opacity: 0; }
+        .info-note svg { width: 16px; height: 16px; color: #16A34A; flex-shrink: 0; margin-top: 1px; }
+        .info-note-text { font-size: 12px; font-weight: 600; color: #15803D; line-height: 1.5; }
+
+        @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    </style>
+</head>
+<body>
+<div class="shell">
+
+    <div class="top-bar">
+        <a href="index.html" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="avatar">CW</div>
+    </div>
+
+    <div class="hero">
+        <div class="eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            Validation
+        </div>
+        <div class="hero-title">Select a Store</div>
+        <div class="hero-sub">Search by store number or address to view installation progress and health.</div>
+    </div>
+
+    <div class="search-card">
+        <div class="field-label">Store</div>
+        <div class="search-wrap">
+            <div class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
+            <input class="search-input" id="searchInput" type="text" placeholder="Search store number or city…" oninput="filterStores(this.value)" autocomplete="off">
+        </div>
+        <div class="store-list" id="storeList"></div>
+    </div>
+
+    <div class="cta-wrap">
+        <a href="val_overview.html" class="btn-primary disabled" id="ctaBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+            View Store Progress
+        </a>
+    </div>
+
+    <div class="info-note">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <div class="info-note-text">You can view any store remotely. Store data is pulled live from the backend system.</div>
+    </div>
+
+</div>
+
+<script>
+    const STORES = [
+        { id:"0042", name:"Store 0042", addr:"456 Oak Ave, Kansas City MO" },
+        { id:"0100", name:"Store 0100", addr:"123 Main St, Springfield MO" },
+        { id:"0215", name:"Store 0215", addr:"789 Elm Blvd, St. Louis MO" },
+        { id:"0318", name:"Store 0318", addr:"321 Pine Rd, Columbia MO" },
+        { id:"0442", name:"Store 0442", addr:"654 Maple Dr, Joplin MO" },
+        { id:"0581", name:"Store 0581", addr:"987 Cedar Ln, Jefferson City MO" },
+        { id:"0634", name:"Store 0634", addr:"147 Birch St, Cape Girardeau MO" },
+        { id:"0721", name:"Store 0721", addr:"258 Walnut Ave, Independence MO" },
+        { id:"0856", name:"Store 0856", addr:"369 Spruce Blvd, Branson MO" },
+        { id:"1024", name:"Store 1024", addr:"741 Ash Ct, Kirksville MO" },
+        { id:"8821", name:"Store 8821", addr:"852 Willow Way, Rolla MO" },
+    ];
+
+    let selectedStore = null;
+
+    const STORE_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`;
+    const CHECK_ICON = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>`;
+
+    function renderStores(list) {
+        const el = document.getElementById('storeList');
+        if (list.length === 0) {
+            el.innerHTML = `<div style="text-align:center;padding:20px 0;color:#9CA3AF;font-size:13px;font-weight:600;">No stores found</div>`;
+            return;
+        }
+        el.innerHTML = list.map(s => `
+            <div class="store-row${selectedStore === s.id ? ' selected' : ''}" onclick="selectStore('${s.id}')">
+                <div class="store-icon">${STORE_ICON}</div>
+                <div class="store-info">
+                    <div class="store-name">${s.name}</div>
+                    <div class="store-addr">${s.addr}</div>
+                </div>
+                <div class="store-check">${CHECK_ICON}</div>
+            </div>`).join('');
+    }
+
+    function filterStores(q) {
+        const filtered = STORES.filter(s =>
+            s.id.includes(q) ||
+            s.name.toLowerCase().includes(q.toLowerCase()) ||
+            s.addr.toLowerCase().includes(q.toLowerCase())
+        );
+        renderStores(filtered);
+    }
+
+    function selectStore(id) {
+        selectedStore = id;
+        sessionStorage.setItem('selectedStore', id);
+        document.getElementById('ctaBtn').classList.remove('disabled');
+        filterStores(document.getElementById('searchInput').value);
+    }
+
+    // Init — show all stores, pre-select if returning
+    const saved = sessionStorage.getItem('selectedStore');
+    if (saved) selectedStore = saved;
+    renderStores(STORES);
+</script>
+</body>
+</html>

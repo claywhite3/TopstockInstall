@@ -3,252 +3,415 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vusion - Camera Issues List</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Vusion - Camera Issues</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Roboto', sans-serif; }
-        body { background-color: #F4F6F8; min-height: 100vh; display: flex; flex-direction: column; padding-bottom: 80px; }
-        .top-header { background-color: #FDD757; display: flex; justify-content: space-between; align-items: center; padding: 15px 20px; }
-        .back-icon { font-size: 20px; color: #000; text-decoration: none; }
-        .top-header h1 { font-size: 20px; font-weight: 700; color: #000; }
-        .user-pill { background-color: white; padding: 6px 14px; border-radius: 50px; display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .user-pill i { color: #555; }
-        
-        .status-banner { background-color: #FEF0B2; padding: 15px 20px; border-bottom: 1px solid #EAEAEA; }
-        .status-top-row { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px; }
-        .status-top-row h2 { font-size: 20px; font-weight: 500; color: #000; max-width: 65%; line-height: 1.2; }
-        .status-badges { display: flex; gap: 10px; align-items: center; }
-        .badge-count { background-color: white; border: 1px solid #CCC; padding: 4px 10px; border-radius: 6px; font-weight: 700; display: flex; align-items: center; gap: 5px; font-size: 14px; }
-        .filter-icon { font-size: 20px; color: #333; }
-        
-        /* Restored Progress Bar CSS */
-        .progress-row { display: flex; justify-content: flex-end; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; color: #333; }
-        .progress-bar-visual { display: flex; gap: 3px; }
-        .prog-step { width: 14px; height: 12px; background-color: #D1D5DB; border-radius: 2px; transition: background-color 0.3s ease; }
-        .prog-step.completed { background-color: #61B15A; }
-        
-        .list-container { padding: 15px 20px; flex: 1; max-width: 600px; margin: 0 auto; width: 100%; }
-        .card { background-color: white; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.08); margin-bottom: 12px; overflow: hidden; display: flex; transition: all 0.3s ease; }
-        .card.active { padding-right: 15px; }
-        .card-indicator { width: 50px; display: flex; justify-content: center; align-items: center; flex-shrink: 0; }
-        .indicator-red { background-color: #F56565; }
-        .indicator-orange { background-color: #F6AD55; }
-        .custom-checkbox { width: 22px; height: 22px; background-color: white; border-radius: 4px; border: 2px solid rgba(0,0,0,0.1); }
-        .card-content { padding: 15px; flex: 1; }
-        
-        .card-title { font-size: 16px; font-weight: 700; color: #333; margin-bottom: 6px; display: flex; justify-content: space-between; align-items: center;}
-        
-        .cam-array { display: flex; gap: 4px; background-color: #EDF2F7; padding: 4px; border-radius: 4px; border: 1px solid #E2E8F0;}
-        .cam-lens { width: 10px; height: 10px; border-radius: 50%; background-color: #48BB78; } 
-        .cam-lens.error { background-color: #E53E3E; }
-        
-        .cam-issue-type { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: #2D3748;}
-        .card-meta { font-size: 12px; color: #888; }
-        .status-red { color: #E53E3E; }
-        .status-orange { color: #DD6B20; }
-        
-        .card-actions { display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 10px 0; width: 120px; }
-        .btn-help { background: linear-gradient(180deg, #FADBD8, #F5B7B1); border: 1px solid #E6A8A3; color: #C0392B; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: 700; text-decoration: none; display: flex; justify-content: space-between; align-items: center; text-shadow: 0 1px 0 rgba(255,255,255,0.5); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .btn-check-now { background: linear-gradient(180deg, #58D68D, #2ECC71); border: 1px solid #27AE60; color: white; padding: 8px; border-radius: 6px; font-size: 13px; font-weight: 700; display: flex; justify-content: center; align-items: center; gap: 6px; cursor: pointer; box-shadow: 0 3px 6px rgba(46,204,113,0.3); text-shadow: 0 1px 2px rgba(0,0,0,0.2); border: none;}
-        .btn-check-now:disabled { background: #82E0AA; border: 1px solid #82E0AA; cursor: not-allowed; box-shadow: none; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .fa-spin-custom { animation: spin 1s linear infinite; }
-        
-        .card.simple { padding: 15px; align-items: center; gap: 15px; }
-        .simple-checkbox { font-size: 24px; color: #CBD5E0; }
-        .simple-checkbox.checked { color: #48BB78; }
-        .card.simple .card-content { padding: 0; margin-bottom: 0; }
-        .text-green { color: #48BB78; }
-        .simple-right { font-size: 12px; color: #718096; display: flex; align-items: center; gap: 5px; }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .phone-shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 90px; }
 
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: #F4F6F8; padding: 15px 20px; display: flex; justify-content: center; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); z-index: 10; }
-        .bottom-nav-inner { width: 100%; max-width: 500px; display: flex; justify-content: space-between; gap: 15px; }
-        .btn-bottom { background-color: white; padding: 12px 15px; border-radius: 8px; font-size: 16px; font-weight: 500; color: #000; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.08); border: 1px solid #E2E8F0; flex: 1; }
-        .btn-bottom.see-all { flex: 0.9; font-weight: 600; } .btn-bottom.view-map { flex: 1.1; font-weight: 500; }
-        .stacked-icon-wrapper { position: relative; display: flex; justify-content: center; align-items: center; }
-        .stacked-icon-wrapper i.fa-layer-group { color: #4A5568; }
-        .stacked-icon-wrapper i.fa-exclamation-circle { position: absolute; top: -4px; right: -6px; color: #E53E3E; background: white; border-radius: 50%; font-size: 10px; }
+        /* ── Top bar ── */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; flex-shrink: 0; }
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform 0.15s; }
+        .btn-back:active { transform: scale(0.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
+
+        /* ── Banner ── */
+        .banner { margin: 12px 20px 0; background: #fff; border-radius: 20px; padding: 16px 18px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); }
+        .banner-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px; }
+        .banner-title { font-size: 15px; font-weight: 700; color: #111827; max-width: 70%; line-height: 1.3; }
+        .banner-badge { background: #FFF7ED; border: 1.5px solid #FED7AA; border-radius: 10px; padding: 4px 10px; font-size: 13px; font-weight: 700; color: #F97316; display: flex; align-items: center; gap: 5px; }
+        .banner-badge svg { width: 13px; height: 13px; }
+        .progress-row { display: flex; align-items: center; justify-content: space-between; }
+        .progress-label { font-size: 12px; color: #9CA3AF; font-weight: 500; }
+        .progress-label span { color: #111827; font-weight: 700; }
+        .progress-track { flex: 1; height: 6px; background: #E5E7EB; border-radius: 10px; overflow: hidden; margin-left: 10px; }
+        .progress-fill { height: 100%; background: #16A34A; border-radius: 10px; transition: width 0.4s ease; }
+
+        /* ── Sticky sort bar ── */
+        .sort-bar-wrap {
+            position: sticky;
+            top: 0;
+            z-index: 20;
+            background: #F2F3F7;
+            padding: 10px 20px 8px;
+        }
+        .sort-bar {
+            display: flex;
+            gap: 6px;
+            background: #E5E7EB;
+            border-radius: 12px;
+            padding: 3px;
+        }
+        .sort-btn {
+            flex: 1;
+            padding: 7px 4px;
+            border: none;
+            border-radius: 9px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 600;
+            color: #6B7280;
+            background: transparent;
+            cursor: pointer;
+            transition: background 0.18s, color 0.18s, box-shadow 0.18s;
+            white-space: nowrap;
+        }
+        .sort-btn.active {
+            background: #fff;
+            color: #111827;
+            box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+        }
+
+        /* ── List ── */
+        .list { padding: 2px 20px 0; display: flex; flex-direction: column; gap: 10px; }
+
+        /* ── Sticky section headers ── */
+        .section-header {
+            position: sticky;
+            top: 54px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0 4px;
+            background: #F2F3F7;
+        }
+        .section-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: 0.5px; }
+        .section-count { font-size: 11px; font-weight: 600; color: #9CA3AF; }
+
+        /* ── Active card ── */
+        .card-active { background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); display: flex; overflow: hidden; transition: opacity 0.28s, transform 0.28s; }
+        .card-active.fading { opacity: 0; transform: translateX(24px); }
+        .card-severity { width: 6px; flex-shrink: 0; }
+        .sev-red    { background: #DC2626; }
+        .sev-orange { background: #F97316; }
+        .card-body { flex: 1; padding: 14px 14px 14px 12px; }
+        .card-location { font-size: 15px; font-weight: 700; color: #111827; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; }
+        .lens-array { display: flex; gap: 3px; background: #F3F4F6; border: 1px solid #E5E7EB; border-radius: 6px; padding: 4px 6px; }
+        .lens { width: 10px; height: 10px; border-radius: 50%; background: #16A34A; }
+        .lens.err { background: #DC2626; }
+        .card-issue { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+        .status-red    { color: #DC2626; }
+        .status-orange { color: #F97316; }
+        .card-meta { font-size: 11px; color: #9CA3AF; }
+        .card-actions { display: flex; flex-direction: column; justify-content: center; gap: 8px; padding: 12px 12px 12px 0; width: 110px; flex-shrink: 0; }
+        .btn-help { background: #FEF2F2; border: 1.5px solid #FECACA; color: #DC2626; padding: 7px 10px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; text-decoration: none; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+        .btn-help svg { width: 12px; height: 12px; }
+        .btn-check { background: #16A34A; color: #fff; border: none; padding: 8px 10px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 5px; box-shadow: 0 3px 8px rgba(22,163,74,0.3); }
+        .btn-check:disabled { background: #86EFAC; box-shadow: none; cursor: not-allowed; }
+        .btn-check svg { width: 12px; height: 12px; }
+
+        /* ── Simple card ── */
+        .card-simple { background: #fff; border-radius: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); display: flex; align-items: center; padding: 12px 14px; gap: 12px; }
+        .simple-check svg { width: 22px; height: 22px; flex-shrink: 0; }
+        .simple-body { flex: 1; }
+        .simple-title { font-size: 14px; font-weight: 600; color: #111827; }
+        .simple-meta  { font-size: 11px; color: #9CA3AF; margin-top: 2px; }
+        .text-green  { color: #16A34A; }
+        .text-orange { color: #F97316; }
+        .simple-time { font-size: 11px; color: #9CA3AF; white-space: nowrap; }
+
+        /* ── Collapsible completed ── */
+        .completed-toggle-row {
+            position: sticky;
+            top: 54px;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 6px 0 4px;
+            background: #F2F3F7;
+            cursor: pointer;
+            border: none;
+            width: 100%;
+            font-family: 'DM Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .toggle-chevron {
+            width: 16px; height: 16px;
+            color: #9CA3AF;
+            transition: transform 0.22s ease;
+            flex-shrink: 0;
+        }
+        .toggle-chevron.open { transform: rotate(180deg); }
+        .completed-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            overflow: hidden;
+            max-height: 0;
+            opacity: 0;
+            transition: max-height 0.32s ease, opacity 0.25s ease;
+        }
+        .completed-list.open { max-height: 700px; opacity: 1; }
+
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .spinning { animation: spin 1s linear infinite; }
+
+        /* ── Bottom nav ── */
+        .bottom-nav { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 390px; background: #F2F3F7; padding: 12px 20px 28px; display: flex; gap: 12px; box-shadow: 0 -4px 16px rgba(0,0,0,0.06); z-index: 10; }
+        .btn-all { flex: 1; padding: 14px; background: #fff; color: #374151; border: 1.5px solid #E5E7EB; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; text-decoration: none; transition: transform 0.15s; }
+        .btn-all:active { transform: scale(0.975); }
+        .btn-all svg { width: 15px; height: 15px; color: #6B7280; }
+        .btn-map { flex: 1; padding: 14px; background: #2563EB; color: #fff; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; text-decoration: none; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: transform 0.15s; }
+        .btn-map:active { transform: scale(0.975); }
+        .btn-map svg { width: 15px; height: 15px; }
     </style>
 </head>
 <body>
-    <div class="top-header">
-        <a href="assigned_work_landing.html" class="back-icon"><i class="fas fa-arrow-left"></i></a>
-        <h1>Store 100</h1>
-        <div class="user-pill"><i class="fas fa-user"></i><span>installer01@email.com</span></div>
+<div class="phone-shell">
+
+    <div class="top-bar">
+        <a href="assigned_work_landing.html" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="avatar">CW</div>
     </div>
 
-    <div class="status-banner">
-        <div class="status-top-row">
-            <h2>8 Rails Require Camera Service</h2>
-            <div class="status-badges">
-                <div class="badge-count"><i class="fas fa-camera" style="color: #666;"></i> 8</div>
-                <i class="fas fa-filter filter-icon"></i>
+    <div class="banner">
+        <div class="banner-top">
+            <div class="banner-title">8 Rails Require Camera Service</div>
+            <div class="banner-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                8
             </div>
         </div>
         <div class="progress-row">
-            <span>Progress: <span id="progress-count">2</span> / 8</span>
-            <div class="progress-bar-visual">
-                <div class="prog-step completed"></div>
-                <div class="prog-step completed"></div>
-                <div class="prog-step"></div>
-                <div class="prog-step"></div>
-                <div class="prog-step"></div>
-                <div class="prog-step"></div>
-                <div class="prog-step"></div>
-                <div class="prog-step"></div>
-            </div>
+            <div class="progress-label">Progress: <span id="progressCount">2</span> / 8</div>
+            <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
         </div>
     </div>
 
-    <div class="list-container">
-        <div class="card active" id="cam-1">
-            <div class="card-indicator indicator-red"><div class="custom-checkbox"></div></div>
-            <div class="card-content">
-                <div class="card-title">
+    <!-- Sticky sort bar -->
+    <div class="sort-bar-wrap">
+        <div class="sort-bar">
+            <button class="sort-btn active" onclick="setSort('urgent', this)">Most Urgent</button>
+            <button class="sort-btn"        onclick="setSort('aisle',  this)">By Aisle</button>
+        </div>
+    </div>
+
+    <div class="list" id="mainList">
+
+        <!-- Critical / Urgent section header -->
+        <div class="section-header" id="header-critical">
+            <span class="section-label">Critical / Urgent</span>
+            <span class="section-count" id="count-critical">3 remaining</span>
+        </div>
+
+        <div class="card-active" id="card-C3-05" data-sev="1" data-aisle="C" data-done="0">
+            <div class="card-severity sev-red"></div>
+            <div class="card-body">
+                <div class="card-location">
                     C3.05
-                    <div class="cam-array" title="Lens 2 error">
-                        <div class="cam-lens"></div>
-                        <div class="cam-lens error"></div>
-                        <div class="cam-lens"></div>
+                    <div class="lens-array" title="Center lens error">
+                        <div class="lens"></div><div class="lens err"></div><div class="lens"></div>
                     </div>
                 </div>
-                <div class="cam-issue-type status-red">Blocked Camera (2/3 Images)</div>
-                <div class="card-meta">Obstruction detected on center lens</div>
+                <div class="card-issue status-red">Blocked Camera (2/3 Images)</div>
+                <div class="card-meta">Obstruction on center lens</div>
             </div>
             <div class="card-actions">
-                <a href="#" class="btn-help">Help Me! <i class="fas fa-caret-right"></i></a>
-                <button class="btn-check-now" onclick="markCompleted('cam-1', this)"><i class="fas fa-camera"></i> Test Image</button>
+                <a href="#" class="btn-help">Help Me! <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+                <button class="btn-check" onclick="markDone('card-C3-05', this, 'C3.05')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                    Test
+                </button>
             </div>
         </div>
 
-        <div class="card active" id="cam-2">
-            <div class="card-indicator indicator-orange"><div class="custom-checkbox"></div></div>
-            <div class="card-content">
-                <div class="card-title">
+        <div class="card-active" id="card-D1-12" data-sev="2" data-aisle="D" data-done="0">
+            <div class="card-severity sev-orange"></div>
+            <div class="card-body">
+                <div class="card-location">
                     D1.12
-                    <div class="cam-array" title="Array failure">
-                        <div class="cam-lens error"></div>
-                        <div class="cam-lens error"></div>
-                        <div class="cam-lens error"></div>
+                    <div class="lens-array" title="All lenses error">
+                        <div class="lens err"></div><div class="lens err"></div><div class="lens err"></div>
                     </div>
                 </div>
-                <div class="cam-issue-type status-orange">Camera Not Rotating</div>
-                <div class="card-meta">Motor fault reported on pan/tilt</div>
+                <div class="card-issue status-orange">Camera Not Rotating</div>
+                <div class="card-meta">Motor fault on pan/tilt</div>
             </div>
             <div class="card-actions">
-                <a href="#" class="btn-help">Help Me! <i class="fas fa-caret-right"></i></a>
-                <button class="btn-check-now" onclick="markCompleted('cam-2', this)"><i class="fas fa-sync-alt"></i> Calibrate</button>
+                <a href="#" class="btn-help">Help Me! <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+                <button class="btn-check" onclick="markDone('card-D1-12', this, 'D1.12')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg>
+                    Calibrate
+                </button>
             </div>
         </div>
-        
-        <div class="card active" id="cam-3">
-            <div class="card-indicator indicator-orange"><div class="custom-checkbox"></div></div>
-            <div class="card-content">
-                <div class="card-title">
+
+        <div class="card-active" id="card-F2-01" data-sev="2" data-aisle="F" data-done="0">
+            <div class="card-severity sev-orange"></div>
+            <div class="card-body">
+                <div class="card-location">
                     F2.01
-                    <div class="cam-array" title="Lens 3 error">
-                        <div class="cam-lens"></div>
-                        <div class="cam-lens"></div>
-                        <div class="cam-lens error"></div>
+                    <div class="lens-array" title="Right lens error">
+                        <div class="lens"></div><div class="lens"></div><div class="lens err"></div>
                     </div>
                 </div>
-                <div class="cam-issue-type status-orange">Blurry Image</div>
+                <div class="card-issue status-orange">Blurry Image</div>
                 <div class="card-meta">Right lens out of focus / dirty</div>
             </div>
             <div class="card-actions">
-                <a href="#" class="btn-help">Help Me! <i class="fas fa-caret-right"></i></a>
-                <button class="btn-check-now" onclick="markCompleted('cam-3', this)"><i class="fas fa-camera"></i> Test Image</button>
+                <a href="#" class="btn-help">Help Me! <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></a>
+                <button class="btn-check" onclick="markDone('card-F2-01', this, 'F2.01')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+                    Test
+                </button>
             </div>
         </div>
 
-        <div class="card simple">
-            <i class="far fa-square simple-checkbox"></i>
-            <div class="card-content">
-                <div class="card-title">F4.15 - <span class="status-orange">Lens Obscured</span></div>
-                <div class="card-meta">Last seen: 2 hrs ago</div>
-            </div>
-            <div class="simple-right">2 hrs ago <i class="fas fa-chevron-right"></i></div>
+        <!-- Pending section header -->
+        <div class="section-header" id="header-pending">
+            <span class="section-label">Pending</span>
+            <span class="section-count" id="count-pending">3 remaining</span>
         </div>
 
-        <div class="card simple">
-            <i class="far fa-square simple-checkbox"></i>
-            <div class="card-content">
-                <div class="card-title">G2.10 - <span class="status-orange">Dark Image</span></div>
-                <div class="card-meta">Last seen: 4 hrs ago</div>
-            </div>
-            <div class="simple-right">4 hrs ago <i class="fas fa-chevron-right"></i></div>
+        <div class="card-simple" id="card-F4-15" data-sev="3" data-aisle="F" data-done="0">
+            <div class="simple-check"><svg viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/></svg></div>
+            <div class="simple-body"><div class="simple-title">F4.15 — <span class="text-orange">Lens Obscured</span></div><div class="simple-meta">Last seen: 2 hrs ago</div></div>
+            <div class="simple-time">2 hrs ago</div>
+        </div>
+        <div class="card-simple" id="card-G2-10" data-sev="3" data-aisle="G" data-done="0">
+            <div class="simple-check"><svg viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/></svg></div>
+            <div class="simple-body"><div class="simple-title">G2.10 — <span class="text-orange">Dark Image</span></div><div class="simple-meta">Last seen: 4 hrs ago</div></div>
+            <div class="simple-time">4 hrs ago</div>
+        </div>
+        <div class="card-simple" id="card-G2-11" data-sev="3" data-aisle="G" data-done="0">
+            <div class="simple-check"><svg viewBox="0 0 24 24" fill="none" stroke="#D1D5DB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/></svg></div>
+            <div class="simple-body"><div class="simple-title">G2.11 — <span class="text-orange">Dark Image</span></div><div class="simple-meta">Last seen: 4 hrs ago</div></div>
+            <div class="simple-time">4 hrs ago</div>
         </div>
 
-        <div class="card simple">
-            <i class="far fa-square simple-checkbox"></i>
-            <div class="card-content">
-                <div class="card-title">G2.11 - <span class="status-orange">Dark Image</span></div>
-                <div class="card-meta">Last seen: 4 hrs ago</div>
+        <!-- Completed section (collapsible) -->
+        <button class="completed-toggle-row" id="completedToggle" onclick="toggleCompleted()">
+            <span class="section-label">Completed</span>
+            <span style="display:flex;align-items:center;gap:6px;">
+                <span class="section-count" id="count-completed">2 done</span>
+                <svg class="toggle-chevron" id="toggleChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
+            </span>
+        </button>
+
+        <div class="completed-list" id="completedList">
+            <div class="card-simple" id="card-A2-08" data-sev="99" data-aisle="A" data-done="1">
+                <div class="simple-check"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="#16A34A" stroke-width="2"/><polyline points="7 13 10 16 17 9" stroke="#16A34A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="simple-body"><div class="simple-title">A2.08 — <span class="text-green">Aligned &amp; Clear</span></div><div class="simple-meta">3/3 images received</div></div>
+                <div class="simple-time">10 mins ago</div>
             </div>
-            <div class="simple-right">4 hrs ago <i class="fas fa-chevron-right"></i></div>
+            <div class="card-simple" id="card-A4-01" data-sev="99" data-aisle="A" data-done="1">
+                <div class="simple-check"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="#16A34A" stroke-width="2"/><polyline points="7 13 10 16 17 9" stroke="#16A34A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                <div class="simple-body"><div class="simple-title">A4.01 — <span class="text-green">Aligned &amp; Clear</span></div><div class="simple-meta">3/3 images received</div></div>
+                <div class="simple-time">15 mins ago</div>
+            </div>
         </div>
 
-        <div class="card simple">
-            <i class="fas fa-check-square simple-checkbox checked"></i>
-            <div class="card-content">
-                <div class="card-title">A2.08 - <span class="text-green">Aligned & Clear</span></div>
-                <div class="card-meta">Tested successfully</div>
-            </div>
-            <div class="simple-right">10 mins ago <i class="fas fa-chevron-right"></i></div>
-        </div>
-
-        <div class="card simple">
-            <i class="fas fa-check-square simple-checkbox checked"></i>
-            <div class="card-content">
-                <div class="card-title">A4.01 - <span class="text-green">Aligned & Clear</span></div>
-                <div class="card-meta">Tested successfully</div>
-            </div>
-            <div class="simple-right">15 mins ago <i class="fas fa-chevron-right"></i></div>
-        </div>
     </div>
+</div>
 
-    <div class="bottom-nav">
-        <div class="bottom-nav-inner">
-            <a href="assigned_work_landing.html" class="btn-bottom see-all">
-                <div class="stacked-icon-wrapper"><i class="fas fa-layer-group"></i><i class="fas fa-exclamation-circle"></i></div> See all Work
-            </a>
-            <a href="camera_issues_map.html" class="btn-bottom view-map">VIEW BY MAP <i class="fas fa-map"></i></a>
-        </div>
-    </div>
+<div class="bottom-nav">
+    <a href="assigned_work_landing.html" class="btn-all">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        All Work
+    </a>
+    <a href="camera_issues_map.html" class="btn-map">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 20l-5.447-2.724A1 1 0 0 1 3 16.382V5.618a1 1 0 0 1 1.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0 0 21 18.382V7.618a1 1 0 0 0-.553-.894L15 4m0 13V4M9 7l6-3"/></svg>
+        View Map
+    </a>
+</div>
 
-    <script>
-        let currentProgress = 2; // Starting at 2 based on the 2 simple completed cards
+<script>
+    let progress = 2, total = 8;
+    let completedOpen = false;
+    let currentSort = 'urgent';
 
-        function markCompleted(cardId, buttonElement) {
-            const card = document.getElementById(cardId);
-            if (!card) return;
-            buttonElement.style.width = buttonElement.offsetWidth + 'px'; 
-            buttonElement.innerHTML = '<i class="fas fa-spinner fa-spin-custom"></i> Testing...';
-            buttonElement.disabled = true;
-            
-            setTimeout(() => {
-                const titleElement = card.querySelector('.card-title');
-                const locationCode = titleElement.innerText.trim().split('\n')[0]; 
-                card.className = 'card simple';
-                card.innerHTML = `
-                    <i class="fas fa-check-square simple-checkbox checked"></i>
-                    <div class="card-content">
-                        <div class="card-title">${locationCode} - <span class="text-green">Aligned & Clear</span></div>
-                        <div class="card-meta">3/3 Images successfully received</div>
-                    </div>
-                    <div class="simple-right">Just now <i class="fas fa-chevron-right"></i></div>
-                `;
+    /* ── Toggle completed ── */
+    function toggleCompleted() {
+        completedOpen = !completedOpen;
+        document.getElementById('completedList').classList.toggle('open', completedOpen);
+        document.getElementById('toggleChevron').classList.toggle('open', completedOpen);
+    }
 
-                // Update Progress Tracker
-                currentProgress++;
-                document.getElementById('progress-count').innerText = currentProgress;
-                const emptySteps = document.querySelectorAll('.prog-step:not(.completed)');
-                if (emptySteps.length > 0) {
-                    emptySteps[0].classList.add('completed');
-                }
-            }, 2000); 
+    /* ── Sort ── */
+    function setSort(mode, btn) {
+        currentSort = mode;
+        document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        applySort();
+    }
+
+    function applySort() {
+        const list        = document.getElementById('mainList');
+        const hCritical   = document.getElementById('header-critical');
+        const hPending    = document.getElementById('header-pending');
+        const hCompleted  = document.getElementById('completedToggle');
+        const cList       = document.getElementById('completedList');
+
+        const activeCards = [...list.querySelectorAll('[data-done="0"]')];
+
+        if (currentSort === 'aisle') {
+            // flat alphabetical — hide section splits
+            hCritical.style.display = 'none';
+            hPending.style.display  = 'none';
+            activeCards.sort((a, b) => (a.dataset.aisle + a.id).localeCompare(b.dataset.aisle + b.id));
+            activeCards.forEach(c => list.insertBefore(c, hCompleted));
+        } else {
+            // urgent-first or completed-last — both use sev ordering, sections visible
+            hCritical.style.display = '';
+            hPending.style.display  = '';
+            const urgent  = activeCards.filter(c => +c.dataset.sev <= 2).sort((a,b) => +a.dataset.sev - +b.dataset.sev);
+            const pending = activeCards.filter(c => +c.dataset.sev  > 2);
+            urgent.forEach(c  => list.insertBefore(c, hPending));
+            pending.forEach(c => list.insertBefore(c, hCompleted));
         }
-    </script>
+
+        // Completed section always last
+        list.appendChild(hCompleted);
+        list.appendChild(cList);
+    }
+
+    /* ── Mark done ── */
+    function markDone(cardId, btn, loc) {
+        btn.innerHTML = '<svg class="spinning" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="12" height="12"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg> Testing…';
+        btn.disabled = true;
+
+        const card = document.getElementById(cardId);
+        setTimeout(() => {
+            card.classList.add('fading');
+            setTimeout(() => {
+                const done = document.createElement('div');
+                done.className = 'card-simple';
+                done.id = cardId + '-done';
+                done.dataset.sev   = '99';
+                done.dataset.aisle = card.dataset.aisle;
+                done.dataset.done  = '1';
+                done.innerHTML = `
+                    <div class="simple-check"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="3" fill="none" stroke="#16A34A" stroke-width="2"/><polyline points="7 13 10 16 17 9" stroke="#16A34A" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+                    <div class="simple-body"><div class="simple-title">${loc} — <span class="text-green">Aligned &amp; Clear</span></div><div class="simple-meta">3/3 images received</div></div>
+                    <div class="simple-time">Just now</div>`;
+
+                card.remove();
+                document.getElementById('completedList').prepend(done);
+
+                if (!completedOpen) toggleCompleted();
+
+                progress++;
+                document.getElementById('progressCount').textContent = progress;
+                document.getElementById('progressFill').style.width = Math.round(progress / total * 100) + '%';
+                updateCounts();
+            }, 280);
+        }, 2000);
+    }
+
+    function updateCounts() {
+        const critical = document.querySelectorAll('[data-done="0"][data-sev="1"], [data-done="0"][data-sev="2"]').length;
+        const pending  = document.querySelectorAll('[data-done="0"][data-sev="3"]').length;
+        const done     = document.querySelectorAll('[data-done="1"]').length;
+        document.getElementById('count-critical').textContent  = critical + ' remaining';
+        document.getElementById('count-pending').textContent   = pending  + ' remaining';
+        document.getElementById('count-completed').textContent = done     + ' done';
+    }
+</script>
 </body>
 </html>
