@@ -43,8 +43,8 @@
     </div>
     <div style="padding:4px 20px 0;">
         <div class="eyebrow">Validation</div>
-        <div style="font-size:22px;font-weight:800;color:#111827;margin-top:2px;">Store 0100</div>
-        <div style="font-size:13px;color:#6B7280;font-weight:500;margin-top:1px;">123 Main St, Springfield MO</div>
+        <div style="font-size:22px;font-weight:800;color:#111827;margin-top:2px;" id="hdrStore">Store 0100</div>
+        <div style="font-size:13px;color:#6B7280;font-weight:500;margin-top:1px;" id="hdrAddress">123 Main St, Springfield MO</div>
     </div>
     <div class="stat-row">
         <div class="stat-card">
@@ -159,5 +159,12 @@
             </a>
     </div>
 </div>
+<script>
+    (function() {
+        const store = sessionStorage.getItem('selectedStore') || '0100';
+        document.getElementById('hdrStore').textContent = 'Store ' + store;
+        // Address would come from real data; leave as-is for demo
+    })();
+</script>
 </body>
 </html>

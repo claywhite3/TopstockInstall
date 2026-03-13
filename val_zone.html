@@ -40,8 +40,8 @@
     </div>
     <div style="padding:4px 20px 0;">
         <div class="eyebrow">Zone Overview</div>
-        <div style="font-size:22px;font-weight:800;color:#111827;margin-top:2px;">Zone C</div>
-        <div style="font-size:13px;color:#6B7280;font-weight:500;margin-top:1px;">4 aisles · 32 rails total</div>
+        <div style="font-size:22px;font-weight:800;color:#111827;margin-top:2px;" id="hdrZone">Zone C</div>
+        <div style="font-size:13px;color:#6B7280;font-weight:500;margin-top:1px;" id="hdrZoneSub">4 aisles · 32 rails total</div>
     </div>
     <div class="summary-card">
         <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
@@ -121,5 +121,20 @@
         </a>
     </div>
 </div>
+<script>
+    (function() {
+        const p    = new URLSearchParams(window.location.search);
+        const zone = (p.get('zone') || 'C').toUpperCase();
+        document.getElementById('hdrZone').textContent    = 'Zone ' + zone;
+        document.getElementById('hdrZoneSub').textContent = '4 aisles · 32 rails total';
+        // Update aisle row links AND visible labels to use the correct zone letter
+        document.querySelectorAll('a[href^="val_aisle.html"]').forEach((a, i) => {
+            const num = i + 1;
+            a.href = 'val_aisle.html?aisle=' + zone + num;
+            const label = a.querySelector('span[style*="font-size:16px"]');
+            if (label) label.textContent = 'Aisle ' + zone + num;
+        });
+    })();
+</script>
 </body>
 </html>

@@ -41,8 +41,8 @@
     </div>
     <div style="padding:4px 20px 0;">
         <div class="eyebrow">Aisle Detail</div>
-        <div style="font-size:22px;font-weight:800;color:#111827;margin-top:2px;">Aisle C3</div>
-        <div style="font-size:13px;color:#6B7280;font-weight:500;margin-top:1px;">Zone C · 8 sections</div>
+        <div style="font-size:22px;font-weight:800;color:#111827;margin-top:2px;" id="hdrAisle">Aisle C3</div>
+        <div style="font-size:13px;color:#6B7280;font-weight:500;margin-top:1px;" id="hdrZone">Zone C · 8 sections</div>
     </div>
     <div class="summary-card">
         <div style="height:8px;background:#E5E7EB;border-radius:10px;overflow:hidden;margin-bottom:10px;">
@@ -162,5 +162,15 @@
         </div>
     </div>
 </div>
+<script>
+    (function() {
+        const p     = new URLSearchParams(window.location.search);
+        const aisle = p.get('aisle') || 'C3';
+        // Derive zone letter from aisle string e.g. "C3" → zone "C", or just "C" → zone "C"
+        const zone  = aisle.replace(/[^A-Z]/gi, '')[0] || 'C';
+        document.getElementById('hdrAisle').textContent = 'Aisle ' + aisle;
+        document.getElementById('hdrZone').textContent  = 'Zone ' + zone.toUpperCase() + ' · 8 sections';
+    })();
+</script>
 </body>
 </html>
