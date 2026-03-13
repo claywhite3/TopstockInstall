@@ -162,8 +162,10 @@
 <script>
     (function() {
         const store = sessionStorage.getItem('selectedStore') || '0100';
-        document.getElementById('hdrStore').textContent = 'Store ' + store;
-        // Address would come from real data; leave as-is for demo
+        const name  = sessionStorage.getItem('selectedStoreName') || 'Store ' + store;
+        const addr  = sessionStorage.getItem('selectedStoreAddr') || '';
+        document.getElementById('hdrStore').textContent   = name;
+        document.getElementById('hdrAddress').textContent = addr;
     })();
 </script>
 </body>

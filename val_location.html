@@ -111,17 +111,17 @@
 
 <script>
     const STORES = [
-        { id:"0042", name:"Store 0042", addr:"456 Oak Ave, Kansas City MO" },
-        { id:"0100", name:"Store 0100", addr:"123 Main St, Springfield MO" },
-        { id:"0215", name:"Store 0215", addr:"789 Elm Blvd, St. Louis MO" },
-        { id:"0318", name:"Store 0318", addr:"321 Pine Rd, Columbia MO" },
-        { id:"0442", name:"Store 0442", addr:"654 Maple Dr, Joplin MO" },
-        { id:"0581", name:"Store 0581", addr:"987 Cedar Ln, Jefferson City MO" },
-        { id:"0634", name:"Store 0634", addr:"147 Birch St, Cape Girardeau MO" },
-        { id:"0721", name:"Store 0721", addr:"258 Walnut Ave, Independence MO" },
-        { id:"0856", name:"Store 0856", addr:"369 Spruce Blvd, Branson MO" },
-        { id:"1024", name:"Store 1024", addr:"741 Ash Ct, Kirksville MO" },
-        { id:"8821", name:"Store 8821", addr:"852 Willow Way, Rolla MO" },
+        { id:"0042", name:"Store 0042", addr:"1863 CR 5300, Coffeyville, KS 67337" },
+        { id:"0100", name:"Store 0100", addr:"406 S Walton Blvd, Bentonville, AR 72712" },
+        { id:"0215", name:"Store 0215", addr:"2301 S Campbell Ave, Springfield, MO 65807" },
+        { id:"0318", name:"Store 0318", addr:"109 WP Malone Dr, Arkadelphia, AR 71923" },
+        { id:"0442", name:"Store 0442", addr:"1133 E General Cavazos Blvd, Kingsville, TX 78363" },
+        { id:"0581", name:"Store 0581", addr:"2802 S Center St, Marshalltown, IA 50158" },
+        { id:"0634", name:"Store 0634", addr:"2240 W DeKalb St, Camden, SC 29020" },
+        { id:"0721", name:"Store 0721", addr:"19100 Murdock Cir, Port Charlotte, FL 33948" },
+        { id:"0856", name:"Store 0856", addr:"404 Hwy 27 N Bypass, Bremen, GA 30110" },
+        { id:"1024", name:"Store 1024", addr:"414 S Main St, Swainsboro, GA 30401" },
+        { id:"8821", name:"Store 8821", addr:"1150 US Highway 60 E, Republic, MO 65738" },
     ];
 
     let selectedStore = null;
@@ -157,7 +157,10 @@
 
     function selectStore(id) {
         selectedStore = id;
+        const store = STORES.find(s => s.id === id);
         sessionStorage.setItem('selectedStore', id);
+        sessionStorage.setItem('selectedStoreName', store ? store.name : 'Store ' + id);
+        sessionStorage.setItem('selectedStoreAddr', store ? store.addr : '');
         document.getElementById('ctaBtn').classList.remove('disabled');
         filterStores(document.getElementById('searchInput').value);
     }
