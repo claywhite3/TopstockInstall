@@ -135,15 +135,20 @@
             el.innerHTML = `<div style="text-align:center;padding:20px 0;color:#9CA3AF;font-size:13px;font-weight:600;">No stores found</div>`;
             return;
         }
-        el.innerHTML = list.map(s => `
+        el.innerHTML = list.map(s => {
+            const commaIdx = s.addr.indexOf(',');
+            const street   = commaIdx > -1 ? s.addr.slice(0, commaIdx) : s.addr;
+            const cityLine = commaIdx > -1 ? s.addr.slice(commaIdx + 1).trim() : '';
+            return `
             <div class="store-row${selectedStore === s.id ? ' selected' : ''}" onclick="selectStore('${s.id}')">
                 <div class="store-icon">${STORE_ICON}</div>
                 <div class="store-info">
                     <div class="store-name">${s.name}</div>
-                    <div class="store-addr">${s.addr}</div>
+                    <div class="store-addr">${street}<br>${cityLine}</div>
                 </div>
                 <div class="store-check">${CHECK_ICON}</div>
-            </div>`).join('');
+            </div>`;
+        }).join('');
     }
 
     function filterStores(q) {
