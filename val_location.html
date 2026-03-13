@@ -8,7 +8,7 @@
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
-        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 90px; }
 
         /* Top bar */
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
@@ -52,19 +52,26 @@
         .store-check svg { width: 11px; height: 11px; color: #fff; opacity: 0; transition: opacity .15s; }
         .store-row.selected .store-check svg { opacity: 1; }
 
-        /* CTA */
-        .cta-wrap { padding: 20px 20px 0; animation: fadeUp .4s .16s ease both; opacity: 0; }
+        /* Sticky bottom bar */
+        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 390px; background: #fff; padding: 14px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.07); border-top: 1px solid #F3F4F6; }
         .btn-primary { width: 100%; padding: 16px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: transform .15s, opacity .15s; text-decoration: none; }
         .btn-primary:active { transform: scale(.975); }
         .btn-primary:disabled, .btn-primary.disabled { opacity: .45; cursor: not-allowed; pointer-events: none; }
         .btn-primary svg { width: 16px; height: 16px; }
 
+        /* Find Me GPS button */
+        .btn-findme { width: 100%; padding: 11px 14px; background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: #15803D; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: transform .15s, background .15s; margin-bottom: 14px; }
+        .btn-findme:active { transform: scale(.975); background: #DCFCE7; }
+        .btn-findme svg { width: 15px; height: 15px; }
+        .btn-findme.locating { color: #9CA3AF; border-color: #E5E7EB; background: #F9FAFB; pointer-events: none; }
+
         /* Info note */
-        .info-note { margin: 16px 20px 0; background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 14px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; animation: fadeUp .4s .22s ease both; opacity: 0; }
+        .info-note { margin: 16px 20px 32px; background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 14px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; animation: fadeUp .4s .22s ease both; opacity: 0; }
         .info-note svg { width: 16px; height: 16px; color: #16A34A; flex-shrink: 0; margin-top: 1px; }
         .info-note-text { font-size: 12px; font-weight: 600; color: #15803D; line-height: 1.5; }
 
         @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -92,14 +99,11 @@
             <div class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
             <input class="search-input" id="searchInput" type="text" placeholder="Search store number or city…" oninput="filterStores(this.value)" autocomplete="off">
         </div>
+        <button class="btn-findme" id="findMeBtn" onclick="findMe()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            Use My Location
+        </button>
         <div class="store-list" id="storeList"></div>
-    </div>
-
-    <div class="cta-wrap">
-        <a href="val_overview.html" class="btn-primary disabled" id="ctaBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            View Store Progress
-        </a>
     </div>
 
     <div class="info-note">
@@ -107,6 +111,13 @@
         <div class="info-note-text">You can view any store remotely. Store data is pulled live from the backend system.</div>
     </div>
 
+</div>
+
+<div class="bottom-bar">
+    <a href="val_overview.html" class="btn-primary disabled" id="ctaBtn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
+        View Store Progress
+    </a>
 </div>
 
 <script>
@@ -174,6 +185,23 @@
     const saved = sessionStorage.getItem('selectedStore');
     if (saved) selectedStore = saved;
     renderStores(STORES);
+
+    function findMe() {
+        const btn = document.getElementById('findMeBtn');
+        btn.classList.add('locating');
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Locating…`;
+        // Simulate GPS lookup — defaults to Store 0100
+        setTimeout(() => {
+            btn.classList.remove('locating');
+            btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg> Use My Location`;
+            selectStore('0100');
+            // Scroll the selected store into view
+            setTimeout(() => {
+                const el = document.querySelector('.store-row.selected');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }, 1800);
+    }
 </script>
 </body>
 </html>
