@@ -107,8 +107,7 @@
         .product-info { flex: 1; min-width: 0; }
         .product-name { font-size: 15px; font-weight: 700; color: #111827; line-height: 1.3; }
         .product-upc { font-size: 12px; color: #9CA3AF; font-weight: 500; margin-top: 3px; }
-        .product-qty { font-size: 12px; font-weight: 700; color: #374151; margin-top: 6px; }
-        .product-qty span { color: #2563EB; }
+        .product-price { font-size: 16px; font-weight: 800; color: #111827; margin-top: 6px; }
         .color-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
         .color-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
         .color-label { font-size: 12px; font-weight: 600; color: #6B7280; }
@@ -213,26 +212,26 @@
 <script>
     // Real products photographed in A13.13 — using local product images
     const A13_SEC13_PRODUCTS = [
-        { name: "Great Value Reduced Sodium Brown Gravy Mix", upc: "078742199597", img: "Brown_Gravy.png",    qty: 6 },
-        { name: "Great Value Beef Stew Seasoning Mix",        upc: "078742371825", img: "Beef_Stew.png",      qty: 4 },
-        { name: "McCormick Grill Mates Brown Sugar Bourbon Marinade", upc: "052100038293", img: "B_Sugar_Bourbon.png", qty: 5 },
-        { name: "Wings of Fury Sriracha Chicken Seasoning",   upc: "850035474006", img: "Sriracch.png",       qty: 3 },
+        { name: "Great Value Reduced Sodium Brown Gravy Mix", upc: "078742199597", img: "Brown_Gravy.png",    price: "48¢" },
+        { name: "Great Value Beef Stew Seasoning Mix",        upc: "078742371825", img: "Beef_Stew.png",      price: "$1.22" },
+        { name: "McCormick Grill Mates Brown Sugar Bourbon Marinade", upc: "052100038293", img: "B_Sugar_Bourbon.png", price: "$1.42" },
+        { name: "Wings of Fury Sriracha Chicken Seasoning",   upc: "850035474006", img: "Sriracch.png",       price: "$1.73" },
     ];
 
     // General product pool for other sections
     const A13_PRODUCTS = [
-        { name: "McCormick Gravy Mix — Brown Gravy",       upc: "0052100010843", qty: 4 },
-        { name: "McCormick Seasoning — Taco",              upc: "0052100083241", qty: 3 },
-        { name: "McCormick Easy Meal Plan — Chicken Rice", upc: "0052100091832", qty: 5 },
-        { name: "Williams Meatloaf Seasoning",             upc: "0048102938402", qty: 4 },
-        { name: "Crock-Pot Slow Cooker Pot Roast",         upc: "0039201847302", qty: 3 },
-        { name: "McCormick Homestyle Beef Stroganoff",     upc: "0052100183920", qty: 2 },
-        { name: "Knorr Pasta Sides — Cheddar Broccoli",   upc: "0048192038402", qty: 5 },
-        { name: "Chef Boyardee Mini Ravioli",              upc: "0064103829102", qty: 6 },
-        { name: "Hamburger Helper — Cheeseburger Mac",     upc: "0016029384702", qty: 3 },
-        { name: "Idahoan Mashed Potatoes — Buttery",       upc: "0081029384702", qty: 4 },
-        { name: "Stove Top Stuffing — Chicken",            upc: "0043091827302", qty: 3 },
-        { name: "Hidden Valley Ranch Recipes",             upc: "0027103928402", qty: 2 },
+        { name: "McCormick Gravy Mix — Brown Gravy",       upc: "0052100010843", price: "$0.97" },
+        { name: "McCormick Seasoning — Taco",              upc: "0052100083241", price: "$1.12" },
+        { name: "McCormick Easy Meal Plan — Chicken Rice", upc: "0052100091832", price: "$1.48" },
+        { name: "Williams Meatloaf Seasoning",             upc: "0048102938402", price: "$1.22" },
+        { name: "Crock-Pot Slow Cooker Pot Roast",         upc: "0039201847302", price: "$1.98" },
+        { name: "McCormick Homestyle Beef Stroganoff",     upc: "0052100183920", price: "$1.48" },
+        { name: "Knorr Pasta Sides — Cheddar Broccoli",   upc: "0048192038402", price: "$1.28" },
+        { name: "Chef Boyardee Mini Ravioli",              upc: "0064103829102", price: "$1.58" },
+        { name: "Hamburger Helper — Cheeseburger Mac",     upc: "0016029384702", price: "$2.28" },
+        { name: "Idahoan Mashed Potatoes — Buttery",       upc: "0081029384702", price: "$1.48" },
+        { name: "Stove Top Stuffing — Chicken",            upc: "0043091827302", price: "$2.48" },
+        { name: "Hidden Valley Ranch Recipes",             upc: "0027103928402", price: "$1.98" },
     ];
 
     const COLORS = ['red','blue','green','amber','purple','teal'];
@@ -373,7 +372,6 @@
 
         products.forEach((item, i) => {
             const color = COLORS[i % COLORS.length];
-            const qty = item.qty || (2 + i);
             const card = document.createElement('div');
             card.className = 'product-card';
             card.id = `pc-${i}`;
@@ -388,7 +386,7 @@
                     <div class="product-info">
                         <div class="product-name">${item.name}</div>
                         <div class="product-upc">UPC ${item.upc}</div>
-                        <div class="product-qty">Qty needed: <span>${qty}</span></div>
+                        <div class="product-price">${item.price || ''}</div>
                     </div>
                 </div>
                 <div class="color-row">
