@@ -3,32 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vusion - Select Store</title>
+    <title>Vusion - Guided Topstock</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
-        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 90px; }
 
-        /* Top bar */
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
         .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; }
         .btn-back:active { transform: scale(.93); }
         .btn-back svg { width: 16px; height: 16px; color: #374151; }
         .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
 
-        /* Hero */
         .hero { padding: 28px 20px 0; animation: fadeUp .4s ease both; }
-        .eyebrow { font-size: 11px; font-weight: 700; color: #16A34A; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+        .eyebrow { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
         .eyebrow svg { width: 13px; height: 13px; }
         .hero-title { font-size: 26px; font-weight: 800; color: #111827; line-height: 1.15; }
         .hero-sub { font-size: 14px; color: #6B7280; font-weight: 500; margin-top: 6px; line-height: 1.5; }
 
-        /* Search card */
         .search-card { margin: 24px 20px 0; background: #fff; border-radius: 20px; padding: 20px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); animation: fadeUp .4s .08s ease both; opacity: 0; }
         .field-label { font-size: 12px; font-weight: 700; color: #374151; margin-bottom: 8px; text-transform: uppercase; letter-spacing: .4px; }
 
-        /* Search input */
         .search-wrap { position: relative; margin-bottom: 14px; }
         .search-input { width: 100%; padding: 13px 16px 13px 42px; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 500; color: #111827; outline: none; transition: border-color .2s; }
         .search-input:focus { border-color: #2563EB; background: #fff; }
@@ -36,8 +32,12 @@
         .search-icon { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); pointer-events: none; }
         .search-icon svg { width: 16px; height: 16px; color: #9CA3AF; }
 
-        /* Store list */
-        .store-list { display: flex; flex-direction: column; gap: 8px; max-height: 340px; overflow-y: auto; }
+        .btn-findme { width: 100%; padding: 11px 14px; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: #2563EB; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: transform .15s, background .15s; margin-bottom: 14px; }
+        .btn-findme:active { transform: scale(.975); background: #DBEAFE; }
+        .btn-findme svg { width: 15px; height: 15px; }
+        .btn-findme.locating { color: #9CA3AF; border-color: #E5E7EB; background: #F9FAFB; pointer-events: none; }
+
+        .store-list { display: flex; flex-direction: column; gap: 8px; max-height: 320px; overflow-y: auto; }
         .store-list::-webkit-scrollbar { width: 0; }
         .store-row { display: flex; align-items: center; gap: 12px; padding: 13px 14px; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 14px; cursor: pointer; transition: border-color .18s, background .18s; }
         .store-row:hover, .store-row.selected { background: #EFF6FF; border-color: #2563EB; }
@@ -46,25 +46,24 @@
         .store-row.selected .store-icon svg { color: #2563EB; }
         .store-info { flex: 1; }
         .store-name { font-size: 14px; font-weight: 700; color: #111827; }
-        .store-addr { font-size: 12px; color: #9CA3AF; font-weight: 500; margin-top: 1px; }
+        .store-addr { font-size: 12px; color: #9CA3AF; font-weight: 500; margin-top: 1px; line-height: 1.4; }
         .store-check { width: 20px; height: 20px; border-radius: 50%; border: 2px solid #E5E7EB; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background .18s, border-color .18s; }
         .store-row.selected .store-check { background: #2563EB; border-color: #2563EB; }
         .store-check svg { width: 11px; height: 11px; color: #fff; opacity: 0; transition: opacity .15s; }
         .store-row.selected .store-check svg { opacity: 1; }
 
-        /* CTA */
-        .cta-wrap { padding: 20px 20px 0; animation: fadeUp .4s .16s ease both; opacity: 0; }
-        .btn-primary { width: 100%; padding: 16px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: transform .15s, opacity .15s; text-decoration: none; }
+        .bottom-bar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 390px; background: #fff; padding: 14px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.07); border-top: 1px solid #F3F4F6; }
+        .btn-primary { width: 100%; padding: 16px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(124,58,237,0.3); transition: transform .15s, opacity .15s; text-decoration: none; }
         .btn-primary:active { transform: scale(.975); }
-        .btn-primary:disabled, .btn-primary.disabled { opacity: .45; cursor: not-allowed; pointer-events: none; }
+        .btn-primary.disabled { opacity: .45; cursor: not-allowed; pointer-events: none; }
         .btn-primary svg { width: 16px; height: 16px; }
 
-        /* Info note */
-        .info-note { margin: 16px 20px 0; background: #F0FDF4; border: 1.5px solid #86EFAC; border-radius: 14px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; animation: fadeUp .4s .22s ease both; opacity: 0; }
-        .info-note svg { width: 16px; height: 16px; color: #16A34A; flex-shrink: 0; margin-top: 1px; }
-        .info-note-text { font-size: 12px; font-weight: 600; color: #15803D; line-height: 1.5; }
+        .info-note { margin: 16px 20px 0; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 14px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; animation: fadeUp .4s .22s ease both; opacity: 0; }
+        .info-note svg { width: 16px; height: 16px; color: #2563EB; flex-shrink: 0; margin-top: 1px; }
+        .info-note-text { font-size: 12px; font-weight: 600; color: #1D4ED8; line-height: 1.5; }
 
         @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes spin { to { transform: rotate(360deg); } }
     </style>
 </head>
 <body>
@@ -79,11 +78,11 @@
 
     <div class="hero">
         <div class="eyebrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            Validation
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 3H5a2 2 0 0 0-2 2v4m6-6h10a2 2 0 0 1 2 2v4M9 3v18m0 0h10a2 2 0 0 0 2-2v-4M9 21H5a2 2 0 0 1-2-2v-4m0 0h18"/></svg>
+            Guided Topstock
         </div>
         <div class="hero-title">Select a Store</div>
-        <div class="hero-sub">Search by store number or address to view installation progress and health.</div>
+        <div class="hero-sub">Choose a store to begin guided topstock operations.</div>
     </div>
 
     <div class="search-card">
@@ -92,36 +91,32 @@
             <div class="search-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg></div>
             <input class="search-input" id="searchInput" type="text" placeholder="Search store number or city…" oninput="filterStores(this.value)" autocomplete="off">
         </div>
+        <button class="btn-findme" id="findMeBtn" onclick="findMe()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+            Use My Location
+        </button>
         <div class="store-list" id="storeList"></div>
-    </div>
-
-    <div class="cta-wrap">
-        <a href="val_overview.html" class="btn-primary disabled" id="ctaBtn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 11 12 14 22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
-            View Store Progress
-        </a>
     </div>
 
     <div class="info-note">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-        <div class="info-note-text">You can view any store remotely. Store data is pulled live from the backend system.</div>
+        <div class="info-note-text">Only stores with active Guided Topstock installations are shown.</div>
     </div>
 
 </div>
 
+<div class="bottom-bar">
+    <a href="gt_zone.html" class="btn-primary disabled" id="ctaBtn">
+        Start Guided Topstock
+    </a>
+</div>
+
 <script>
     const STORES = [
-        { id:"0042", name:"Store 0042", addr:"1863 CR 5300, Coffeyville, KS 67337" },
-        { id:"0100", name:"Store 0100", addr:"406 S Walton Blvd, Bentonville, AR 72712" },
-        { id:"0215", name:"Store 0215", addr:"2301 S Campbell Ave, Springfield, MO 65807" },
-        { id:"0318", name:"Store 0318", addr:"109 WP Malone Dr, Arkadelphia, AR 71923" },
-        { id:"0442", name:"Store 0442", addr:"1133 E General Cavazos Blvd, Kingsville, TX 78363" },
-        { id:"0581", name:"Store 0581", addr:"2802 S Center St, Marshalltown, IA 50158" },
-        { id:"0634", name:"Store 0634", addr:"2240 W DeKalb St, Camden, SC 29020" },
-        { id:"0721", name:"Store 0721", addr:"19100 Murdock Cir, Port Charlotte, FL 33948" },
-        { id:"0856", name:"Store 0856", addr:"404 Hwy 27 N Bypass, Bremen, GA 30110" },
-        { id:"1024", name:"Store 1024", addr:"414 S Main St, Swainsboro, GA 30401" },
-        { id:"8821", name:"Store 8821", addr:"1150 US Highway 60 E, Republic, MO 65738" },
+        { id:"0100", name:"Store 0100", addr:"406 S Walton Blvd\nBentonville, AR 72712" },
+        { id:"1216", name:"Store 1216", addr:"1213 E Trinity Mills Rd\nCarrollton, TX 75006" },
+        { id:"4686", name:"Store 4686", addr:"906 SW Regional Airport Blvd\nBentonville, AR 72712" },
+        { id:"7634", name:"Store 7634", addr:"13739 N Central Expressway\nDallas, TX 75243" },
     ];
 
     let selectedStore = null;
@@ -136,15 +131,14 @@
             return;
         }
         el.innerHTML = list.map(s => {
-            const commaIdx = s.addr.indexOf(',');
-            const street   = commaIdx > -1 ? s.addr.slice(0, commaIdx) : s.addr;
-            const cityLine = commaIdx > -1 ? s.addr.slice(commaIdx + 1).trim() : '';
+            const parts = s.addr.split('\n');
+            const addrHtml = parts.join('<br>');
             return `
             <div class="store-row${selectedStore === s.id ? ' selected' : ''}" onclick="selectStore('${s.id}')">
                 <div class="store-icon">${STORE_ICON}</div>
                 <div class="store-info">
                     <div class="store-name">${s.name}</div>
-                    <div class="store-addr">${street}<br>${cityLine}</div>
+                    <div class="store-addr">${addrHtml}</div>
                 </div>
                 <div class="store-check">${CHECK_ICON}</div>
             </div>`;
@@ -153,9 +147,7 @@
 
     function filterStores(q) {
         const filtered = STORES.filter(s =>
-            s.id.includes(q) ||
-            s.name.toLowerCase().includes(q.toLowerCase()) ||
-            s.addr.toLowerCase().includes(q.toLowerCase())
+            s.id.includes(q) || s.name.toLowerCase().includes(q.toLowerCase()) || s.addr.toLowerCase().includes(q.toLowerCase())
         );
         renderStores(filtered);
     }
@@ -163,15 +155,29 @@
     function selectStore(id) {
         selectedStore = id;
         const store = STORES.find(s => s.id === id);
-        sessionStorage.setItem('selectedStore', id);
-        sessionStorage.setItem('selectedStoreName', store ? store.name : 'Store ' + id);
-        sessionStorage.setItem('selectedStoreAddr', store ? store.addr : '');
+        sessionStorage.setItem('gtStore', id);
+        sessionStorage.setItem('gtStoreName', store ? store.name : 'Store ' + id);
+        sessionStorage.setItem('gtStoreAddr', store ? store.addr.replace('\n', ', ') : '');
         document.getElementById('ctaBtn').classList.remove('disabled');
         filterStores(document.getElementById('searchInput').value);
     }
 
-    // Init — show all stores, pre-select if returning
-    const saved = sessionStorage.getItem('selectedStore');
+    function findMe() {
+        const btn = document.getElementById('findMeBtn');
+        btn.classList.add('locating');
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg> Locating…`;
+        setTimeout(() => {
+            btn.classList.remove('locating');
+            btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg> Use My Location`;
+            selectStore('0100');
+            setTimeout(() => {
+                const el = document.querySelector('.store-row.selected');
+                if (el) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            }, 100);
+        }, 1800);
+    }
+
+    const saved = sessionStorage.getItem('gtStore');
     if (saved) selectedStore = saved;
     renderStores(STORES);
 </script>

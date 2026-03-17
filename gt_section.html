@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion - Guided Topstock</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 120px; }
+
+        /* Top bar */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; }
+        .btn-back:active { transform: scale(.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
+
+        /* Hero */
+        .hero { padding: 4px 20px 0; }
+        .eyebrow { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .5px; }
+        .hero-title { font-size: 22px; font-weight: 800; color: #111827; margin-top: 2px; }
+        .hero-sub { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 1px; }
+
+        /* Summary strip */
+        .summary-strip { margin: 14px 20px 0; display: flex; gap: 8px; }
+        .summary-pill { flex: 1; background: #fff; border-radius: 12px; padding: 10px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; gap: 2px; }
+        .pill-count { font-size: 20px; font-weight: 800; line-height: 1; }
+        .pill-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
+        .pill-urgent  .pill-count { color: #DC2626; }
+        .pill-urgent  .pill-label { color: #DC2626; }
+        .pill-pull    .pill-count { color: #D97706; }
+        .pill-pull    .pill-label { color: #D97706; }
+        .pill-clear   .pill-count { color: #9CA3AF; }
+        .pill-clear   .pill-label { color: #9CA3AF; }
+
+        /* Sort toggle */
+        .sort-bar { margin: 14px 20px 0; background: #E5E7EB; border-radius: 12px; padding: 3px; display: flex; }
+        .sort-btn { flex: 1; padding: 8px; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .18s; background: transparent; color: #6B7280; }
+        .sort-btn.active { background: #fff; color: #111827; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
+
+        /* Section grid */
+        .section-header { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; padding: 16px 20px 8px; }
+        .section-grid { padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+        /* Section card base */
+        .sec-card { border-radius: 18px; padding: 14px; text-decoration: none; display: flex; flex-direction: column; gap: 6px; position: relative; overflow: hidden; transition: transform .15s, box-shadow .15s; animation: fadeUp .3s ease both; opacity: 0; }
+        .sec-card:active { transform: scale(.97); }
+        .sec-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 18px 18px 0 0; }
+
+        /* Urgent — red */
+        .sec-urgent { background: #fff; box-shadow: 0 2px 12px rgba(220,38,38,0.12); border: 1.5px solid #FECACA; }
+        .sec-urgent::before { background: #DC2626; }
+        .sec-urgent .sec-num { color: #DC2626; }
+        .sec-urgent .sec-status { color: #DC2626; background: #FEF2F2; }
+        .sec-urgent .sec-count { color: #DC2626; }
+
+        /* Pull — orange */
+        .sec-pull { background: #fff; box-shadow: 0 2px 12px rgba(217,119,6,0.10); border: 1.5px solid #FDE68A; }
+        .sec-pull::before { background: #D97706; }
+        .sec-pull .sec-num { color: #D97706; }
+        .sec-pull .sec-status { color: #D97706; background: #FFFBEB; }
+        .sec-pull .sec-count { color: #D97706; }
+
+        /* Clear — muted */
+        .sec-clear { background: #F9FAFB; box-shadow: none; border: 1.5px solid #E5E7EB; opacity: 0.6; }
+        .sec-clear::before { background: #D1D5DB; }
+        .sec-clear .sec-num { color: #9CA3AF; }
+        .sec-clear .sec-status { color: #9CA3AF; background: #F3F4F6; }
+        .sec-clear .sec-count { color: #9CA3AF; }
+
+        .sec-num { font-size: 18px; font-weight: 800; letter-spacing: .3px; margin-top: 2px; }
+        .sec-label { font-size: 15px; font-weight: 800; color: #111827; line-height: 1.2; }
+        .sec-clear .sec-label { color: #9CA3AF; }
+        .sec-status { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; width: fit-content; margin-top: 2px; }
+        .sec-count { font-size: 11px; font-weight: 600; margin-top: 2px; }
+        .sec-arrow { position: absolute; top: 14px; right: 12px; }
+        .sec-arrow svg { width: 13px; height: 13px; color: #D1D5DB; }
+        .sec-urgent .sec-arrow svg { color: #FCA5A5; }
+        .sec-pull .sec-arrow svg   { color: #FCD34D; }
+
+        /* Item detail view (slide in) */
+        .detail-view { position: fixed; top: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 390px; height: 100vh; background: #F2F3F7; z-index: 100; display: flex; flex-direction: column; transition: transform .3s cubic-bezier(.4,0,.2,1); transform: translateX(-50%) translateY(100%); }
+        .detail-view.open { transform: translateX(-50%) translateY(0); }
+        .detail-top { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; flex-shrink: 0; }
+        .btn-close { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .btn-close svg { width: 16px; height: 16px; color: #374151; }
+        .detail-hero { padding: 4px 20px 0; flex-shrink: 0; }
+        .detail-eyebrow { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .5px; }
+        .detail-title { font-size: 20px; font-weight: 800; color: #111827; margin-top: 2px; }
+        .detail-sub { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 1px; }
+        .detail-scroll { flex: 1; overflow-y: auto; padding: 12px 0 100px; }
+        .detail-scroll::-webkit-scrollbar { width: 0; }
+
+        /* Product cards in detail view */
+        .items-list { padding: 0 20px; display: flex; flex-direction: column; gap: 12px; }
+        .product-card { background: #fff; border-radius: 18px; padding: 16px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); transition: box-shadow .2s; }
+        .product-card.flashing { box-shadow: 0 4px 20px rgba(37,99,235,0.2); }
+        .card-top { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 14px; }
+        .product-img { width: 72px; height: 72px; background: #F9FAFB; border-radius: 12px; flex-shrink: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; border: 1.5px solid #E5E7EB; }
+        .product-img img { width: 100%; height: 100%; object-fit: contain; display: block; }
+        .product-img.loaded { background: #fff; }
+        .no-img { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+        .no-img svg { width: 22px; height: 22px; color: #D1D5DB; }
+        .no-img span { font-size: 9px; font-weight: 600; color: #D1D5DB; text-align: center; line-height: 1.2; }
+        .product-info { flex: 1; min-width: 0; }
+        .product-name { font-size: 15px; font-weight: 700; color: #111827; line-height: 1.3; }
+        .product-upc { font-size: 12px; color: #9CA3AF; font-weight: 500; margin-top: 3px; }
+        .product-qty { font-size: 12px; font-weight: 700; color: #374151; margin-top: 6px; }
+        .product-qty span { color: #2563EB; }
+        .color-row { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+        .color-dot { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; }
+        .color-label { font-size: 12px; font-weight: 600; color: #6B7280; }
+        .color-label strong { color: #111827; }
+        .flash-bar { height: 4px; border-radius: 4px; margin-bottom: 12px; opacity: 0; transition: opacity .3s; }
+        .product-card.flashing .flash-bar { opacity: 1; animation: flashPulse 1s ease-in-out infinite; }
+        .btn-showme { width: 100%; padding: 13px; border: none; border-radius: 13px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 7px; transition: transform .15s; }
+        .btn-showme:active { transform: scale(.975); }
+        .btn-showme svg { width: 15px; height: 15px; }
+        .btn-showme.idle { background: #EFF6FF; color: #2563EB; }
+        .btn-showme.active { background: #2563EB; color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+
+        /* Color classes */
+        .dot-red    { background: #EF4444; } .bar-red    { background: linear-gradient(90deg,#EF4444,#FCA5A5); }
+        .dot-blue   { background: #3B82F6; } .bar-blue   { background: linear-gradient(90deg,#3B82F6,#93C5FD); }
+        .dot-green  { background: #22C55E; } .bar-green  { background: linear-gradient(90deg,#22C55E,#86EFAC); }
+        .dot-amber  { background: #F59E0B; } .bar-amber  { background: linear-gradient(90deg,#F59E0B,#FCD34D); }
+        .dot-purple { background: #A855F7; } .bar-purple { background: linear-gradient(90deg,#A855F7,#D8B4FE); }
+        .dot-teal   { background: #14B8A6; } .bar-teal   { background: linear-gradient(90deg,#14B8A6,#5EEAD4); }
+
+        /* Sticky bottom bar for detail view */
+        .detail-bottom { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 390px; background: #fff; padding: 14px 20px; box-shadow: 0 -4px 20px rgba(0,0,0,0.07); border-top: 1px solid #F3F4F6; z-index: 101; display: none; }
+        .detail-bottom.visible { display: block; }
+        .btn-showall { width: 100%; padding: 16px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: transform .15s; }
+        .btn-showall:active { transform: scale(.975); }
+        .btn-showall.all-active { background: #1D4ED8; }
+        .btn-showall svg { width: 16px; height: 16px; }
+
+        @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes flashPulse { 0%,100% { opacity:.4; } 50% { opacity:1; } }
+    </style>
+</head>
+<body>
+<div class="shell">
+
+    <div class="top-bar">
+        <a href="javascript:history.back()" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="avatar">CW</div>
+    </div>
+
+    <div class="hero">
+        <div class="eyebrow">Guided Topstock</div>
+        <div class="hero-title" id="hdrTitle">Aisle A13</div>
+        <div class="hero-sub" id="hdrSub">Pasta &amp; Dinner · 16 modular sections</div>
+    </div>
+
+    <!-- Summary strip -->
+    <div class="summary-strip">
+        <div class="summary-pill pill-urgent">
+            <div class="pill-count" id="countUrgent">0</div>
+            <div class="pill-label">Urgent</div>
+        </div>
+        <div class="summary-pill pill-pull">
+            <div class="pill-count" id="countPull">0</div>
+            <div class="pill-label">Items to Pull</div>
+        </div>
+        <div class="summary-pill pill-clear">
+            <div class="pill-count" id="countClear">0</div>
+            <div class="pill-label">All Clear</div>
+        </div>
+    </div>
+
+    <!-- Sort toggle -->
+    <div class="sort-bar">
+        <button class="sort-btn active" id="btnPriority" onclick="setSort('priority')">Priority</button>
+        <button class="sort-btn" id="btnNumber" onclick="setSort('number')">Number Order</button>
+    </div>
+
+    <div class="section-header" id="sectionHeader">Modular Sections</div>
+    <div class="section-grid" id="sectionGrid"></div>
+
+</div>
+
+<!-- Detail view (slides up) -->
+<div class="detail-view" id="detailView">
+    <div class="detail-top">
+        <button class="btn-close" onclick="closeDetail()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </button>
+        <div class="avatar">CW</div>
+    </div>
+    <div class="detail-hero">
+        <div class="detail-eyebrow" id="detailEyebrow">Guided Topstock</div>
+        <div class="detail-title" id="detailTitle">Section 3</div>
+        <div class="detail-sub" id="detailSub">Aisle A13 · 4 items to downstock</div>
+    </div>
+    <div class="detail-scroll">
+        <div style="height:12px;"></div>
+        <div class="items-list" id="itemsList"></div>
+    </div>
+</div>
+
+<div class="detail-bottom" id="detailBottom">
+    <button class="btn-showall" id="btnShowAll" onclick="showAll()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.364 5.636a9 9 0 0 1 0 12.728M15.536 8.464a5 5 0 0 1 0 7.072M6.343 17.657a9 9 0 0 1 0-12.728M9.172 14.828a5 5 0 0 1 0-7.072"/></svg>
+        Show Me All
+    </button>
+</div>
+
+<script>
+    // Real products photographed in A13.13 — using local product images
+    const A13_SEC13_PRODUCTS = [
+        { name: "Great Value Reduced Sodium Brown Gravy Mix", upc: "078742199597", img: "Brown_Gravy.png",    qty: 6 },
+        { name: "Great Value Beef Stew Seasoning Mix",        upc: "078742371825", img: "Beef_Stew.png",      qty: 4 },
+        { name: "McCormick Grill Mates Brown Sugar Bourbon Marinade", upc: "052100038293", img: "B_Sugar_Bourbon.png", qty: 5 },
+        { name: "Wings of Fury Sriracha Chicken Seasoning",   upc: "850035474006", img: "Sriracch.png",       qty: 3 },
+    ];
+
+    // General product pool for other sections
+    const A13_PRODUCTS = [
+        { name: "McCormick Gravy Mix — Brown Gravy",       upc: "0052100010843", qty: 4 },
+        { name: "McCormick Seasoning — Taco",              upc: "0052100083241", qty: 3 },
+        { name: "McCormick Easy Meal Plan — Chicken Rice", upc: "0052100091832", qty: 5 },
+        { name: "Williams Meatloaf Seasoning",             upc: "0048102938402", qty: 4 },
+        { name: "Crock-Pot Slow Cooker Pot Roast",         upc: "0039201847302", qty: 3 },
+        { name: "McCormick Homestyle Beef Stroganoff",     upc: "0052100183920", qty: 2 },
+        { name: "Knorr Pasta Sides — Cheddar Broccoli",   upc: "0048192038402", qty: 5 },
+        { name: "Chef Boyardee Mini Ravioli",              upc: "0064103829102", qty: 6 },
+        { name: "Hamburger Helper — Cheeseburger Mac",     upc: "0016029384702", qty: 3 },
+        { name: "Idahoan Mashed Potatoes — Buttery",       upc: "0081029384702", qty: 4 },
+        { name: "Stove Top Stuffing — Chicken",            upc: "0043091827302", qty: 3 },
+        { name: "Hidden Valley Ranch Recipes",             upc: "0027103928402", qty: 2 },
+    ];
+
+    const COLORS = ['red','blue','green','amber','purple','teal'];
+    const COLOR_NAMES = { red:'Red', blue:'Blue', green:'Green', amber:'Amber', purple:'Purple', teal:'Teal' };
+
+    const p = new URLSearchParams(window.location.search);
+    const aisle = p.get('aisle') || 'A13';
+
+    // Section data — deterministically assign priority based on aisle+section seed
+    // For A13 demo: mix of urgent, pull, and clear to make it feel real
+    const A13_PRIORITY = {
+        1: 'clear', 2: 'urgent', 3: 'clear', 4: 'pull',
+        5: 'clear', 6: 'clear',  7: 'clear', 8: 'clear',
+        9: 'clear', 10: 'clear', 11: 'clear', 12: 'clear',
+        13: 'urgent', 14: 'clear', 15: 'pull', 16: 'clear'
+    };
+    const A13_ITEMS = {
+        2: 5, 4: 3, 13: 4, 15: 2
+    };
+
+    const AISLE_SECTIONS = {"A13":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]};
+    const sections = AISLE_SECTIONS[aisle] || Array.from({length:8},(_,i)=>i+1);
+
+    // Aisle label lookup
+    const AISLE_LABELS = { "A13": "Pasta & Dinner" };
+    const label = AISLE_LABELS[aisle] || 'Aisle ' + aisle;
+
+    document.getElementById('hdrTitle').textContent = 'Aisle ' + aisle;
+    document.getElementById('hdrSub').textContent = label + ' · ' + sections.length + ' modular sections';
+
+    // Build section data
+    function getSectionData(sec) {
+        const seed = (aisle.charCodeAt(0) * 17 + sec * 13) % 100;
+        // Use A13 specific data if available, else derive
+        let priority = A13_PRIORITY[sec] || (seed < 25 ? 'urgent' : seed < 55 ? 'pull' : 'clear');
+        let itemCount = A13_ITEMS[sec] || (priority === 'urgent' ? 3 + (seed % 4) : priority === 'pull' ? 2 + (seed % 3) : 0);
+        return { sec, priority, itemCount };
+    }
+
+    const allSections = sections.map(getSectionData);
+
+    // Update summary counts
+    const urgentCount = allSections.filter(s => s.priority === 'urgent').length;
+    const pullCount   = allSections.filter(s => s.priority === 'pull').length;
+    const clearCount  = allSections.filter(s => s.priority === 'clear').length;
+    document.getElementById('countUrgent').textContent = urgentCount;
+    document.getElementById('countPull').textContent   = pullCount;
+    document.getElementById('countClear').textContent  = clearCount;
+
+    let currentSort = 'priority';
+
+    function setSort(mode) {
+        currentSort = mode;
+        document.getElementById('btnPriority').classList.toggle('active', mode === 'priority');
+        document.getElementById('btnNumber').classList.toggle('active', mode === 'number');
+        renderGrid();
+    }
+
+    function renderGrid() {
+        const grid = document.getElementById('sectionGrid');
+        grid.innerHTML = '';
+
+        let ordered = [...allSections];
+        if (currentSort === 'priority') {
+            const order = { urgent: 0, pull: 1, clear: 2 };
+            ordered.sort((a, b) => order[a.priority] - order[b.priority] || a.sec - b.sec);
+        }
+
+        const statusMeta = {
+            urgent: { cls: 'sec-urgent', label: 'Urgent',        icon: '🔴' },
+            pull:   { cls: 'sec-pull',   label: 'Items to Pull', icon: '🟠' },
+            clear:  { cls: 'sec-clear',  label: 'All Clear',     icon: '✓'  },
+        };
+
+        ordered.forEach((s, i) => {
+            const meta = statusMeta[s.priority];
+            const delay = Math.min(i * 0.04, 0.4).toFixed(2);
+            const card = document.createElement('div');
+            card.className = `sec-card ${meta.cls}`;
+            card.style.animationDelay = `${delay}s`;
+            card.style.cursor = s.priority === 'clear' ? 'default' : 'pointer';
+            if (s.priority !== 'clear') {
+                card.onclick = () => openDetail(s.sec, s.priority, s.itemCount);
+            }
+            card.innerHTML = `
+                <div class="sec-num">${aisle}.${s.sec}</div>
+                <div class="sec-status">
+                    ${s.priority === 'urgent' ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' : ''}
+                    ${meta.label}
+                </div>
+                ${s.itemCount > 0 ? `<div class="sec-count">${s.itemCount} item${s.itemCount !== 1 ? 's' : ''} to pull</div>` : ''}
+                ${s.priority !== 'clear' ? `<div class="sec-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>` : ''}
+            `;
+            grid.appendChild(card);
+        });
+    }
+
+    function getSecLabel(sec) {
+        // Map section numbers to rough product areas in A13
+        const map = {
+            1:'Seasoning / Gravy', 2:'Gravy & Sauce Mix', 3:'Slow Cooker Kits',
+            4:'Easy Meal Plans', 5:'Meatloaf & Stew', 6:'Canned Pasta',
+            7:'Chef Boyardee', 8:'SpaghettiOs', 9:'Knorr Pasta Sides',
+            10:'Pasta Roni', 11:'Hamburger Helper', 12:'Velveeta Skillets',
+            13:'Suddenly Salad', 14:'Mashed Potatoes', 15:'Stuffing Mix',
+            16:'International Foods'
+        };
+        return map[sec] || 'Section ' + sec;
+    }
+
+    // Detail view
+    let activeFlashes = new Set();
+    let allFlashing = false;
+    let autoStopTimers = [];
+    let currentSection = null;
+
+    function openDetail(sec, priority, itemCount) {
+        currentSection = sec;
+        stopAll();
+        activeFlashes.clear();
+
+        document.getElementById('detailEyebrow').textContent = 'Guided Topstock · Aisle ' + aisle;
+        document.getElementById('detailTitle').textContent = aisle + '.' + sec;
+
+        const isRealSection = (aisle === 'A13' && sec === 13);
+        const displayCount = isRealSection ? A13_SEC13_PRODUCTS.length : itemCount;
+        document.getElementById('detailSub').textContent = displayCount + ' item' + (displayCount !== 1 ? 's' : '') + ' to downstock';
+
+        // Build product list
+        const list = document.getElementById('itemsList');
+        list.innerHTML = '';
+
+        // Use real photographed products for A13.13, generic pool for others
+        const products = isRealSection ? A13_SEC13_PRODUCTS : (() => {
+            const seed = (aisle.charCodeAt(0) * 31 + sec * 7) % A13_PRODUCTS.length;
+            return Array.from({length: itemCount}, (_, i) => A13_PRODUCTS[(seed + i * 3) % A13_PRODUCTS.length]);
+        })();
+
+        products.forEach((item, i) => {
+            const color = COLORS[i % COLORS.length];
+            const qty = item.qty || (2 + i);
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            card.id = `pc-${i}`;
+            card.innerHTML = `
+                <div class="card-top">
+                    <div class="product-img" id="imgwrap-${i}">
+                        ${item.img
+                            ? `<img src="${item.img}" alt="${item.name}" style="width:100%;height:100%;object-fit:contain;display:block;">`
+                            : `<div class="no-img"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span>No Image</span></div>`
+                        }
+                    </div>
+                    <div class="product-info">
+                        <div class="product-name">${item.name}</div>
+                        <div class="product-upc">UPC ${item.upc}</div>
+                        <div class="product-qty">Qty needed: <span>${qty}</span></div>
+                    </div>
+                </div>
+                <div class="color-row">
+                    <div class="color-dot dot-${color}"></div>
+                    <div class="color-label">Look for <strong>${COLOR_NAMES[color]}</strong> — LED rail + ESL tag</div>
+                </div>
+                <div class="flash-bar bar-${color}" id="fb-${i}"></div>
+                <button class="btn-showme idle" id="bsm-${i}" onclick="showItem(${i}, '${color}')">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    Show Me
+                </button>
+            `;
+            list.appendChild(card);
+        });
+
+        document.getElementById('detailView').classList.add('open');
+        document.getElementById('detailBottom').classList.add('visible');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetail() {
+        stopAll();
+        document.getElementById('detailView').classList.remove('open');
+        document.getElementById('detailBottom').classList.remove('visible');
+        document.body.style.overflow = '';
+        currentSection = null;
+    }
+
+    function showItem(idx, color) {
+        const card = document.getElementById(`pc-${idx}`);
+        const btn  = document.getElementById(`bsm-${idx}`);
+        if (!card || !btn) return;
+        if (activeFlashes.has(idx)) {
+            card.classList.remove('flashing');
+            btn.className = 'btn-showme idle';
+            btn.innerHTML = showMeHTML;
+            activeFlashes.delete(idx);
+        } else {
+            card.classList.add('flashing');
+            btn.className = 'btn-showme active';
+            btn.innerHTML = flashingHTML;
+            activeFlashes.add(idx);
+            const t = setTimeout(() => { if (activeFlashes.has(idx)) showItem(idx, color); }, 8000);
+            autoStopTimers.push(t);
+        }
+    }
+
+    function showAll() {
+        if (allFlashing) { stopAll(); return; }
+        allFlashing = true;
+        const btn = document.getElementById('btnShowAll');
+        btn.classList.add('all-active');
+        btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.364 5.636a9 9 0 0 1 0 12.728M15.536 8.464a5 5 0 0 1 0 7.072M6.343 17.657a9 9 0 0 1 0-12.728M9.172 14.828a5 5 0 0 1 0-7.072"/></svg> All Items Flashing…`;
+        document.querySelectorAll('.product-card').forEach((card, idx) => {
+            card.classList.add('flashing');
+            const b = document.getElementById(`bsm-${idx}`);
+            if (b) { b.className = 'btn-showme active'; b.innerHTML = flashingHTML; activeFlashes.add(idx); }
+        });
+        const t = setTimeout(stopAll, 10000);
+        autoStopTimers.push(t);
+    }
+
+    function stopAll() {
+        allFlashing = false;
+        autoStopTimers.forEach(t => clearTimeout(t));
+        autoStopTimers = [];
+        activeFlashes.clear();
+        document.querySelectorAll('.product-card').forEach((card, idx) => {
+            card.classList.remove('flashing');
+            const b = document.getElementById(`bsm-${idx}`);
+            if (b) { b.className = 'btn-showme idle'; b.innerHTML = showMeHTML; }
+        });
+        const btn = document.getElementById('btnShowAll');
+        if (btn) {
+            btn.classList.remove('all-active');
+            btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.364 5.636a9 9 0 0 1 0 12.728M15.536 8.464a5 5 0 0 1 0 7.072M6.343 17.657a9 9 0 0 1 0-12.728M9.172 14.828a5 5 0 0 1 0-7.072"/></svg> Show Me All`;
+        }
+    }
+
+    const showMeHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg> Show Me`;
+    const flashingHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18.364 5.636a9 9 0 0 1 0 12.728M15.536 8.464a5 5 0 0 1 0 7.072M6.343 17.657a9 9 0 0 1 0-12.728M9.172 14.828a5 5 0 0 1 0-7.072"/></svg> Flashing…`;
+
+    // Init
+    renderGrid();
+</script>
+</body>
+</html>

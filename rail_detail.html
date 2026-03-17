@@ -106,17 +106,17 @@
 
     <!-- Top bar -->
     <div class="top-bar">
-        <a href="val_aisle.html" class="btn-icon" id="backBtn" onclick="goBack(event)">
+        <a href="val_aisle.html" class="btn-icon" id="backBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </a>
         <div class="avatar">CW</div>
     </div>
 
-    <!-- Rail identity — populated from URL params -->
+    <!-- Rail identity -->
     <div class="rail-header">
-        <div class="eyebrow" id="hdrEyebrow">Section · Rail</div>
-        <div class="rail-id" id="hdrRailId">—</div>
-        <div class="rail-meta" id="hdrMeta">Loading…</div>
+        <div class="eyebrow">Section C3 · Rail</div>
+        <div class="rail-id">Z001-0123</div>
+        <div class="rail-meta">Aisle C3 · Section 2 · Store 0100</div>
     </div>
 
     <!-- Main status banner -->
@@ -137,17 +137,17 @@
     <div class="info-card">
         <div class="info-row">
             <span class="info-label">Topstock ID</span>
-            <span class="info-val mono" id="infoRailId">—</span>
+            <span class="info-val mono">Z001-0123</span>
         </div>
         <div class="divider"></div>
         <div class="info-row">
             <span class="info-label">Sub-modulars</span>
-            <span class="info-val" id="infoSubMods">—</span>
+            <span class="info-val">C3.3, C3.4</span>
         </div>
         <div class="divider"></div>
         <div class="info-row">
             <span class="info-label">Opposing Aisle</span>
-            <span class="info-val" id="infoOpposing">—</span>
+            <span class="info-val">C4.2</span>
         </div>
         <div class="divider"></div>
         <div class="info-row">
@@ -379,22 +379,16 @@
         setTimestamp();
         CHECKS.forEach(id => setPill(id, 'testing', 'Running check…'));
 
-        const initialOk = (window._initialStatus !== 'issues');
-
-        setTimeout(() => setPill('ble',  'ok', SUB_LABELS.ble.ok),  1200);
-        setTimeout(() => setPill('wifi', 'ok', SUB_LABELS.wifi.ok), 2000);
-        setTimeout(() => setPill('camera', initialOk ? 'ok' : 'fail',
-            initialOk ? SUB_LABELS.camera.ok : SUB_LABELS.camera.fail), 2800);
-        setTimeout(() => setPill('led', 'ok', SUB_LABELS.led.ok), 3600);
+        // Stagger results — BLE, wifi pass; camera fails; LED, E-Label pass
+        setTimeout(() => setPill('ble',    'ok',   SUB_LABELS.ble.ok),    1200);
+        setTimeout(() => setPill('wifi',   'ok',   SUB_LABELS.wifi.ok),   2000);
+        setTimeout(() => setPill('camera', 'fail', SUB_LABELS.camera.fail), 2800);
+        setTimeout(() => setPill('led',    'ok',   SUB_LABELS.led.ok),    3600);
         setTimeout(() => {
             setPill('elabel', 'ok', SUB_LABELS.elabel.ok);
-            setBanner(initialOk ? 'ok' : 'issues');
+            setBanner('issues');
             setTimestamp();
             lockButtons(false);
-            // Auto-trigger camera retest if returning from repair flow
-            if (window._autoRetest) {
-                setTimeout(runRetest, 600);
-            }
         }, 4400);
     });
 
@@ -441,45 +435,6 @@
     function doSwap() {
         window.location.href = 'page5.html';
     }
-
-    // ── URL params ───────────────────────────────────────────────────────────
-    (function() {
-        const p = new URLSearchParams(window.location.search);
-        const aisle   = p.get('aisle')   || 'C3';
-        const section = p.get('section') || '2';
-        const rail    = p.get('rail')    || 'Z001-0123';
-        const status  = p.get('status')  || 'issues';
-        const store   = sessionStorage.getItem('selectedStore') || '0100';
-
-        // Header
-        document.getElementById('hdrEyebrow').textContent = `Aisle ${aisle} · Section ${section}`;
-        document.getElementById('hdrRailId').textContent  = rail;
-        document.getElementById('hdrMeta').textContent    = `Aisle ${aisle} · Section ${section} · Store ${store}`;
-
-        // Info card — derive sub-modulars and opposing from aisle/section
-        const secNum   = parseInt(section);
-        const subMods  = `${aisle}.${secNum + 2}, ${aisle}.${secNum + 3}`;
-        const opposing = `${aisle.replace(/([A-Z])(\d+)/,(_,l,n)=>l+(+n+1))}.${section}`;
-        document.getElementById('infoRailId').textContent  = rail;
-        document.getElementById('infoSubMods').textContent = subMods;
-        document.getElementById('infoOpposing').textContent = opposing;
-
-        // Store status for initial test sequence
-        window._initialStatus = status;
-
-        // If returning from a repair/reset, auto-trigger retest after load
-        window._autoRetest = (p.get('retest') === '1');
-    })();
-
-    function goBack(e) {
-        e.preventDefault();
-        if (document.referrer && document.referrer !== window.location.href) {
-            history.back();
-        } else {
-            window.location.href = 'val_aisle.html';
-        }
-    }
-
 </script>
 </body>
 </html>
