@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vusion - Select Zone</title>
+    <title>Vusion - Guided Topstock</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -21,68 +21,21 @@
         .hero-title { font-size: 22px; font-weight: 800; color: #111827; margin-top: 2px; }
         .hero-sub { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 1px; }
 
-
-
-        /* Summary strip */
-        .summary-strip { margin: 14px 20px 0; display: flex; gap: 8px; }
-        .summary-pill { flex: 1; background: #fff; border-radius: 12px; padding: 10px 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; gap: 2px; }
-        .pill-count { font-size: 20px; font-weight: 800; line-height: 1; }
-        .pill-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; }
-        .pill-urgent .pill-count { color: #DC2626; } .pill-urgent .pill-label { color: #DC2626; }
-        .pill-pull   .pill-count { color: #D97706; } .pill-pull   .pill-label { color: #D97706; }
-        .pill-clear  .pill-count { color: #9CA3AF; } .pill-clear  .pill-label { color: #9CA3AF; }
-
-        /* Sort toggle */
-        .sort-bar { margin: 14px 20px 0; background: #E5E7EB; border-radius: 12px; padding: 3px; display: flex; }
-        .sort-btn { flex: 1; padding: 8px; border: none; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; cursor: pointer; transition: all .18s; background: transparent; color: #6B7280; }
-        .sort-btn.active { background: #fff; color: #111827; box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
-
         .section-header { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; padding: 16px 20px 8px; }
 
         .zone-grid { padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-        /* Card base */
-        .zone-card { border-radius: 18px; padding: 14px; text-decoration: none; display: flex; flex-direction: column; gap: 4px; position: relative; overflow: hidden; transition: transform .15s, box-shadow .15s; animation: fadeUp .35s ease both; opacity: 0; }
-        .zone-card:active { transform: scale(.97); }
-        .zone-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; border-radius: 18px 18px 0 0; }
+        .zone-card { background: #fff; border-radius: 18px; padding: 14px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); text-decoration: none; display: flex; flex-direction: column; gap: 4px; position: relative; overflow: hidden; transition: transform .15s, box-shadow .15s; animation: fadeUp .35s ease both; opacity: 0; }
+        .zone-card:active { transform: scale(.97); box-shadow: 0 1px 5px rgba(0,0,0,0.08); }
+        .zone-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: #2563EB; border-radius: 18px 18px 0 0; }
 
-        /* Urgent */
-        .zc-urgent { background: #fff; box-shadow: 0 2px 12px rgba(220,38,38,0.12); border: 1.5px solid #FECACA; }
-        .zc-urgent::before { background: #DC2626; }
-        .zc-urgent .zc-letter { color: #DC2626; }
-        .zc-urgent .zc-status { color: #DC2626; background: #FEF2F2; }
-        .zc-urgent .zc-count  { color: #DC2626; }
-        .zc-urgent .zc-arrow svg { color: #FCA5A5; }
-        .zc-urgent .zc-dept { background: #FEF2F2; color: #DC2626; }
-
-        /* Pull */
-        .zc-pull { background: #fff; box-shadow: 0 2px 12px rgba(217,119,6,0.10); border: 1.5px solid #FDE68A; }
-        .zc-pull::before { background: #D97706; }
-        .zc-pull .zc-letter { color: #D97706; }
-        .zc-pull .zc-status { color: #D97706; background: #FFFBEB; }
-        .zc-pull .zc-count  { color: #D97706; }
-        .zc-pull .zc-arrow svg { color: #FCD34D; }
-        .zc-pull .zc-dept { background: #FFFBEB; color: #D97706; }
-
-        /* Clear */
-        .zc-clear { background: #F9FAFB; box-shadow: none; border: 1.5px solid #E5E7EB; opacity: 0.6; }
-        .zc-clear::before { background: #D1D5DB; }
-        .zc-clear .zc-letter { color: #9CA3AF; }
-        .zc-clear .zc-name   { color: #9CA3AF; }
-        .zc-clear .zc-desc   { color: #C4C9D4; }
-        .zc-clear .zc-status { color: #9CA3AF; background: #F3F4F6; }
-        .zc-clear .zc-arrow svg { color: #D1D5DB; }
-        .zc-clear .zc-dept { background: #F3F4F6; color: #9CA3AF; }
-
-        .zc-letter { font-size: 18px; font-weight: 800; letter-spacing: .3px; margin-top: 2px; }
-        .zc-name   { font-size: 13px; font-weight: 800; color: #111827; line-height: 1.2; margin-top: 1px; }
-        .zc-desc   { font-size: 10px; color: #6B7280; font-weight: 500; line-height: 1.4; margin-top: 2px; }
-        .zc-status { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; width: fit-content; margin-top: 4px; }
-        .zc-count  { font-size: 11px; font-weight: 600; margin-top: 2px; }
-        .zc-dept-row { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
-        .zc-dept   { font-size: 9px; font-weight: 700; background: #EFF6FF; color: #2563EB; padding: 2px 5px; border-radius: 4px; }
-        .zc-arrow  { position: absolute; top: 14px; right: 12px; }
-        .zc-arrow svg { width: 13px; height: 13px; color: #D1D5DB; }
+        .zone-letter { font-size: 18px; font-weight: 800; color: #2563EB; margin-top: 2px; }
+        .zone-name   { font-size: 13px; font-weight: 800; color: #111827; line-height: 1.2; margin-top: 1px; }
+        .zone-desc   { font-size: 10px; color: #6B7280; font-weight: 500; line-height: 1.4; margin-top: 2px; }
+        .zone-dept-row { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
+        .zone-dept   { font-size: 9px; font-weight: 700; background: #EFF6FF; color: #2563EB; padding: 2px 5px; border-radius: 4px; }
+        .zone-arrow  { position: absolute; top: 14px; right: 12px; }
+        .zone-arrow svg { width: 13px; height: 13px; color: #D1D5DB; }
 
         @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
     </style>
@@ -103,46 +56,17 @@
         <div class="hero-sub" id="hdrAddr">406 S Walton Blvd, Bentonville, AR</div>
     </div>
 
-    <div class="summary-strip">
-        <div class="summary-pill pill-urgent">
-            <div class="pill-count" id="countUrgent">0</div>
-            <div class="pill-label">Urgent</div>
-        </div>
-        <div class="summary-pill pill-pull">
-            <div class="pill-count" id="countPull">0</div>
-            <div class="pill-label">With Work</div>
-        </div>
-        <div class="summary-pill pill-clear">
-            <div class="pill-count" id="countClear">0</div>
-            <div class="pill-label">All Clear</div>
-        </div>
-    </div>
-
-    <div class="sort-bar">
-        <button class="sort-btn active" id="btnPriority" onclick="setSort('priority')">Priority</button>
-        <button class="sort-btn" id="btnAlpha" onclick="setSort('alpha')">A–Z</button>
-    </div>
-
-    <div class="section-header">Zones — tap to open</div>
+    <div class="section-header">Select a Zone</div>
     <div class="zone-grid" id="zoneGrid"></div>
 
 </div>
 
 <script>
     const ZONE_DATA = {
-        "0100": {
-            "A": { aisles: 12, sections: 192 },
-            "E": { aisles: 4,  sections: 29  },
-            "F": { aisles: 18, sections: 149 },
-            "G": { aisles: 25, sections: 153 },
-            "H": { aisles: 30, sections: 259 },
-            "I": { aisles: 22, sections: 153 },
-            "J": { aisles: 16, sections: 136 },
-            "L": { aisles: 18, sections: 135 },
-        },
-        "4686": { "A": { aisles: 8, sections: 96 }, "F": { aisles: 12, sections: 88 }, "G": { aisles: 15, sections: 110 }, "H": { aisles: 20, sections: 170 } },
-        "7634": { "A": { aisles: 10, sections: 140 }, "E": { aisles: 3, sections: 22 }, "G": { aisles: 18, sections: 120 }, "H": { aisles: 22, sections: 190 }, "I": { aisles: 14, sections: 98 } },
-        "1216": { "F": { aisles: 10, sections: 80 }, "G": { aisles: 12, sections: 90 }, "H": { aisles: 18, sections: 150 }, "J": { aisles: 10, sections: 80 } },
+        "0100": { "A": { aisles: 12 }, "E": { aisles: 4 }, "F": { aisles: 18 }, "G": { aisles: 25 }, "H": { aisles: 30 }, "I": { aisles: 22 }, "J": { aisles: 16 }, "L": { aisles: 18 } },
+        "4686": { "A": { aisles: 8 }, "F": { aisles: 12 }, "G": { aisles: 15 }, "H": { aisles: 20 } },
+        "7634": { "A": { aisles: 10 }, "E": { aisles: 3 }, "G": { aisles: 18 }, "H": { aisles: 22 }, "I": { aisles: 14 } },
+        "1216": { "F": { aisles: 10 }, "G": { aisles: 12 }, "H": { aisles: 18 }, "J": { aisles: 10 } },
     };
 
     const ZONE_INFO = {
@@ -156,20 +80,6 @@
         "L": { name: "Tools & Hardware",     desc: "Hardware, paint, accessories & lawn",        depts: [11, 12] },
     };
 
-    // Priority per zone — A urgent (has A13), G pull, rest clear
-    const ZONE_PRIORITY = {
-        "0100": { "A": "urgent", "E": "clear", "F": "clear", "G": "pull", "H": "clear", "I": "pull", "J": "clear", "L": "clear" },
-        "4686": { "A": "clear",  "F": "clear", "G": "pull",  "H": "clear" },
-        "7634": { "A": "urgent", "E": "clear", "G": "clear", "H": "pull",  "I": "clear" },
-        "1216": { "F": "clear",  "G": "clear", "H": "clear", "J": "pull"  },
-    };
-
-    const ZONE_ISSUES = {
-        "0100": { "A": "4 aisles need attention", "G": "2 aisles need attention", "I": "1 aisle needs attention" },
-        "7634": { "A": "1 aisle needs attention", "H": "1 aisle needs attention" },
-        "1216": { "J": "1 aisle needs attention" },
-    };
-
     const store     = sessionStorage.getItem('gtStore')     || '0100';
     const storeName = sessionStorage.getItem('gtStoreName') || 'Store 0100';
     const storeAddr = sessionStorage.getItem('gtStoreAddr') || '406 S Walton Blvd, Bentonville, AR';
@@ -177,80 +87,25 @@
     document.getElementById('hdrStore').textContent = storeName;
     document.getElementById('hdrAddr').textContent  = storeAddr;
 
-    const zones    = ZONE_DATA[store]     || ZONE_DATA['0100'];
-    const priority = ZONE_PRIORITY[store] || {};
-    const issues   = ZONE_ISSUES[store]   || {};
+    const zones = ZONE_DATA[store] || ZONE_DATA['0100'];
+    const grid  = document.getElementById('zoneGrid');
 
-    // Build zone list with priority
-    const allZones = Object.entries(zones).map(([letter, info]) => ({
-        letter, info,
-        priority: priority[letter] || 'clear',
-        issue: issues[letter] || null,
-    }));
-
-    // Summary counts
-    const urgentCount = allZones.filter(z => z.priority === 'urgent').length;
-    const pullCount   = allZones.filter(z => z.priority === 'pull').length;
-    const clearCount  = allZones.filter(z => z.priority === 'clear').length;
-    document.getElementById('countUrgent').textContent = urgentCount;
-    document.getElementById('countPull').textContent   = pullCount;
-    document.getElementById('countClear').textContent  = clearCount;
-
-
-    let currentSort = 'priority';
-
-    function setSort(mode) {
-        currentSort = mode;
-        document.getElementById('btnPriority').classList.toggle('active', mode === 'priority');
-        document.getElementById('btnAlpha').classList.toggle('active', mode === 'alpha');
-        renderGrid();
-    }
-
-    function renderGrid() {
-        const grid = document.getElementById('zoneGrid');
-        grid.innerHTML = '';
-
-        let ordered = [...allZones];
-        if (currentSort === 'priority') {
-            const order = { urgent: 0, pull: 1, clear: 2 };
-            ordered.sort((a, b) => order[a.priority] - order[b.priority]);
-        } else {
-            ordered.sort((a, b) => a.letter.localeCompare(b.letter));
-        }
-
-        const statusMeta = {
-            urgent: { cls: 'zc-urgent', label: 'Urgent',        icon: true  },
-            pull:   { cls: 'zc-pull',   label: 'Items to Pull', icon: false },
-            clear:  { cls: 'zc-clear',  label: 'All Clear',     icon: false },
-        };
-
-        ordered.forEach((z, i) => {
-            const sm   = statusMeta[z.priority];
-            const info = ZONE_INFO[z.letter] || { name: 'Zone ' + z.letter, desc: '', depts: [] };
-            const deptLabel = 'Dept ' + info.depts.join(' · ');
-            const delay = Math.min(i * 0.05, 0.4).toFixed(2);
-
-            const card = document.createElement('a');
-            card.href = `gt_aisle.html?zone=${z.letter}`;
-            card.className = `zone-card ${sm.cls}`;
-            card.style.animationDelay = `${delay}s`;
-            card.innerHTML = `
-                <div class="zc-letter">Zone ${z.letter}</div>
-                <div class="zc-name">${info.name}</div>
-                <div class="zc-desc">${info.desc}</div>
-                <div class="zc-status">
-                    ${sm.icon ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="10" height="10"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' : ''}
-                    ${sm.label}
-                </div>
-                ${z.issue ? `<div class="zc-count">${z.issue}</div>` : ''}
-                <div class="zc-dept-row"><span class="zc-dept">${deptLabel}</span></div>
-                <div class="zc-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
-            `;
-            grid.appendChild(card);
-        });
-    }
-
-    renderGrid();
+    Object.entries(zones).forEach(([letter, info], i) => {
+        const meta  = ZONE_INFO[letter] || { name: 'Zone ' + letter, desc: '', depts: [] };
+        const delay = (i * 0.06).toFixed(2);
+        const card  = document.createElement('a');
+        card.href   = `gt_aisle.html?zone=${letter}`;
+        card.className = 'zone-card';
+        card.style.animationDelay = `${delay}s`;
+        card.innerHTML = `
+            <div class="zone-letter">Zone ${letter}</div>
+            <div class="zone-name">${meta.name}</div>
+            <div class="zone-desc">${meta.desc}</div>
+            <div class="zone-dept-row"><span class="zone-dept">Dept ${ meta.depts.join(' · ') }</span></div>
+            <div class="zone-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
+        `;
+        grid.appendChild(card);
+    });
 </script>
 </body>
 </html>
