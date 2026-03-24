@@ -504,5 +504,13 @@
     }
 </script>
 
+<script>
+    (function() {
+        var aisle   = sessionStorage.getItem('selectedAisle')   || '—';
+        var section = sessionStorage.getItem('selectedSection') || '—';
+        var pill = document.getElementById('topPill');
+        if (pill) pill.textContent = aisle + '-' + section;
+    })();
+</script>
 </body>
 </html>
