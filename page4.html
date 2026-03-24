@@ -6,177 +6,370 @@
     <title>Vusion - Select Modular</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; color: #111827; }
-        .phone-shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        /* Top bar */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; gap: 10px; }
-        .back-btn { width: 38px; height: 38px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px rgba(0,0,0,0.08); text-decoration: none; border: none; cursor: pointer; flex-shrink: 0; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #F2F3F7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #111827;
+        }
+
+        .phone-shell {
+            width: 100%;
+            max-width: 390px;
+            min-height: 100vh;
+            background: #F2F3F7;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Top bar ── */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px 8px;
+        }
+
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
         .back-btn svg { width: 18px; height: 18px; color: #111827; }
-        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0; }
 
-        /* Persistent aisle pill */
-        .aisle-pill { flex: 1; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 12px; padding: 7px 14px; display: flex; align-items: center; justify-content: space-between; min-width: 0; }
-        .aisle-pill-label { font-size: 10px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .4px; }
-        .aisle-pill-value { font-size: 16px; font-weight: 800; color: #2563EB; }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #2563EB;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
 
-        .hero { padding: 12px 20px 0; animation: fadeUp .4s ease both; }
+        /* ── Hero ── */
+        .hero {
+            padding: 16px 20px 0;
+            animation: fadeUp 0.4s ease both;
+        }
         .hero-title { font-size: 24px; font-weight: 700; color: #111827; line-height: 1.2; }
         .hero-sub { font-size: 14px; color: #6B7280; margin-top: 4px; line-height: 1.5; }
 
-        .image-card { margin: 16px 20px 0; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); animation: fadeUp .4s .1s ease both; }
-        .instruction-img { width: 100%; height: auto; display: block; }
-        .image-caption { padding: 10px 16px 12px; font-size: 12px; color: #9CA3AF; font-weight: 500; text-align: center; }
-        .image-placeholder { width: 100%; height: 120px; background: linear-gradient(135deg,#e0e7ef,#c7d2e0); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        /* ── Image card ── */
+        .image-card {
+            margin: 18px 20px 0;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            animation: fadeUp 0.4s 0.1s ease both;
+        }
+
+        .instruction-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-caption {
+            padding: 10px 16px 12px;
+            font-size: 12px;
+            color: #9CA3AF;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #e0e7ef, #c7d2e0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
         .image-placeholder svg { width: 36px; height: 36px; color: #94A3B8; }
         .image-placeholder span { font-size: 12px; color: #94A3B8; font-weight: 500; }
 
-        /* Flag blocker link */
-        .flag-link-wrap { padding: 12px 20px 0; display: flex; justify-content: flex-end; animation: fadeUp .4s .12s ease both; }
-        .flag-link { font-size: 13px; font-weight: 700; color: #D97706; display: flex; align-items: center; gap: 5px; cursor: pointer; background: none; border: none; font-family: 'DM Sans', sans-serif; }
-        .flag-link:active { opacity: .7; }
+        /* ── Selector section ── */
+        .selector-section {
+            padding: 18px 20px 0;
+            animation: fadeUp 0.4s 0.15s ease both;
+        }
 
-        /* Toggle */
-        .sort-bar-wrap { padding: 6px 20px 0; animation: fadeUp .4s .13s ease both; }
-        .sort-bar { display: flex; gap: 4px; background: #E5E7EB; border-radius: 12px; padding: 3px; }
-        .sort-btn { flex: 1; padding: 7px 4px; border: none; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: #6B7280; background: transparent; cursor: pointer; transition: background .18s, color .18s, box-shadow .18s; white-space: nowrap; }
-        .sort-btn.active { background: #fff; color: #111827; box-shadow: 0 1px 6px rgba(0,0,0,0.1); }
+        .selector-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
 
-        /* Selector */
-        .selector-section { padding: 12px 20px 0; animation: fadeUp .4s .15s ease both; }
-        .selector-group { display: flex; flex-direction: column; gap: 6px; }
-        .selector-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; padding-left: 4px; }
+        .selector-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-left: 4px;
+        }
 
+        /* ── Combobox ── */
         .combobox { position: relative; }
-        .combobox-input-wrap { background: #fff; border: 1.5px solid #E5E7EB; border-radius: 14px; display: flex; align-items: center; padding: 0 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: border-color .15s, box-shadow .15s; cursor: text; }
-        .combobox-input-wrap.open, .combobox-input-wrap:focus-within { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-        .combobox-input-wrap.error { border-color: #EF4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.1); }
-        .combobox-input { flex: 1; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; color: #111827; background: transparent; padding: 13px 0; width: 100%; text-align: center; }
+
+        .combobox-input-wrap {
+            background: #fff;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: border-color 0.15s, box-shadow 0.15s;
+            cursor: text;
+        }
+
+        .combobox-input-wrap.open,
+        .combobox-input-wrap:focus-within {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .combobox-input-wrap.error {
+            border-color: #EF4444;
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+        }
+
+        .combobox-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            background: transparent;
+            padding: 13px 0;
+            width: 100%;
+            text-align: center;
+        }
+
         .combobox-input::placeholder { color: #9CA3AF; font-weight: 400; }
-        .combobox-chevron { width: 18px; height: 18px; color: #9CA3AF; transition: transform .2s; flex-shrink: 0; }
+
+        .combobox-chevron {
+            width: 18px;
+            height: 18px;
+            color: #9CA3AF;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
         .combobox-chevron.rotated { transform: rotate(180deg); }
-        .combobox-dropdown { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: #fff; border: 1.5px solid #E5E7EB; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 100; max-height: 200px; overflow-y: auto; display: none; scroll-behavior: smooth; }
+
+        /* ── Dropdown list ── */
+        .combobox-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 100;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            scroll-behavior: smooth;
+        }
         .combobox-dropdown.open { display: block; }
-        .combobox-dropdown::-webkit-scrollbar { width: 4px; }
-        .combobox-dropdown::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 4px; }
-        .combobox-option { padding: 12px 16px; font-size: 15px; font-weight: 500; color: #111827; cursor: pointer; transition: background .1s; display: flex; align-items: center; justify-content: space-between; }
+
+        .combobox-option {
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #111827;
+            cursor: pointer;
+            transition: background 0.1s;
+            text-align: center;
+        }
         .combobox-option:first-child { border-radius: 13px 13px 0 0; }
         .combobox-option:last-child  { border-radius: 0 0 13px 13px; }
-        .combobox-option:hover, .combobox-option.highlighted { background: #EFF6FF; color: #2563EB; }
-        .combobox-option.selected { background: #2563EB; color: #fff; }
-        .combobox-no-results { padding: 14px 16px; font-size: 14px; color: #9CA3AF; text-align: center; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-        .dot-installed { background: #059669; } .dot-flagged { background: #D97706; } .dot-uninstalled { background: #CBD5E1; }
+        .combobox-option:hover,
+        .combobox-option.highlighted { background: #EFF6FF; color: #2563EB; }
+        .combobox-option.selected    { background: #2563EB; color: #fff; }
+        .combobox-option.selected:hover { background: #1D4ED8; }
 
-        .selected-badge { margin-top: 14px; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; opacity: 0; pointer-events: none; transition: opacity .2s; }
-        .selected-badge.visible { opacity: 1; pointer-events: all; }
-        .badge-label { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .5px; }
-        .badge-value { font-size: 18px; font-weight: 800; color: #2563EB; }
-        .error-msg { min-height: 20px; font-size: 13px; color: #EF4444; font-weight: 500; margin-top: 8px; padding-left: 4px; }
+        .combobox-no-results {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #9CA3AF;
+            text-align: center;
+        }
 
-        /* Nav */
-        .nav-area { display: flex; gap: 10px; padding: 20px; margin-top: auto; animation: fadeUp .4s .25s ease both; }
-        .btn-back-nav { padding: 15px 20px; background: #fff; color: #6B7280; border: 1.5px solid #E5E7EB; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none; transition: transform .15s; flex-shrink: 0; }
-        .btn-back-nav:active { transform: scale(.975); }
-        .btn-back-nav svg { width: 16px; height: 16px; }
-        .btn-next { flex: 1; padding: 15px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s, box-shadow .15s; box-shadow: 0 4px 14px rgba(37,99,235,0.3); }
-        .btn-next:active { transform: scale(.975); }
+        .combobox-dropdown::-webkit-scrollbar { width: 4px; }
+        .combobox-dropdown::-webkit-scrollbar-track { background: transparent; }
+        .combobox-dropdown::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 4px; }
+
+        /* ── Selected badge ── */
+        .selected-badge {
+            margin-top: 16px;
+            background: #EFF6FF;
+            border: 1.5px solid #BFDBFE;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.25s, transform 0.25s;
+        }
+        .selected-badge.visible { opacity: 1; transform: translateY(0); }
+        .badge-label { font-size: 11px; color: #93C5FD; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-value { font-size: 22px; font-weight: 700; color: #2563EB; letter-spacing: 2px; }
+
+        /* ── Error message ── */
+        .error-msg {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #EF4444;
+            font-weight: 500;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        /* ── Nav buttons ── */
+        .nav-area {
+            padding: 20px 20px 32px;
+            display: flex;
+            gap: 12px;
+            animation: fadeUp 0.4s 0.25s ease both;
+            margin-top: auto;
+        }
+
+        .btn-back {
+            padding: 15px 20px;
+            background: #fff;
+            color: #6B7280;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: transform 0.15s;
+            flex-shrink: 0;
+        }
+        .btn-back:active { transform: scale(0.975); }
+        .btn-back svg { width: 16px; height: 16px; }
+
+        .btn-next {
+            flex: 1;
+            padding: 15px;
+            background: #2563EB;
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+        }
+        .btn-next:active { transform: scale(0.975); box-shadow: 0 2px 6px rgba(37,99,235,0.2); }
+        .btn-next:disabled { background: #CBD5E1; box-shadow: none; cursor: not-allowed; }
         .btn-next svg { width: 18px; height: 18px; }
 
-        /* Occupied modal */
-        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
-        .modal-overlay.open { opacity: 1; pointer-events: all; }
-        .modal-sheet { background: #fff; border-radius: 24px 24px 0 0; padding: 24px 20px 36px; width: 100%; max-width: 390px; transform: translateY(100%); transition: transform .25s cubic-bezier(.4,0,.2,1); }
-        .modal-overlay.open .modal-sheet { transform: translateY(0); }
-        .modal-icon { width: 48px; height: 48px; background: #FEF2F2; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
-        .modal-icon svg { width: 22px; height: 22px; color: #DC2626; }
-        .modal-title { font-size: 18px; font-weight: 800; color: #111827; }
-        .modal-body  { font-size: 14px; color: #6B7280; margin-top: 6px; line-height: 1.6; }
-        .modal-id    { font-weight: 700; color: #111827; }
-        .modal-btns  { display: flex; gap: 10px; margin-top: 20px; }
-        .modal-cancel  { flex: 1; padding: 14px; background: #F3F4F6; color: #374151; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
-        .modal-confirm { flex: 2; padding: 14px; background: #DC2626; color: #fff; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
-
-        /* Flag modal */
-        .flag-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
-        .flag-overlay.open { opacity: 1; pointer-events: all; }
-        .flag-sheet { background: #fff; border-radius: 24px 24px 0 0; padding: 24px 20px 36px; width: 100%; max-width: 390px; transform: translateY(100%); transition: transform .25s cubic-bezier(.4,0,.2,1); }
-        .flag-overlay.open .flag-sheet { transform: translateY(0); }
-        .flag-icon-wrap { width: 48px; height: 48px; background: #FFFBEB; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; font-size: 22px; }
-        .flag-title { font-size: 18px; font-weight: 800; color: #111827; }
-        .flag-body  { font-size: 14px; color: #6B7280; margin-top: 6px; line-height: 1.6; }
-        .flag-field-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; margin-top: 16px; margin-bottom: 6px; }
-        .flag-input { width: 100%; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 12px; padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #111827; outline: none; transition: border-color .15s; }
-        .flag-input:focus { border-color: #D97706; box-shadow: 0 0 0 3px rgba(217,119,6,0.1); }
-        textarea.flag-input { resize: none; }
-        .flag-btns { display: flex; gap: 10px; margin-top: 16px; }
-        .flag-cancel { flex: 1; padding: 14px; background: #F3F4F6; color: #374151; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
-        .flag-submit { flex: 2; padding: 14px; background: #D97706; color: #fff; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(217,119,6,0.3); }
-
-        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        /* ── Animations ── */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+
 <div class="phone-shell">
 
+    <!-- Top bar -->
     <div class="top-bar">
         <a href="page3.html" class="back-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </a>
-        <div class="aisle-pill">
-            <div class="aisle-pill-label">Selected Aisle</div>
-            <div class="aisle-pill-value" id="aislePillValue">—</div>
-        </div>
         <div class="avatar">CW</div>
     </div>
 
+    <!-- Hero -->
     <div class="hero">
         <div class="hero-title">Modular Section</div>
         <div class="hero-sub">Select the modular section where you are currently installing the rail.</div>
     </div>
 
+    <!-- Image Card -->
     <div class="image-card">
         <img src="modular.jpg" alt="Modular Diagram" class="instruction-img"
              onerror="this.parentElement.innerHTML='<div class=\'image-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'3\' y=\'3\' width=\'18\' height=\'18\' rx=\'2\'/><path d=\'M3 9h18M3 15h18M9 3v18\'/></svg><span>Modular diagram</span></div><div class=\'image-caption\'>Note: Each section requires its own rail</div>'">
         <div class="image-caption">Note: Each section requires its own rail</div>
     </div>
 
-    <div class="flag-link-wrap">
-        <button class="flag-link" onclick="openFlagModal()">
-            🚩 Flag Installation Blocker
-        </button>
-    </div>
-
-    <div class="sort-bar-wrap">
-        <div class="sort-bar">
-            <button class="sort-btn active" id="btn-uninstalled" onclick="setFilter('uninstalled')">Uninstalled</button>
-            <button class="sort-btn"        id="btn-flagged"     onclick="setFilter('flagged')">Flagged</button>
-            <button class="sort-btn"        id="btn-installed"   onclick="setFilter('installed')">Installed</button>
-            <button class="sort-btn"        id="btn-all"         onclick="setFilter('all')">All</button>
-        </div>
-    </div>
-
+    <!-- Selector Section -->
     <div class="selector-section">
         <div class="selector-group">
             <div class="selector-label">Section Number</div>
-            <div class="combobox">
+            <div class="combobox" id="modularCombobox">
                 <div class="combobox-input-wrap" id="modularInputWrap">
-                    <input class="combobox-input" id="modularInput" type="text" placeholder="1 – 30" autocomplete="off" maxlength="2">
-                    <svg class="combobox-chevron" id="modularChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                    <input class="combobox-input" id="modularInput" type="text"
+                           placeholder="1 – 30"
+                           autocomplete="off"
+                           maxlength="2">
+                    <svg class="combobox-chevron" id="modularChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 9l6 6 6-6"/>
+                    </svg>
                 </div>
                 <div class="combobox-dropdown" id="modularDropdown"></div>
             </div>
         </div>
+
+        <!-- Selected badge -->
         <div class="selected-badge" id="selectedBadge">
             <div class="badge-label">Selected Section</div>
             <div class="badge-value" id="badgeValue">—</div>
         </div>
+
+        <!-- Error message -->
         <div class="error-msg" id="errorMsg"></div>
     </div>
 
+    <!-- Nav Buttons -->
     <div class="nav-area">
-        <a href="page3.html" class="btn-back-nav">
+        <a href="page3.html" class="btn-back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             Back
         </a>
@@ -185,218 +378,130 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
         </button>
     </div>
-</div>
 
-<!-- Occupied modal -->
-<div class="modal-overlay" id="occupiedModal">
-    <div class="modal-sheet">
-        <div class="modal-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        </div>
-        <div class="modal-title">Section Already Installed</div>
-        <div class="modal-body">Section <span class="modal-id" id="occupiedSecId"></span> already has a rail installed. Do you want to replace it?</div>
-        <div class="modal-btns">
-            <button class="modal-cancel"  onclick="closeOccupied()">Cancel</button>
-            <button class="modal-confirm" onclick="confirmReplace()">Replace Rail</button>
-        </div>
-    </div>
-</div>
-
-<!-- Flag modal -->
-<div class="flag-overlay" id="flagModal">
-    <div class="flag-sheet">
-        <div class="flag-icon-wrap">🚩</div>
-        <div class="flag-title">Flag Installation Blocker</div>
-        <div class="flag-body">Describe what's preventing installation. A supervisor will review this flag.</div>
-        <div class="flag-field-label">Section (optional)</div>
-        <input type="text" class="flag-input" id="flagSecInput" placeholder="e.g. 7">
-        <div class="flag-field-label">Notes</div>
-        <textarea class="flag-input" id="flagNotes" rows="3" placeholder="e.g. Shelf bracket missing, can't mount rail"></textarea>
-        <div class="flag-btns">
-            <button class="flag-cancel" onclick="closeFlagModal()">Cancel</button>
-            <button class="flag-submit" onclick="submitFlag()">Submit Flag</button>
-        </div>
-    </div>
 </div>
 
 <script>
-    // Seeded section states per aisle
-    const SECTION_SEEDS = {
-        'A8':  { installed:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], flagged:{} },
-        'A9':  { installed:[1,2,3,4,5,6,7,8,9,10,11,12,13,14],       flagged:{} },
-        'A10': { installed:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], flagged:{} },
-        'A11': { installed:[1,2,3,5,6,7,8,10,11,12,13,14,15,16],     flagged:{ 4:'Shelf damage — bracket bent', 9:"Shelf damage — rail won't clip" } },
-        'A12': { installed:[], flagged:{} },
-        'A13': { installed:[], flagged:{} },
-        'A14': { installed:[1,2,3,4,5,7,8,9], flagged:{ 6:'Obstruction — display fixture blocking mount' } },
-        'A15': { installed:[], flagged:{} },
-        'A16': { installed:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], flagged:{} },
-        'A17': { installed:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], flagged:{} },
-        'A18': { installed:[1,2,3], flagged:{} },
-        'A19': { installed:[], flagged:{} },
-    };
-    const TOTAL_SECTIONS = 16;
+    const NUMBERS = Array.from({length: 30}, (_, i) => String(i + 1));
 
-    const aisle = sessionStorage.getItem('selectedAisle') || 'A13';
-    document.getElementById('aislePillValue').textContent = aisle;
-
-    function getSectionData() {
-        const seed = SECTION_SEEDS[aisle] || { installed:[], flagged:{} };
-        try {
-            const rt = JSON.parse(sessionStorage.getItem('sectionState_' + aisle) || 'null');
-            if (!rt) return seed;
-            return { installed:[...new Set([...seed.installed,...(rt.installed||[])])], flagged:Object.assign({},seed.flagged,rt.flagged||{}) };
-        } catch(e) { return seed; }
-    }
-
-    function saveSectionData(data) {
-        sessionStorage.setItem('sectionState_' + aisle, JSON.stringify(data));
-    }
-
-    function secStatus(sec, data) {
-        if (data.flagged[sec]) return 'flagged';
-        if (data.installed.includes(sec)) return 'installed';
-        return 'uninstalled';
-    }
-
-    function dotClass(s) { return { installed:'dot-installed', flagged:'dot-flagged' }[s] || 'dot-uninstalled'; }
-
-    let currentFilter = 'uninstalled';
     let selectedNumber = '';
-    let pendingSection = null;
 
-    function filteredSections() {
-        const data = getSectionData();
-        const all  = Array.from({length: TOTAL_SECTIONS}, (_, i) => i + 1);
-        if (currentFilter === 'all') return all;
-        return all.filter(n => {
-            const s = secStatus(n, data);
-            return s === currentFilter;
-        });
-    }
+    function buildCombobox({ inputId, wrapperId, chevronId, dropdownId, options, onSelect, transform }) {
+        const input    = document.getElementById(inputId);
+        const wrap     = document.getElementById(wrapperId);
+        const chevron  = document.getElementById(chevronId);
+        const dropdown = document.getElementById(dropdownId);
 
-    function renderDropdown(q) {
-        const dd   = document.getElementById('modularDropdown');
-        const data = getSectionData();
-        const nums = filteredSections().filter(n => String(n).startsWith(q));
-        dd.innerHTML = '';
-        if (nums.length === 0) { dd.innerHTML = '<div class="combobox-no-results">No sections in this category</div>'; return; }
-        nums.forEach(n => {
-            const s = secStatus(n, data);
-            const d = document.createElement('div');
-            d.className = 'combobox-option' + (String(n) === selectedNumber ? ' selected' : '');
-            d.innerHTML = `<span>${n}</span><span class="status-dot ${dotClass(s)}"></span>`;
-            d.addEventListener('mousedown', e => { e.preventDefault(); pickSection(n, s); });
-            dd.appendChild(d);
-        });
-    }
+        function renderOptions(filter) {
+            const q = filter.trim();
+            const matches = options.filter(o => o.startsWith(q));
+            dropdown.innerHTML = '';
 
-    function setFilter(f) {
-        currentFilter = f;
-        ['uninstalled','flagged','installed','all'].forEach(k =>
-            document.getElementById('btn-' + k).classList.toggle('active', k === f));
-        selectedNumber = '';
-        document.getElementById('modularInput').value = '';
-        updateBadge();
-        renderDropdown('');
-    }
+            if (matches.length === 0) {
+                dropdown.innerHTML = '<div class="combobox-no-results">No matches</div>';
+                return;
+            }
 
-    function pickSection(n, status) {
-        selectedNumber = String(n);
-        document.getElementById('modularInput').value = selectedNumber;
-        closeDropdown();
-        document.getElementById('modularInputWrap').classList.remove('error');
-        updateBadge();
-
-        if (status === 'installed') {
-            pendingSection = n;
-            document.getElementById('occupiedSecId').textContent = aisle + '-' + n;
-            document.getElementById('occupiedModal').classList.add('open');
+            matches.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'combobox-option' + (opt === onSelect._current ? ' selected' : '');
+                div.textContent = opt;
+                div.addEventListener('mousedown', e => {
+                    e.preventDefault();
+                    selectOption(opt);
+                });
+                dropdown.appendChild(div);
+            });
         }
+
+        function openDropdown() {
+            renderOptions(input.value);
+            dropdown.classList.add('open');
+            wrap.classList.add('open');
+            chevron.classList.add('rotated');
+        }
+
+        function closeDropdown() {
+            dropdown.classList.remove('open');
+            wrap.classList.remove('open');
+            chevron.classList.remove('rotated');
+        }
+
+        function selectOption(opt) {
+            onSelect._current = opt;
+            input.value = opt;
+            onSelect(opt);
+            closeDropdown();
+            wrap.classList.remove('error');
+            updateBadge();
+        }
+
+        input.addEventListener('focus', () => openDropdown());
+        input.addEventListener('blur',  () => setTimeout(closeDropdown, 150));
+
+        input.addEventListener('input', () => {
+            const val = transform ? transform(input.value) : input.value;
+            input.value = val;
+            onSelect._current = '';
+            onSelect('');
+            renderOptions(val);
+            if (!dropdown.classList.contains('open')) openDropdown();
+            updateBadge();
+        });
+
+        wrap.addEventListener('click', () => {
+            if (dropdown.classList.contains('open')) {
+                closeDropdown();
+            } else {
+                input.focus();
+                openDropdown();
+            }
+        });
     }
 
-    function openDropdown() {
-        renderDropdown(document.getElementById('modularInput').value);
-        document.getElementById('modularDropdown').classList.add('open');
-        document.getElementById('modularInputWrap').classList.add('open');
-        document.getElementById('modularChevron').classList.add('rotated');
-    }
+    function setNumber(val) { selectedNumber = val; }
+    setNumber._current = '';
 
-    function closeDropdown() {
-        document.getElementById('modularDropdown').classList.remove('open');
-        document.getElementById('modularInputWrap').classList.remove('open');
-        document.getElementById('modularChevron').classList.remove('rotated');
-    }
-
-    const input = document.getElementById('modularInput');
-    const wrap  = document.getElementById('modularInputWrap');
-    input.addEventListener('focus', openDropdown);
-    input.addEventListener('blur',  () => setTimeout(closeDropdown, 150));
-    input.addEventListener('input', () => {
-        const v = input.value.replace(/[^0-9]/g,'').slice(0,2);
-        input.value = v; selectedNumber = ''; updateBadge(); renderDropdown(v);
-        if (!document.getElementById('modularDropdown').classList.contains('open')) openDropdown();
+    buildCombobox({
+        inputId:    'modularInput',
+        wrapperId:  'modularInputWrap',
+        chevronId:  'modularChevron',
+        dropdownId: 'modularDropdown',
+        options:    NUMBERS,
+        onSelect:   setNumber,
+        transform:  v => v.replace(/[^0-9]/g, '').slice(0, 2)
     });
-    wrap.addEventListener('click', () => document.getElementById('modularDropdown').classList.contains('open') ? closeDropdown() : input.focus());
 
     function updateBadge() {
-        const show = !!selectedNumber;
-        document.getElementById('selectedBadge').classList.toggle('visible', show);
-        document.getElementById('badgeValue').textContent = show ? aisle + '-' + selectedNumber : '—';
+        const badge = document.getElementById('selectedBadge');
+        const value = document.getElementById('badgeValue');
+        if (selectedNumber) {
+            value.textContent = selectedNumber;
+            badge.classList.add('visible');
+        } else {
+            badge.classList.remove('visible');
+        }
         document.getElementById('errorMsg').textContent = '';
     }
 
-    // Occupied modal
-    function closeOccupied() {
-        document.getElementById('occupiedModal').classList.remove('open');
-        selectedNumber = ''; document.getElementById('modularInput').value = ''; updateBadge();
-        pendingSection = null;
-    }
-    function confirmReplace() {
-        document.getElementById('occupiedModal').classList.remove('open');
-        if (pendingSection) proceed();
-    }
-
     function validateAndGo() {
-        const wrap = document.getElementById('modularInputWrap');
-        if (!selectedNumber) { wrap.classList.add('error'); document.getElementById('errorMsg').textContent = 'Please select a valid section number.'; return; }
-        wrap.classList.remove('error');
-        proceed();
-    }
+        const wrap     = document.getElementById('modularInputWrap');
+        const errorMsg = document.getElementById('errorMsg');
 
-    function proceed() {
+        if (!selectedNumber) {
+            wrap.classList.add('error');
+            errorMsg.textContent = 'Please select a valid section number.';
+            return;
+        }
+
+        wrap.classList.remove('error');
+
+        // Save section context for use on the success page
         sessionStorage.setItem('selectedSection', selectedNumber);
+
         window.location.href = 'page5.html';
     }
-
-    // Flag modal
-    function openFlagModal() {
-        document.getElementById('flagSecInput').value = selectedNumber ? aisle + '-' + selectedNumber : '';
-        document.getElementById('flagNotes').value = '';
-        document.getElementById('flagModal').classList.add('open');
-    }
-    function closeFlagModal() { document.getElementById('flagModal').classList.remove('open'); }
-    function submitFlag() {
-        const notes = document.getElementById('flagNotes').value.trim();
-        if (!notes) { document.getElementById('flagNotes').focus(); return; }
-        const secRaw = document.getElementById('flagSecInput').value.trim();
-        const match  = secRaw.match(/(\d+)$/);
-        const secNum = match ? parseInt(match[1]) : null;
-        if (secNum) {
-            const data = getSectionData();
-            data.installed = data.installed.filter(s => s !== secNum);
-            data.flagged[secNum] = notes;
-            saveSectionData(data);
-        }
-        const flags = JSON.parse(sessionStorage.getItem('installFlags') || '[]');
-        flags.push({ aisle, section: secRaw || 'Unspecified', notes, ts: Date.now(), installer: 'CW' });
-        sessionStorage.setItem('installFlags', JSON.stringify(flags));
-        closeFlagModal();
-        selectedNumber = ''; document.getElementById('modularInput').value = ''; updateBadge();
-        renderDropdown('');
-    }
-
-    renderDropdown('');
 </script>
+
 </body>
 </html>

@@ -6,77 +6,338 @@
     <title>Vusion - Select Aisle</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; color: #111827; }
-        .phone-shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
 
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
-        .back-btn { width: 38px; height: 38px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 4px rgba(0,0,0,0.08); text-decoration: none; border: none; cursor: pointer; }
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #F2F3F7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #111827;
+        }
+
+        .phone-shell {
+            width: 100%;
+            max-width: 390px;
+            min-height: 100vh;
+            background: #F2F3F7;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Top bar ── */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px 8px;
+        }
+
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
         .back-btn svg { width: 18px; height: 18px; color: #111827; }
-        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
 
-        .hero { padding: 16px 20px 0; animation: fadeUp .4s ease both; }
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #2563EB;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            padding: 16px 20px 0;
+            animation: fadeUp 0.4s ease both;
+        }
         .hero-title { font-size: 24px; font-weight: 700; color: #111827; line-height: 1.2; }
         .hero-sub { font-size: 14px; color: #6B7280; margin-top: 4px; line-height: 1.5; }
 
-        .image-card { margin: 16px 20px 0; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.06); animation: fadeUp .4s .1s ease both; }
-        .aisle-img { width: 100%; height: auto; display: block; }
-        .image-caption { padding: 10px 16px 12px; font-size: 12px; color: #9CA3AF; font-weight: 500; text-align: center; }
-        .image-placeholder { width: 100%; height: 120px; background: linear-gradient(135deg,#e0e7ef,#c7d2e0); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        /* ── Aisle image card ── */
+        .image-card {
+            margin: 18px 20px 0;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            animation: fadeUp 0.4s 0.1s ease both;
+        }
+
+        .aisle-img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .image-caption {
+            padding: 10px 16px 12px;
+            font-size: 12px;
+            color: #9CA3AF;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .image-placeholder {
+            width: 100%;
+            height: 140px;
+            background: linear-gradient(135deg, #e0e7ef, #c7d2e0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
         .image-placeholder svg { width: 36px; height: 36px; color: #94A3B8; }
         .image-placeholder span { font-size: 12px; color: #94A3B8; font-weight: 500; }
 
-        .sort-bar-wrap { padding: 16px 20px 0; animation: fadeUp .4s .12s ease both; }
-        .sort-bar { display: flex; gap: 4px; background: #E5E7EB; border-radius: 12px; padding: 3px; }
-        .sort-btn { flex: 1; padding: 7px 4px; border: none; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: #6B7280; background: transparent; cursor: pointer; transition: background .18s, color .18s, box-shadow .18s; white-space: nowrap; }
-        .sort-btn.active { background: #fff; color: #111827; box-shadow: 0 1px 6px rgba(0,0,0,0.1); }
+        /* ── Selector section ── */
+        .selector-section {
+            padding: 18px 20px 0;
+            animation: fadeUp 0.4s 0.15s ease both;
+        }
 
-        .selector-section { padding: 16px 20px 0; animation: fadeUp .4s .15s ease both; }
-        .selector-row { display: flex; gap: 12px; }
-        .selector-group { flex: 1; display: flex; flex-direction: column; gap: 6px; }
-        .selector-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; padding-left: 4px; }
+        .selector-row {
+            display: flex;
+            gap: 12px;
+        }
 
-        .combobox { position: relative; }
-        .combobox-input-wrap { background: #fff; border: 1.5px solid #E5E7EB; border-radius: 14px; display: flex; align-items: center; padding: 0 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: border-color .15s, box-shadow .15s; cursor: text; }
-        .combobox-input-wrap.open, .combobox-input-wrap:focus-within { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
-        .combobox-input-wrap.error { border-color: #EF4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.1); }
-        .combobox-input { flex: 1; border: none; outline: none; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; color: #111827; background: transparent; padding: 13px 0; width: 100%; text-align: center; }
-        .combobox-input::placeholder { color: #9CA3AF; font-weight: 400; }
-        .combobox-chevron { width: 18px; height: 18px; color: #9CA3AF; transition: transform .2s; flex-shrink: 0; }
+        .selector-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .selector-label {
+            font-size: 11px;
+            font-weight: 700;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding-left: 4px;
+        }
+
+        /* ── Combobox ── */
+        .combobox {
+            position: relative;
+        }
+
+        .combobox-input-wrap {
+            background: #fff;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 14px;
+            display: flex;
+            align-items: center;
+            padding: 0 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: border-color 0.15s, box-shadow 0.15s;
+            cursor: text;
+        }
+
+        .combobox-input-wrap.open,
+        .combobox-input-wrap:focus-within {
+            border-color: #2563EB;
+            box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+        }
+
+        .combobox-input-wrap.error {
+            border-color: #EF4444;
+            box-shadow: 0 0 0 3px rgba(239,68,68,0.1);
+        }
+
+        .combobox-input {
+            flex: 1;
+            border: none;
+            outline: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: #111827;
+            background: transparent;
+            padding: 13px 0;
+            width: 100%;
+            text-align: center;
+        }
+
+        .combobox-input::placeholder {
+            color: #9CA3AF;
+            font-weight: 400;
+        }
+
+        .combobox-chevron {
+            width: 18px;
+            height: 18px;
+            color: #9CA3AF;
+            transition: transform 0.2s;
+            flex-shrink: 0;
+        }
+
         .combobox-chevron.rotated { transform: rotate(180deg); }
-        .combobox-dropdown { position: absolute; top: calc(100% + 6px); left: 0; right: 0; background: #fff; border: 1.5px solid #E5E7EB; border-radius: 14px; box-shadow: 0 8px 24px rgba(0,0,0,0.12); z-index: 100; max-height: 200px; overflow-y: auto; display: none; scroll-behavior: smooth; }
+
+        /* ── Dropdown list ── */
+        .combobox-dropdown {
+            position: absolute;
+            top: calc(100% + 6px);
+            left: 0;
+            right: 0;
+            background: #fff;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 14px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            z-index: 100;
+            max-height: 200px;
+            overflow-y: auto;
+            display: none;
+            scroll-behavior: smooth;
+        }
+
         .combobox-dropdown.open { display: block; }
-        .combobox-dropdown::-webkit-scrollbar { width: 4px; }
-        .combobox-dropdown::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 4px; }
-        .combobox-option { padding: 12px 16px; font-size: 15px; font-weight: 500; color: #111827; cursor: pointer; transition: background .1s; display: flex; align-items: center; justify-content: space-between; }
+
+        .combobox-option {
+            padding: 12px 16px;
+            font-size: 15px;
+            font-weight: 500;
+            color: #111827;
+            cursor: pointer;
+            transition: background 0.1s;
+            text-align: center;
+        }
+
         .combobox-option:first-child { border-radius: 13px 13px 0 0; }
         .combobox-option:last-child  { border-radius: 0 0 13px 13px; }
-        .combobox-option:hover, .combobox-option.highlighted { background: #EFF6FF; color: #2563EB; }
+
+        .combobox-option:hover,
+        .combobox-option.highlighted { background: #EFF6FF; color: #2563EB; }
+
         .combobox-option.selected { background: #2563EB; color: #fff; }
-        .combobox-no-results { padding: 14px 16px; font-size: 14px; color: #9CA3AF; text-align: center; }
-        .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
-        .dot-installed { background: #059669; } .dot-flagged { background: #D97706; } .dot-partial { background: #F59E0B; } .dot-uninstalled { background: #CBD5E1; }
+        .combobox-option.selected:hover { background: #1D4ED8; }
 
-        .selected-badge { margin-top: 14px; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; opacity: 0; pointer-events: none; transition: opacity .2s; }
-        .selected-badge.visible { opacity: 1; pointer-events: all; }
-        .badge-label { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .5px; }
-        .badge-value { font-size: 18px; font-weight: 800; color: #2563EB; }
-        .error-msg { min-height: 20px; font-size: 13px; color: #EF4444; font-weight: 500; margin-top: 8px; padding-left: 4px; }
+        .combobox-no-results {
+            padding: 14px 16px;
+            font-size: 14px;
+            color: #9CA3AF;
+            text-align: center;
+        }
 
-        .nav-area { display: flex; gap: 10px; padding: 20px; margin-top: auto; animation: fadeUp .4s .25s ease both; }
-        .btn-back-nav { padding: 15px 20px; background: #fff; color: #6B7280; border: 1.5px solid #E5E7EB; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none; transition: transform .15s; flex-shrink: 0; }
-        .btn-back-nav:active { transform: scale(.975); }
-        .btn-back-nav svg { width: 16px; height: 16px; }
-        .btn-next { flex: 1; padding: 15px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s, box-shadow .15s; box-shadow: 0 4px 14px rgba(37,99,235,0.3); }
-        .btn-next:active { transform: scale(.975); }
+        /* Scrollbar styling */
+        .combobox-dropdown::-webkit-scrollbar { width: 4px; }
+        .combobox-dropdown::-webkit-scrollbar-track { background: transparent; }
+        .combobox-dropdown::-webkit-scrollbar-thumb { background: #E5E7EB; border-radius: 4px; }
+
+        /* ── Selected badge ── */
+        .selected-badge {
+            margin-top: 16px;
+            background: #EFF6FF;
+            border: 1.5px solid #BFDBFE;
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            opacity: 0;
+            transform: translateY(6px);
+            transition: opacity 0.25s, transform 0.25s;
+        }
+
+        .selected-badge.visible { opacity: 1; transform: translateY(0); }
+
+        .badge-label { font-size: 11px; color: #93C5FD; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .badge-value { font-size: 22px; font-weight: 700; color: #2563EB; letter-spacing: 2px; }
+
+        /* ── Error message ── */
+        .error-msg {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #EF4444;
+            font-weight: 500;
+            text-align: center;
+            min-height: 20px;
+        }
+
+        /* ── Nav buttons ── */
+        .nav-area {
+            padding: 20px 20px 32px;
+            display: flex;
+            gap: 12px;
+            animation: fadeUp 0.4s 0.25s ease both;
+            margin-top: auto;
+        }
+
+        .btn-back {
+            padding: 15px 20px;
+            background: #fff;
+            color: #6B7280;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: transform 0.15s;
+            flex-shrink: 0;
+        }
+        .btn-back:active { transform: scale(0.975); }
+        .btn-back svg { width: 16px; height: 16px; }
+
+        .btn-next {
+            flex: 1;
+            padding: 15px;
+            background: #2563EB;
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+            box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+        }
+        .btn-next:active { transform: scale(0.975); box-shadow: 0 2px 6px rgba(37,99,235,0.2); }
+        .btn-next:disabled { background: #CBD5E1; box-shadow: none; cursor: not-allowed; }
         .btn-next svg { width: 18px; height: 18px; }
 
-        @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
+        /* ── Animations ── */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
+
 <div class="phone-shell">
 
+    <!-- Top bar -->
     <div class="top-bar">
         <a href="page2.html" class="back-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
@@ -84,58 +345,72 @@
         <div class="avatar">CW</div>
     </div>
 
+    <!-- Hero -->
     <div class="hero">
         <div class="hero-title">Select Aisle</div>
         <div class="hero-sub">Enter the alphanumeric code from the location marker at the edge of the top shelf.</div>
     </div>
 
+    <!-- Aisle Image Card -->
     <div class="image-card">
         <img src="aisle.png" alt="Aisle Diagram" class="aisle-img"
              onerror="this.parentElement.innerHTML='<div class=\'image-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><path d=\'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\'/></svg><span>Aisle diagram</span></div><div class=\'image-caption\'>Note: Each side is a separate aisle</div>'">
         <div class="image-caption">Note: Each side is a separate aisle</div>
     </div>
 
-    <div class="sort-bar-wrap">
-        <div class="sort-bar">
-            <button class="sort-btn active" id="btn-uninstalled" onclick="setFilter('uninstalled')">Uninstalled</button>
-            <button class="sort-btn"        id="btn-flagged"     onclick="setFilter('flagged')">Flagged</button>
-            <button class="sort-btn"        id="btn-installed"   onclick="setFilter('installed')">Installed</button>
-            <button class="sort-btn"        id="btn-all"         onclick="setFilter('all')">All</button>
-        </div>
-    </div>
-
+    <!-- Selector Section -->
     <div class="selector-section">
         <div class="selector-row">
+
+            <!-- Letter combobox -->
             <div class="selector-group">
                 <div class="selector-label">Letter</div>
-                <div class="combobox">
+                <div class="combobox" id="letterCombobox">
                     <div class="combobox-input-wrap" id="letterInputWrap">
-                        <input class="combobox-input" id="letterInput" type="text" placeholder="A – Z" autocomplete="off" maxlength="1">
-                        <svg class="combobox-chevron" id="letterChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        <input class="combobox-input" id="letterInput" type="text"
+                               placeholder="A – Z"
+                               autocomplete="off"
+                               maxlength="1">
+                        <svg class="combobox-chevron" id="letterChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
                     </div>
                     <div class="combobox-dropdown" id="letterDropdown"></div>
                 </div>
             </div>
+
+            <!-- Number combobox -->
             <div class="selector-group">
                 <div class="selector-label">Number</div>
-                <div class="combobox">
+                <div class="combobox" id="numberCombobox">
                     <div class="combobox-input-wrap" id="numberInputWrap">
-                        <input class="combobox-input" id="numberInput" type="text" placeholder="1 – 30" autocomplete="off" maxlength="2">
-                        <svg class="combobox-chevron" id="numberChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>
+                        <input class="combobox-input" id="numberInput" type="text"
+                               placeholder="1 – 30"
+                               autocomplete="off"
+                               maxlength="2">
+                        <svg class="combobox-chevron" id="numberChevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M6 9l6 6 6-6"/>
+                        </svg>
                     </div>
                     <div class="combobox-dropdown" id="numberDropdown"></div>
                 </div>
             </div>
+
         </div>
+
+        <!-- Selected aisle badge -->
         <div class="selected-badge" id="selectedBadge">
             <div class="badge-label">Selected Aisle</div>
             <div class="badge-value" id="badgeValue">—</div>
         </div>
+
+        <!-- Error message -->
         <div class="error-msg" id="errorMsg"></div>
     </div>
 
+    <!-- Nav Buttons -->
     <div class="nav-area">
-        <a href="page2.html" class="btn-back-nav">
+        <a href="page2.html" class="btn-back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
             Back
         </a>
@@ -146,178 +421,157 @@
     </div>
 
 </div>
+
 <script>
-    const ALL_LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
-    const ALL_NUMBERS = Array.from({length: 30}, (_, i) => String(i + 1));
+    const LETTERS = ['A','B','C','D','E','F','G','H','I','J','K','L','M',
+                     'N','O','P','Q','R','S','T','U','V','W','X','Y','Z'];
+    const NUMBERS = Array.from({length: 30}, (_, i) => String(i + 1));
 
-    let selectedLetter = '', selectedNumber = '', currentFilter = 'uninstalled';
+    let selectedLetter = '';
+    let selectedNumber = '';
 
-    // Aisle-level status rules:
-    // uninstalled = has at least one uninstalled section
-    // flagged     = has at least one flagged section
-    // installed   = every section is installed (complete)
-    // An aisle can qualify for multiple tabs simultaneously
-    const SECTION_SEEDS_P3 = {
-        'A8':  { installed:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], flagged:{} },
-        'A9':  { installed:[1,2,3,4,5,6,7,8,9,10,11,12,13,14],       flagged:{} },
-        'A10': { installed:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], flagged:{} },
-        'A11': { installed:[1,2,3,5,6,7,8,10,11,12,13,14,15,16],     flagged:{4:true, 9:true} },
-        'A12': { installed:[], flagged:{} },
-        'A13': { installed:[], flagged:{} },
-        'A14': { installed:[1,2,3,4,5,7,8,9], flagged:{6:true} },
-        'A15': { installed:[], flagged:{} },
-        'A16': { installed:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], flagged:{} },
-        'A17': { installed:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], flagged:{} },
-        'A18': { installed:[1,2,3], flagged:{} },
-        'A19': { installed:[], flagged:{} },
-    };
-    const TOTAL_SEC = 16;
+    function buildCombobox({ inputId, wrapperId, chevronId, dropdownId, options, onSelect, transform }) {
+        const input    = document.getElementById(inputId);
+        const wrap     = document.getElementById(wrapperId);
+        const chevron  = document.getElementById(chevronId);
+        const dropdown = document.getElementById(dropdownId);
 
-    function aisleQualifies(l, n) {
-        const key  = l + n;
-        const seed = SECTION_SEEDS_P3[key];
-        if (!seed) {
-            // Unknown aisle — treat as uninstalled
-            return currentFilter === 'all' || currentFilter === 'uninstalled';
+        function renderOptions(filter) {
+            const q = filter.trim().toUpperCase();
+            const matches = options.filter(o => o.startsWith(q));
+            dropdown.innerHTML = '';
+
+            if (matches.length === 0) {
+                dropdown.innerHTML = '<div class="combobox-no-results">No matches</div>';
+                return;
+            }
+
+            matches.forEach(opt => {
+                const div = document.createElement('div');
+                div.className = 'combobox-option' + (opt === onSelect._current ? ' selected' : '');
+                div.textContent = opt;
+                div.addEventListener('mousedown', e => {
+                    e.preventDefault();
+                    selectOption(opt);
+                });
+                dropdown.appendChild(div);
+            });
         }
-        const totalInstalled = seed.installed.length;
-        const totalFlagged   = Object.keys(seed.flagged).length;
-        const hasUninstalled = (totalInstalled + totalFlagged) < TOTAL_SEC;
-        const hasFlagged     = totalFlagged > 0;
-        const fullyInstalled = totalInstalled === TOTAL_SEC;
 
-        if (currentFilter === 'all')         return true;
-        if (currentFilter === 'uninstalled') return hasUninstalled;
-        if (currentFilter === 'flagged')     return hasFlagged;
-        if (currentFilter === 'installed')   return fullyInstalled;
-        return false;
-    }
+        function openDropdown() {
+            renderOptions(input.value);
+            dropdown.classList.add('open');
+            wrap.classList.add('open');
+            chevron.classList.add('rotated');
+        }
 
-    function filteredLetters() {
-        if (currentFilter === 'all') return ALL_LETTERS;
-        return ALL_LETTERS.filter(l => ALL_NUMBERS.some(n => aisleQualifies(l, n)));
-    }
+        function closeDropdown() {
+            dropdown.classList.remove('open');
+            wrap.classList.remove('open');
+            chevron.classList.remove('rotated');
+        }
 
-    function filteredNumbers(letter) {
-        if (!letter) return currentFilter === 'all' ? ALL_NUMBERS : [];
-        return ALL_NUMBERS.filter(n => aisleQualifies(letter, n));
-    }
+        function selectOption(opt) {
+            onSelect._current = opt;
+            input.value = opt;
+            onSelect(opt);
+            closeDropdown();
+            wrap.classList.remove('error');
+            updateBadge();
+        }
 
-    function dotClass(letter, number) {
-        const key  = letter + number;
-        const seed = SECTION_SEEDS_P3[key];
-        if (!seed) return 'dot-uninstalled';
-        const fullyInstalled = seed.installed.length === TOTAL_SEC;
-        const hasFlagged     = Object.keys(seed.flagged).length > 0;
-        const hasUninstalled = (seed.installed.length + Object.keys(seed.flagged).length) < TOTAL_SEC;
-        if (fullyInstalled)  return 'dot-installed';
-        if (hasFlagged)      return 'dot-flagged';
-        if (!hasUninstalled) return 'dot-installed';
-        return 'dot-partial';
-    }
+        input.addEventListener('focus', () => openDropdown());
+        input.addEventListener('blur',  () => setTimeout(closeDropdown, 150));
 
-    function renderLetterDropdown(q) {
-        const dd = document.getElementById('letterDropdown');
-        const matches = filteredLetters().filter(l => l.startsWith(q.toUpperCase()));
-        dd.innerHTML = matches.length ? '' : '<div class="combobox-no-results">No matches</div>';
-        matches.forEach(l => {
-            const d = document.createElement('div');
-            d.className = 'combobox-option' + (l === selectedLetter ? ' selected' : '');
-            d.innerHTML = `<span>${l}</span>`;
-            d.addEventListener('mousedown', e => { e.preventDefault(); pickLetter(l); });
-            dd.appendChild(d);
-        });
-    }
-
-    function renderNumberDropdown(q) {
-        const dd = document.getElementById('numberDropdown');
-        const matches = filteredNumbers(selectedLetter).filter(n => n.startsWith(q));
-        dd.innerHTML = matches.length ? '' : '<div class="combobox-no-results">No matches</div>';
-        matches.forEach(n => {
-            const d = document.createElement('div');
-            d.className = 'combobox-option' + (n === selectedNumber ? ' selected' : '');
-            d.innerHTML = `<span>${n}</span><span class="status-dot ${dotClass(selectedLetter, n)}"></span>`;
-            d.addEventListener('mousedown', e => { e.preventDefault(); pickNumber(n); });
-            dd.appendChild(d);
-        });
-    }
-
-    function pickLetter(l) {
-        selectedLetter = l; selectedNumber = '';
-        document.getElementById('letterInput').value = l;
-        document.getElementById('numberInput').value = '';
-        closeDropdown('letter'); updateBadge();
-    }
-
-    function pickNumber(n) {
-        selectedNumber = n;
-        document.getElementById('numberInput').value = n;
-        closeDropdown('number'); updateBadge();
-    }
-
-    function openDropdown(which) {
-        const dd = document.getElementById(which + 'Dropdown');
-        const wrap = document.getElementById(which + 'InputWrap');
-        const chev = document.getElementById(which + 'Chevron');
-        dd.classList.add('open'); wrap.classList.add('open'); chev.classList.add('rotated');
-    }
-
-    function closeDropdown(which) {
-        const dd = document.getElementById(which + 'Dropdown');
-        const wrap = document.getElementById(which + 'InputWrap');
-        const chev = document.getElementById(which + 'Chevron');
-        dd.classList.remove('open'); wrap.classList.remove('open'); chev.classList.remove('rotated');
-    }
-
-    function wireInput(which, render, transform) {
-        const input = document.getElementById(which + 'Input');
-        const wrap  = document.getElementById(which + 'InputWrap');
-        input.addEventListener('focus', () => { render(input.value); openDropdown(which); });
-        input.addEventListener('blur',  () => setTimeout(() => closeDropdown(which), 150));
         input.addEventListener('input', () => {
-            const v = transform ? transform(input.value) : input.value;
-            input.value = v; render(v);
-            if (!document.getElementById(which + 'Dropdown').classList.contains('open')) openDropdown(which);
+            const val = transform ? transform(input.value) : input.value;
+            input.value = val;
+            onSelect._current = '';
+            onSelect('');
+            renderOptions(val);
+            if (!dropdown.classList.contains('open')) openDropdown();
             updateBadge();
         });
-        wrap.addEventListener('click', () => {
-            document.getElementById(which + 'Dropdown').classList.contains('open') ? closeDropdown(which) : input.focus();
+
+        wrap.addEventListener('click', e => {
+            if (dropdown.classList.contains('open')) {
+                closeDropdown();
+            } else {
+                input.focus();
+                openDropdown();
+            }
         });
     }
 
-    wireInput('letter', renderLetterDropdown, v => v.toUpperCase().replace(/[^A-Z]/g,''));
-    wireInput('number', renderNumberDropdown, v => v.replace(/[^0-9]/g,'').slice(0,2));
+    function setLetter(val) { selectedLetter = val; }
+    function setNumber(val) { selectedNumber = val; }
+    setLetter._current = '';
+    setNumber._current = '';
 
-    function setFilter(f) {
-        currentFilter = f;
-        ['uninstalled','flagged','installed','all'].forEach(k =>
-            document.getElementById('btn-' + k).classList.toggle('active', k === f));
-        selectedLetter = ''; selectedNumber = '';
-        document.getElementById('letterInput').value = '';
-        document.getElementById('numberInput').value = '';
-        updateBadge();
-    }
+    buildCombobox({
+        inputId:   'letterInput',
+        wrapperId: 'letterInputWrap',
+        chevronId: 'letterChevron',
+        dropdownId:'letterDropdown',
+        options:   LETTERS,
+        onSelect:  setLetter,
+        transform: v => v.toUpperCase().replace(/[^A-Z]/g, '')
+    });
+
+    buildCombobox({
+        inputId:   'numberInput',
+        wrapperId: 'numberInputWrap',
+        chevronId: 'numberChevron',
+        dropdownId:'numberDropdown',
+        options:   NUMBERS,
+        onSelect:  setNumber,
+        transform: v => v.replace(/[^0-9]/g, '').slice(0, 2)
+    });
 
     function updateBadge() {
-        const show = selectedLetter && selectedNumber;
-        document.getElementById('selectedBadge').classList.toggle('visible', !!show);
-        document.getElementById('badgeValue').textContent = show ? selectedLetter + selectedNumber : '—';
+        const badge = document.getElementById('selectedBadge');
+        const value = document.getElementById('badgeValue');
+        if (selectedLetter && selectedNumber) {
+            value.textContent = selectedLetter + selectedNumber;
+            badge.classList.add('visible');
+        } else {
+            badge.classList.remove('visible');
+        }
         document.getElementById('errorMsg').textContent = '';
     }
 
     function validateAndGo() {
-        const lw = document.getElementById('letterInputWrap');
-        const nw = document.getElementById('numberInputWrap');
+        const letterWrap = document.getElementById('letterInputWrap');
+        const numberWrap = document.getElementById('numberInputWrap');
+        const errorMsg   = document.getElementById('errorMsg');
+
         let valid = true;
-        if (!selectedLetter) { lw.classList.add('error'); valid = false; } else lw.classList.remove('error');
-        if (!selectedNumber) { nw.classList.add('error'); valid = false; } else nw.classList.remove('error');
-        if (!valid) { document.getElementById('errorMsg').textContent = 'Please select a valid letter and number.'; return; }
+
+        if (!selectedLetter) {
+            letterWrap.classList.add('error');
+            valid = false;
+        } else {
+            letterWrap.classList.remove('error');
+        }
+
+        if (!selectedNumber) {
+            numberWrap.classList.add('error');
+            valid = false;
+        } else {
+            numberWrap.classList.remove('error');
+        }
+
+        if (!valid) {
+            errorMsg.textContent = 'Please select a valid letter and number.';
+            return;
+        }
+
+        // Save aisle context for use on the success page
         sessionStorage.setItem('selectedAisle', selectedLetter + selectedNumber);
+
         window.location.href = 'page4.html';
     }
-
-    renderLetterDropdown('');
-    renderNumberDropdown('');
 </script>
+
 </body>
 </html>

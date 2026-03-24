@@ -37,8 +37,15 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            gap: 10px;
             padding: 16px 20px 8px;
         }
+
+
+        /* Persistent selection pill */
+        .selected-pill { flex: 1; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 12px; padding: 7px 14px; display: flex; align-items: center; justify-content: space-between; min-width: 0; }
+        .pill-label { font-size: 10px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .4px; }
+        .pill-value { font-size: 16px; font-weight: 800; color: #2563EB; }
 
         .back-btn {
             width: 38px;
@@ -67,6 +74,7 @@
             font-size: 14px;
             font-weight: 700;
             letter-spacing: 0.5px;
+            flex-shrink: 0;
         }
 
         /* ── Hero ── */
