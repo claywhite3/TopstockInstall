@@ -4,413 +4,275 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Vusion - Confirm Location</title>
-    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            -webkit-tap-highlight-color: transparent;
-        }
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; }
+        
         body {
-            font-family: 'DM Sans', sans-serif;
-            background-color: #F2F3F7;
+            /* Clean light-grey/blue from index.html */
+            background-color: #f0f2f5;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
-            color: #111827;
+            color: #000;
         }
 
-        .phone-shell {
+        /* --- HEADER --- */
+        .header {
             width: 100%;
-            max-width: 390px;
-            min-height: 100vh;
-            background: #F2F3F7;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* ── Top bar ── */
-        .top-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 16px 20px 8px;
+            padding: 20px;
         }
-
-        .back-btn {
-            width: 38px;
-            height: 38px;
-            background: #fff;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-            text-decoration: none;
-            border: none;
-            cursor: pointer;
-        }
-        .back-btn svg { width: 18px; height: 18px; color: #111827; }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            background: #2563EB;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 14px;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        /* ── Hero ── */
-        .hero {
-            padding: 16px 20px 0;
-            animation: fadeUp 0.4s ease both;
-        }
-        .hero-title {
-            font-size: 24px;
-            font-weight: 700;
-            color: #111827;
-            line-height: 1.2;
-        }
-        .hero-sub {
-            font-size: 14px;
-            color: #6B7280;
-            margin-top: 4px;
-        }
-
-        /* ── Location card ── */
-        .location-card {
-            margin: 20px 20px 0;
-            background: #fff;
+        .back-icon { font-size: 24px; color: #000; text-decoration: none; cursor: pointer; }
+        .user-pill {
+            background-color: white;
+            padding: 6px 14px;
             border-radius: 20px;
-            overflow: hidden;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-            animation: fadeUp 0.4s 0.1s ease both;
-        }
-
-        .card-body {
-            padding: 20px 20px 16px;
-            display: flex;
-            align-items: flex-start;
-            gap: 14px;
-        }
-
-        .map-pin-wrap {
-            width: 44px;
-            height: 44px;
-            background: #EFF6FF;
-            border-radius: 12px;
             display: flex;
             align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
+            gap: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
         }
-        .map-pin-wrap svg { width: 22px; height: 22px; color: #2563EB; }
 
-        .store-info { flex: 1; }
-        .store-name { font-size: 17px; font-weight: 700; color: #111827; }
-        .store-address { font-size: 13px; color: #6B7280; margin-top: 3px; line-height: 1.5; }
+        /* --- CONTENT --- */
+        .container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
 
-        .map-img-container { width: 100%; height: 155px; overflow: hidden; }
+        /* Consistent Logo Box from Home Page */
+        .logo-box {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+        .logo-box img { width: 100%; height: 100%; object-fit: contain; }
+
+        h2 { 
+            font-size: 24px; 
+            font-weight: 700; 
+            margin-bottom: 25px; 
+            color: #000; 
+            text-align: center;
+        }
+
+        /* --- LOCATION CARD --- */
+        .location-card {
+            background-color: white;
+            width: 100%;
+            border-radius: 25px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .map-icon-large {
+            font-size: 40px;
+            color: #d93025; 
+            margin-bottom: 12px;
+        }
+
+        .store-name { font-size: 22px; font-weight: 700; color: #000; margin-bottom: 4px; }
+        .store-address { font-size: 16px; color: #666; margin-bottom: 20px; line-height: 1.4; text-align: center; }
+        
+        .map-img-container {
+            width: 100%;
+            height: 160px;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 1px solid #eee;
+        }
         .map-img { width: 100%; height: 100%; object-fit: cover; }
 
-        .map-placeholder {
+        /* --- BUTTONS --- */
+        .action-row {
             width: 100%;
-            height: 155px;
-            background: linear-gradient(135deg, #e0e7ef 0%, #c7d2e0 100%);
             display: flex;
             flex-direction: column;
+            gap: 15px;
             align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
-        .map-placeholder svg { width: 36px; height: 36px; color: #94A3B8; }
-        .map-placeholder span { font-size: 12px; color: #94A3B8; font-weight: 500; }
 
-        /* ── Not found state ── */
-        .not-found-body {
-            padding: 24px 20px;
+        /* Updated with heavier drop shadow */
+        .btn-confirm {
+            background-color: white;
+            border: 3px solid #f9d976;
+            padding: 16px;
+            border-radius: 18px;
+            font-weight: 700;
+            font-size: 18px;
+            /* Heavier box-shadow */
+            box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+            cursor: pointer;
+            width: 90%;
+            color: black;
+            text-decoration: none;
             display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 14px;
-        }
-        .not-found-icon {
-            width: 56px;
-            height: 56px;
-            background: #F3F4F6;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
+            transition: transform 0.1s, box-shadow 0.1s;
         }
-        .not-found-icon svg { width: 28px; height: 28px; color: #6B7280; }
-        .not-found-text { font-size: 14px; color: #6B7280; text-align: center; line-height: 1.6; }
 
-        /* ── GPS pill ── */
+        .btn-confirm:active { 
+            transform: scale(0.97);
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1); /* Reduced shadow on click */
+        }
+
+        .btn-retry {
+            background: transparent;
+            border: none;
+            font-weight: 600;
+            font-size: 16px;
+            cursor: pointer;
+            color: #666;
+            text-decoration: underline;
+        }
+
+        /* GPS Pill Style Update */
         .gps-pill {
-            background: #F8FAFC;
-            border: 1.5px solid #E5E7EB;
-            border-radius: 14px;
-            padding: 14px 16px;
+            background: #ffffff;
+            border: 2px solid #f9d976;
+            border-radius: 15px;
+            padding: 15px;
             width: 100%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            cursor: pointer;
-            transition: background 0.15s;
+            /* Added shadow to GPS pill too */
+            box-shadow: 0 4px 10px rgba(0,0,0,0.06);
         }
-        .gps-pill:active { background: #F1F5F9; }
-        .gps-label { font-size: 10px; color: #9CA3AF; text-transform: uppercase; font-weight: 700; letter-spacing: 0.5px; }
-        .gps-value { font-size: 17px; font-weight: 700; color: #111827; margin-top: 2px; font-family: monospace; }
+        .gps-label { font-size: 10px; color: #999; text-transform: uppercase; font-weight: 700; }
+        .gps-value { font-family: monospace; font-size: 18px; font-weight: 700; color: #333; }
 
-        .copy-btn {
-            width: 34px;
-            height: 34px;
-            background: #EFF6FF;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            transition: background 0.2s;
-        }
-        .copy-btn svg { width: 16px; height: 16px; color: #2563EB; }
-
-        /* ── Action area ── */
-        .action-area {
-            padding: 20px 20px 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            animation: fadeUp 0.4s 0.2s ease both;
-        }
-
-        .btn-confirm {
-            width: 100%;
-            padding: 17px;
-            background: #2563EB;
-            color: #fff;
-            border: none;
-            border-radius: 16px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            text-decoration: none;
-            transition: transform 0.15s ease, box-shadow 0.15s ease;
-            box-shadow: 0 4px 14px rgba(37,99,235,0.3);
-        }
-        .btn-confirm:active { transform: scale(0.975); box-shadow: 0 2px 6px rgba(37,99,235,0.2); }
-        .btn-confirm svg { width: 18px; height: 18px; }
-
-        .btn-retry {
-            width: 100%;
-            padding: 15px;
-            background: #fff;
-            color: #6B7280;
-            border: 1.5px solid #E5E7EB;
-            border-radius: 16px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 15px;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: transform 0.15s ease;
-        }
-        .btn-retry:active { transform: scale(0.975); }
-        .btn-retry svg { width: 16px; height: 16px; }
-
-        /* ── Loading overlay ── */
+        /* --- LOADING OVERLAY --- */
         .overlay {
             position: fixed;
             top: 0; left: 0;
             width: 100%; height: 100%;
-            background: rgba(242,243,247,0.92);
-            display: none;
+            background-color: rgba(255,255,255,0.9);
+            display: none; 
             flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 999;
-            gap: 16px;
-        }
-        .spinner-wrap {
-            width: 64px;
-            height: 64px;
-            background: #fff;
-            border-radius: 20px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
         .spinner {
-            width: 32px;
-            height: 32px;
-            border: 3px solid #E5E7EB;
-            border-top: 3px solid #2563EB;
+            width: 50px; height: 50px;
+            border: 5px solid #eee;
+            border-top: 5px solid #f9d976;
             border-radius: 50%;
-            animation: spin 0.9s linear infinite;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
-        .overlay-text { font-size: 15px; font-weight: 600; color: #374151; }
+        .overlay-text { color: #000; font-size: 18px; font-weight: 600; }
 
-        /* ── Animations ── */
-        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
     </style>
 </head>
 <body>
 
-<div class="phone-shell">
-
-    <!-- Top bar -->
-    <div class="top-bar">
-        <a href="index.html" class="back-btn">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
-        </a>
-        <div class="avatar">CW</div>
-    </div>
-
-    <!-- Hero -->
-    <div class="hero">
-        <div class="hero-title" id="pageTitle">Is this your location?</div>
-        <div class="hero-sub" id="heroSub">Confirm your store before continuing</div>
-    </div>
-
-    <!-- Location Card -->
-    <div class="location-card" id="mainCard">
-        <div class="card-body">
-            <div class="map-pin-wrap">
-                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
-            </div>
-            <div class="store-info">
-                <div class="store-name">Walmart Store #100</div>
-                <div class="store-address">406 S Walton Blvd<br>Bentonville, AR 72712</div>
-            </div>
-        </div>
-        <div class="map-img-container">
-            <img src="map-preview.jpg" alt="Map Location" class="map-img"
-                 onerror="this.parentElement.innerHTML='<div class=\'map-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><path d=\'M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z\'/><circle cx=\'12\' cy=\'10\' r=\'3\'/></svg><span>Map preview</span></div>'">
+    <div class="header">
+        <a href="index.html" class="back-icon"><i class="fas fa-chevron-left"></i></a>
+        <div class="user-pill">
+            <i class="fas fa-user"></i>
+            <span>installer01@email.com</span>
         </div>
     </div>
 
-    <!-- Action Area -->
-    <div class="action-area" id="actionRow">
-        <a href="page3.html" class="btn-confirm">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            Yes, Confirm Location
-        </a>
-        <button class="btn-retry" onclick="triggerRetry()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg>
-            No, Retry GPS
-        </button>
+    <div class="container">
+        <div class="logo-box">
+            <img src="topstock_logo.png" alt="Vusion Logo">
+        </div>
+
+        <h2 id="pageTitle">Is this your location?</h2>
+
+        <div class="location-card" id="mainCard">
+            <i class="fas fa-map-marker-alt map-icon-large"></i>
+            <div class="store-name">Walmart Store #100</div>
+            <div class="store-address">406 S Walton Blvd<br>Bentonville, AR 72712</div>
+            
+            <div class="map-img-container">
+                <img src="map-preview.jpg" alt="Map Location" class="map-img">
+            </div>
+        </div>
+
+        <div class="action-row" id="actionRow">
+            <button class="btn-confirm" onclick="window.location.href='page3.html'">
+                Yes, Confirm Location
+            </button>
+
+            <button class="btn-retry" onclick="triggerRetry()">
+                No, Retry GPS
+            </button>
+        </div>
     </div>
 
-</div>
-
-<!-- Loading Overlay -->
-<div class="overlay" id="loadingOverlay">
-    <div class="spinner-wrap">
+    <div class="overlay" id="loadingOverlay">
         <div class="spinner"></div>
+        <div class="overlay-text">Acquiring GPS Signal...</div>
     </div>
-    <div class="overlay-text" id="overlayText">Acquiring GPS Signal…</div>
-</div>
 
-<script>
-    let retryCount = 0;
+    <script>
+        let retryCount = 0;
 
-    function triggerRetry() {
-        retryCount++;
-        const overlay      = document.getElementById('loadingOverlay');
-        const overlayText  = document.getElementById('overlayText');
-        const mainCard     = document.getElementById('mainCard');
-        const pageTitle    = document.getElementById('pageTitle');
-        const heroSub      = document.getElementById('heroSub');
-        const actionRow    = document.getElementById('actionRow');
+        function triggerRetry() {
+            retryCount++;
+            const overlay = document.getElementById('loadingOverlay');
+            const mainCard = document.getElementById('mainCard');
+            const pageTitle = document.getElementById('pageTitle');
+            const actionRow = document.getElementById('actionRow');
 
-        if (retryCount === 1) {
-            overlayText.innerText = 'Acquiring GPS Signal…';
             overlay.style.display = 'flex';
+
             setTimeout(() => {
                 overlay.style.display = 'none';
-                heroSub.innerText = "Couldn't lock on — try once more?";
+
+                if (retryCount >= 2) {
+                    pageTitle.innerText = "Location Not Found";
+                    mainCard.innerHTML = `
+                        <i class="fas fa-satellite-dish" style="font-size: 40px; color: #555; margin-bottom: 15px;"></i>
+                        <p style="font-size: 15px; color: #666; margin-bottom: 20px; line-height: 1.4; text-align: center;">
+                            We can't find a store at your current location. Please use your raw coordinates to proceed.
+                        </p>
+                        <div class="gps-pill" onclick="copyCoords()">
+                            <div style="text-align: left;">
+                                <div class="gps-label">Raw GPS Data</div>
+                                <div class="gps-value" id="coordValue">36.3729, -94.2088</div>
+                            </div>
+                            <i class="far fa-copy" style="color: #f9d976;"></i>
+                        </div>
+                    `;
+
+                    actionRow.innerHTML = `
+                        <button class="btn-confirm" onclick="window.location.href='page3.html'">
+                            Continue with Coordinates
+                        </button>
+                    `;
+                }
             }, 2000);
-            return;
         }
 
-        overlayText.innerText = 'Acquiring GPS Signal…';
-        overlay.style.display = 'flex';
-
-        setTimeout(() => {
-            overlay.style.display = 'none';
-
-            pageTitle.innerText = 'Location Not Found';
-            heroSub.innerText   = 'Use your raw coordinates to proceed';
-
-            mainCard.innerHTML = `
-                <div class="not-found-body">
-                    <div class="not-found-icon">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <circle cx="12" cy="12" r="10"/>
-                            <path d="M12 8v4M12 16h.01"/>
-                        </svg>
-                    </div>
-                    <p class="not-found-text">
-                        We can't find a store at your current location.<br>
-                        Use your raw coordinates to proceed.
-                    </p>
-                    <div class="gps-pill" onclick="copyCoords()">
-                        <div>
-                            <div class="gps-label">Raw GPS Data</div>
-                            <div class="gps-value" id="coordValue">36.3729, -94.2088</div>
-                        </div>
-                        <div class="copy-btn" id="copyBtn">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                <rect x="9" y="9" width="13" height="13" rx="2"/>
-                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            `;
-
-            actionRow.innerHTML = `
-                <a href="page3.html" class="btn-confirm">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="18" height="18"><polyline points="20 6 9 17 4 12"/></svg>
-                    Continue with Coordinates
-                </a>
-            `;
-        }, 2000);
-    }
-
-    function copyCoords() {
-        const coords = document.getElementById('coordValue').innerText;
-        const btn = document.getElementById('copyBtn');
-        navigator.clipboard.writeText(coords).then(() => {
-            btn.style.background = '#D1FAE5';
-            btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>';
-            setTimeout(() => {
-                btn.style.background = '#EFF6FF';
-                btn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>';
-            }, 1500);
-        });
-    }
-</script>
+        function copyCoords() {
+            const coords = document.getElementById('coordValue').innerText;
+            navigator.clipboard.writeText(coords);
+            alert("Coordinates copied!");
+        }
+    </script>
 
 </body>
 </html>

@@ -35,9 +35,10 @@
         /* ── Top bar ── */
         .top-bar {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
             padding: 16px 20px 8px;
+            gap: 10px;
         }
 
         .avatar {
@@ -52,7 +53,30 @@
             font-size: 14px;
             font-weight: 700;
             letter-spacing: 0.5px;
+            flex-shrink: 0;
         }
+
+        .selected-pill { flex: 1; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 12px; padding: 7px 14px; display: flex; align-items: center; justify-content: space-between; min-width: 0; }
+        .pill-label { font-size: 10px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .4px; }
+        .pill-value { font-size: 16px; font-weight: 800; color: #2563EB; }
+
+        .skip-link { text-align: center; margin-top: -4px; }
+        .skip-link button { background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600; color: #9CA3AF; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+        .skip-link button:active { opacity: .6; }
+
+        .flag-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+        .flag-overlay.open { opacity: 1; pointer-events: all; }
+        .flag-sheet { background: #fff; border-radius: 24px 24px 0 0; padding: 24px 20px 36px; width: 100%; max-width: 390px; transform: translateY(100%); transition: transform .25s cubic-bezier(.4,0,.2,1); }
+        .flag-overlay.open .flag-sheet { transform: translateY(0); }
+        .flag-icon-wrap { width: 48px; height: 48px; background: #FFFBEB; border-radius: 14px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; font-size: 22px; }
+        .flag-title { font-size: 18px; font-weight: 800; color: #111827; }
+        .flag-body  { font-size: 14px; color: #6B7280; margin-top: 6px; line-height: 1.6; }
+        .flag-field-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; margin-top: 16px; margin-bottom: 6px; }
+        .flag-input { width: 100%; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 12px; padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #111827; outline: none; transition: border-color .15s; resize: none; }
+        .flag-input:focus { border-color: #D97706; box-shadow: 0 0 0 3px rgba(217,119,6,0.1); }
+        .flag-btns { display: flex; gap: 10px; margin-top: 16px; }
+        .flag-cancel { flex: 1; padding: 14px; background: #F3F4F6; color: #374151; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
+        .flag-submit { flex: 2; padding: 14px; background: #D97706; color: #fff; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(217,119,6,0.3); }
 
         /* ── Success graphic ── */
         .success-section {
@@ -247,6 +271,10 @@
 
     <!-- Top bar -->
     <div class="top-bar">
+        <div class="selected-pill">
+            <div class="pill-label">Selected</div>
+            <div class="pill-value" id="topPill">—</div>
+        </div>
         <div class="avatar">CW</div>
     </div>
 
@@ -297,6 +325,10 @@
             </div>
         </button>
 
+        <div class="skip-link">
+            <button onclick="openFlagModal()">Skip this rail</button>
+        </div>
+
         <!-- Start a whole new aisle -->
         <a href="page3.html" class="btn-new-aisle">
             <span>Start a New Aisle</span>
@@ -308,33 +340,87 @@
 </div>
 
 <script>
-    // Pull context from sessionStorage (set by earlier pages)
     const aisle   = sessionStorage.getItem('selectedAisle')   || '—';
     const section = sessionStorage.getItem('selectedSection') || '—';
 
-    // Display in the summary card — aisle is the full code (e.g. "G14"), section is the number
     document.getElementById('chipAisle').textContent   = aisle;
     document.getElementById('chipSection').textContent = section;
+    document.getElementById('topPill').textContent     = aisle + '-' + section;
 
-    // Work out the next modular section number
     const currentSection = parseInt(section, 10);
     const nextSection    = isNaN(currentSection) ? null : currentSection + 1;
 
     if (nextSection && nextSection <= 30) {
-        document.getElementById('nextRailLabel').textContent =
-            'Aisle ' + aisle + '  ·  Section ' + nextSection;
+        document.getElementById('nextRailLabel').textContent = 'Aisle ' + aisle + '  ·  Section ' + nextSection;
     } else {
         document.getElementById('nextRailLabel').textContent = 'Install Another Rail';
     }
 
     function goNextRail() {
-        // Pre-fill the next section in sessionStorage so page4 can pick it up
         if (nextSection && nextSection <= 30) {
             sessionStorage.setItem('selectedSection', String(nextSection));
         }
         window.location.href = 'page5.html';
     }
+
+    function openFlagModal() {
+        document.getElementById('flagSecInput').value = aisle + '-' + section;
+        document.getElementById('flagNotes').value = '';
+        document.getElementById('flagModal').classList.add('open');
+    }
+
+    function closeFlagModal() {
+        document.getElementById('flagModal').classList.remove('open');
+    }
+
+    function submitFlag() {
+        const notes = document.getElementById('flagNotes').value.trim();
+        if (!notes) { document.getElementById('flagNotes').focus(); return; }
+
+        // Store flag for supervisor review
+        const flags = JSON.parse(sessionStorage.getItem('installFlags') || '[]');
+        flags.push({ aisle, section, notes, ts: Date.now(), installer: 'CW' });
+        sessionStorage.setItem('installFlags', JSON.stringify(flags));
+
+        // Mark section as flagged in section state
+        try {
+            const key  = 'sectionState_' + aisle;
+            const data = JSON.parse(sessionStorage.getItem(key) || '{"installed":[],"flagged":{}}');
+            const sec  = parseInt(section, 10);
+            data.installed = (data.installed || []).filter(s => s !== sec);
+            data.flagged   = data.flagged || {};
+            data.flagged[sec] = notes;
+            sessionStorage.setItem(key, JSON.stringify(data));
+        } catch(e) {}
+
+        closeFlagModal();
+
+        // Advance to next section after flagging
+        if (nextSection && nextSection <= 30) {
+            sessionStorage.setItem('selectedSection', String(nextSection));
+            window.location.href = 'page5.html';
+        } else {
+            window.location.href = 'page3.html';
+        }
+    }
 </script>
+
+<!-- Flag modal -->
+<div class="flag-overlay" id="flagModal">
+    <div class="flag-sheet">
+        <div class="flag-icon-wrap">🚩</div>
+        <div class="flag-title">Skip This Rail</div>
+        <div class="flag-body">Describe what's preventing installation. A supervisor will review this flag.</div>
+        <div class="flag-field-label">Section</div>
+        <input type="text" class="flag-input" id="flagSecInput" readonly>
+        <div class="flag-field-label">Notes</div>
+        <textarea class="flag-input" id="flagNotes" rows="3" placeholder="e.g. Shelf bracket missing, can't mount rail"></textarea>
+        <div class="flag-btns">
+            <button class="flag-cancel" onclick="closeFlagModal()">Cancel</button>
+            <button class="flag-submit" onclick="submitFlag()">Submit &amp; Skip</button>
+        </div>
+    </div>
+</div>
 
 </body>
 </html>

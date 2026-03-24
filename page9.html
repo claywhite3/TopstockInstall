@@ -35,10 +35,17 @@
         /* ── Top bar ── */
         .top-bar {
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
+            gap: 10px;
             padding: 16px 20px 8px;
         }
+
+
+        /* Persistent selection pill */
+        .selected-pill { flex: 1; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 12px; padding: 7px 14px; display: flex; align-items: center; justify-content: space-between; min-width: 0; }
+        .pill-label { font-size: 10px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .4px; }
+        .pill-value { font-size: 16px; font-weight: 800; color: #2563EB; }
 
         .avatar {
             width: 40px;
@@ -52,6 +59,7 @@
             font-size: 14px;
             font-weight: 700;
             letter-spacing: 0.5px;
+            flex-shrink: 0;
         }
 
         /* ── Failure graphic ── */
@@ -225,6 +233,10 @@
 
     <!-- Top bar -->
     <div class="top-bar">
+        <div class="selected-pill">
+            <div class="pill-label">Selected</div>
+            <div class="pill-value" id="topPill">—</div>
+        </div>
         <div class="avatar">CW</div>
     </div>
 
@@ -283,6 +295,13 @@
     </div>
 
 </div>
+
+<script>
+    const aisle   = sessionStorage.getItem('selectedAisle')   || '—';
+    const section = sessionStorage.getItem('selectedSection') || '—';
+    const _pill = document.getElementById('topPill');
+    if (_pill) _pill.textContent = aisle + '-' + section;
+</script>
 
 </body>
 </html>

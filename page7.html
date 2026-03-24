@@ -37,12 +37,19 @@
         .top-bar {
             width: 100%;
             display: flex;
-            justify-content: flex-end;
+            justify-content: space-between;
             align-items: center;
+            gap: 10px;
             padding: 16px 20px 8px;
         }
 
         /* Avatar doubles as hidden trigger for intervention path */
+
+        /* Persistent selection pill */
+        .selected-pill { flex: 1; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 12px; padding: 7px 14px; display: flex; align-items: center; justify-content: space-between; min-width: 0; }
+        .pill-label { font-size: 10px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .4px; }
+        .pill-value { font-size: 16px; font-weight: 800; color: #2563EB; }
+
         .avatar {
             width: 40px;
             height: 40px;
@@ -187,6 +194,10 @@
 
     <!-- Top bar — avatar is hidden trigger for intervention/3rd-failure path -->
     <div class="top-bar">
+        <div class="selected-pill">
+            <div class="pill-label">Selected</div>
+            <div class="pill-value" id="topPill">—</div>
+        </div>
         <div class="avatar" onclick="triggerIntervention()">CW</div>
     </div>
 
