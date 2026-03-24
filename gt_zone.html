@@ -31,9 +31,6 @@
 
         .zone-letter { font-size: 18px; font-weight: 800; color: #2563EB; margin-top: 2px; }
         .zone-name   { font-size: 13px; font-weight: 800; color: #111827; line-height: 1.2; margin-top: 1px; }
-        .zone-desc   { font-size: 10px; color: #6B7280; font-weight: 500; line-height: 1.4; margin-top: 2px; }
-        .zone-dept-row { display: flex; flex-wrap: wrap; gap: 3px; margin-top: 5px; }
-        .zone-dept   { font-size: 9px; font-weight: 700; background: #EFF6FF; color: #2563EB; padding: 2px 5px; border-radius: 4px; }
         .zone-arrow  { position: absolute; top: 14px; right: 12px; }
         .zone-arrow svg { width: 13px; height: 13px; color: #D1D5DB; }
 
@@ -70,14 +67,14 @@
     };
 
     const ZONE_INFO = {
-        "A": { name: "Grocery",              desc: "Dry goods, dairy, frozen, candy & tobacco", depts: [92, 1, 90, 91] },
-        "E": { name: "Baby",                 desc: "Infant consumables, formula & apparel",      depts: [79, 26] },
-        "F": { name: "Stationery & Office",  desc: "Paper, pens, books & office supplies",       depts: [3, 21] },
-        "G": { name: "Health & Beauty",      desc: "HBA, skincare, cosmetics & wellness",        depts: [2, 46] },
-        "H": { name: "Home Goods",           desc: "Cook & dine, bedding, bath & large goods",   depts: [14, 22, 20, 77] },
-        "I": { name: "Toys & Entertainment", desc: "Toys, games, media, gaming & pets",          depts: [7, 5, 8] },
-        "J": { name: "Paper & Chemicals",    desc: "Household paper, cleaning & chemicals",      depts: [4, 13] },
-        "L": { name: "Tools & Hardware",     desc: "Hardware, paint, accessories & lawn",        depts: [11, 12] },
+        "A": {},
+        "E": {},
+        "F": {},
+        "G": {},
+        "H": {},
+        "I": {},
+        "J": {},
+        "L": {},
     };
 
     const store     = sessionStorage.getItem('gtStore')     || '0100';
@@ -91,7 +88,7 @@
     const grid  = document.getElementById('zoneGrid');
 
     Object.entries(zones).forEach(([letter, info], i) => {
-        const meta  = ZONE_INFO[letter] || { name: 'Zone ' + letter, desc: '', depts: [] };
+
         const delay = (i * 0.06).toFixed(2);
         const card  = document.createElement('a');
         card.href   = `gt_aisle.html?zone=${letter}`;
@@ -99,9 +96,6 @@
         card.style.animationDelay = `${delay}s`;
         card.innerHTML = `
             <div class="zone-letter">Zone ${letter}</div>
-            <div class="zone-name">${meta.name}</div>
-            <div class="zone-desc">${meta.desc}</div>
-            <div class="zone-dept-row"><span class="zone-dept">Dept ${ meta.depts.join(' · ') }</span></div>
             <div class="zone-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></div>
         `;
         grid.appendChild(card);
