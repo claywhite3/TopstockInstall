@@ -25,6 +25,31 @@
         .issue-pill svg { width: 10px; height: 10px; }
         @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
 
+
+        /* Add/Delete controls */
+        .add-delete-wrap { padding: 14px 20px 4px; }
+        .btn-add { width: 100%; padding: 15px; background: #fff; border: 1.5px solid #E5E7EB; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; color: #111827; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s, border-color .15s; }
+        .btn-add:active { transform: scale(.975); border-color: #2563EB; }
+        .btn-add svg { width: 16px; height: 16px; color: #2563EB; }
+        .btn-delete-link { display: block; text-align: left; padding: 6px 4px 0; background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 600; color: #9CA3AF; cursor: pointer; text-decoration: underline; text-underline-offset: 3px; }
+        .btn-delete-link:active { opacity: .6; }
+
+        /* Add/Delete modals */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+        .modal-overlay.open { opacity: 1; pointer-events: all; }
+        .modal-sheet { background: #fff; border-radius: 24px 24px 0 0; padding: 24px 20px 36px; width: 100%; max-width: 390px; transform: translateY(100%); transition: transform .25s cubic-bezier(.4,0,.2,1); }
+        .modal-overlay.open .modal-sheet { transform: translateY(0); }
+        .modal-title { font-size: 18px; font-weight: 800; color: #111827; margin-bottom: 6px; }
+        .modal-body  { font-size: 14px; color: #6B7280; line-height: 1.6; margin-bottom: 16px; }
+        .modal-input { width: 100%; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 12px; padding: 14px; font-family: 'DM Sans', sans-serif; font-size: 20px; font-weight: 700; color: #111827; outline: none; text-align: center; letter-spacing: 2px; transition: border-color .15s; }
+        .modal-input:focus { border-color: #2563EB; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .modal-input.delete-input:focus { border-color: #DC2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.1); }
+        .modal-btns { display: flex; gap: 10px; margin-top: 16px; }
+        .modal-cancel  { flex: 1; padding: 14px; background: #F3F4F6; color: #374151; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
+        .modal-confirm { flex: 2; padding: 14px; background: #2563EB; color: #fff; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
+        .modal-confirm.del { background: #DC2626; box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
+        .modal-error { font-size: 12px; color: #EF4444; font-weight: 600; margin-top: 6px; min-height: 18px; text-align: center; }
+
         .summary-card { margin:12px 20px 0; background:#fff; border-radius:20px; padding:16px 18px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
         .aisle-list   { padding:14px 20px 0; display:flex;flex-direction:column;gap:10px; }
         .eyebrow      { font-size:11px; font-weight:700; color:#2563EB; text-transform:uppercase; letter-spacing:.5px; }
@@ -119,22 +144,92 @@
             </div>
             
         </a>
+    <div class="add-delete-wrap">
+        <button class="btn-add" onclick="openAddModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+            Add Aisle
+        </button>
+        <button class="btn-delete-link" onclick="openDeleteModal()">delete aisle</button>
+    </div>
+
+    <div class="modal-overlay" id="addModal">
+        <div class="modal-sheet">
+            <div class="modal-title">Add Aisle</div>
+            <div class="modal-body">Enter the aisle number to add to this zone.</div>
+            <input class="modal-input" id="addInput" type="text" maxlength="2" placeholder="1–30" autocomplete="off" inputmode="numeric">
+            <div class="modal-error" id="addError"></div>
+            <div class="modal-btns">
+                <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                <button class="modal-confirm" onclick="submitAdd()">Add Aisle</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="deleteModal">
+        <div class="modal-sheet">
+            <div class="modal-title">Delete Aisle</div>
+            <div class="modal-body">Enter the aisle number to remove it from this zone.</div>
+            <input class="modal-input delete-input" id="deleteInput" type="text" maxlength="2" placeholder="1–30" autocomplete="off" inputmode="numeric">
+            <div class="modal-error" id="deleteError"></div>
+            <div class="modal-btns">
+                <button class="modal-cancel" onclick="closeModal('deleteModal')">Cancel</button>
+                <button class="modal-confirm del" onclick="submitDelete()">Delete Aisle</button>
+            </div>
+        </div>
     </div>
 </div>
 <script>
-    (function() {
-        const p    = new URLSearchParams(window.location.search);
-        const zone = (p.get('zone') || 'C').toUpperCase();
-        document.getElementById('hdrZone').textContent    = 'Zone ' + zone;
-        document.getElementById('hdrZoneSub').textContent = '4 aisles · 32 rails total';
-        // Update aisle row links AND visible labels to use the correct zone letter
-        document.querySelectorAll('a[href^="val_aisle.html"]').forEach((a, i) => {
-            const num = i + 1;
-            a.href = 'val_aisle.html?aisle=' + zone + num;
-            const label = a.querySelector('span[style*="font-size:16px"]');
-            if (label) label.textContent = 'Aisle ' + zone + num;
-        });
-    })();
+    const p    = new URLSearchParams(window.location.search);
+    const zone = (p.get('zone') || 'C').toUpperCase();
+    document.getElementById('hdrZone').textContent    = 'Zone ' + zone;
+    document.getElementById('hdrZoneSub').textContent = '4 aisles · 32 rails total';
+    document.querySelectorAll('a[href^="val_aisle.html"]').forEach((a, i) => {
+        const num = i + 1;
+        a.href = 'val_aisle.html?aisle=' + zone + num;
+        const label = a.querySelector('span[style*="font-size:16px"]');
+        if (label) label.textContent = 'Aisle ' + zone + num;
+    });
+
+    function openAddModal() {
+        document.getElementById('addInput').value = '';
+        document.getElementById('addError').textContent = '';
+        document.getElementById('addModal').classList.add('open');
+        setTimeout(() => document.getElementById('addInput').focus(), 300);
+    }
+    function openDeleteModal() {
+        document.getElementById('deleteInput').value = '';
+        document.getElementById('deleteError').textContent = '';
+        document.getElementById('deleteModal').classList.add('open');
+        setTimeout(() => document.getElementById('deleteInput').focus(), 300);
+    }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+    function submitAdd() {
+        const val = document.getElementById('addInput').value.trim().replace(/[^0-9]/g,'');
+        if (!val) { document.getElementById('addError').textContent = 'Please enter a valid aisle number.'; return; }
+        const key = 'addedAisles_' + zone;
+        const added = JSON.parse(sessionStorage.getItem(key) || '[]');
+        if (!added.includes(val)) { added.push(val); sessionStorage.setItem(key, JSON.stringify(added)); }
+        closeModal('addModal');
+        showToast('Aisle ' + zone + val + ' added');
+    }
+    function submitDelete() {
+        const val = document.getElementById('deleteInput').value.trim().replace(/[^0-9]/g,'');
+        if (!val) { document.getElementById('deleteError').textContent = 'Please enter an aisle number.'; return; }
+        const key = 'deletedAisles_' + zone;
+        const deleted = JSON.parse(sessionStorage.getItem(key) || '[]');
+        if (!deleted.includes(val)) { deleted.push(val); sessionStorage.setItem(key, JSON.stringify(deleted)); }
+        closeModal('deleteModal');
+        showToast('Aisle ' + zone + val + ' removed');
+    }
+    function showToast(msg) {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:300;opacity:0;transition:opacity .2s;white-space:nowrap;';
+        document.body.appendChild(t);
+        requestAnimationFrame(() => { t.style.opacity='1'; setTimeout(() => { t.style.opacity='0'; setTimeout(() => t.remove(), 200); }, 2000); });
+    }
+    document.getElementById('addInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
+    document.getElementById('deleteInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
 </script>
 </body>
 </html>
