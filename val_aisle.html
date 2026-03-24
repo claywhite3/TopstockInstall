@@ -14,7 +14,28 @@
         .btn-back:active { transform: scale(.93); }
         .btn-back svg { width: 16px; height: 16px; color: #374151; }
         .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
-        .s-complete { color: #16A34A; } .s-issues { color: #DC2626; } .s-notstarted { color: #9CA3AF; }
+        .s-flagged { color: #D97706; }
+        /* Supervisor review sheet */
+        .review-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 300; display: flex; align-items: flex-end; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+        .review-overlay.open { opacity: 1; pointer-events: all; }
+        .review-sheet { background: #fff; border-radius: 24px 24px 0 0; padding: 24px 20px 36px; width: 100%; max-width: 390px; transform: translateY(100%); transition: transform .25s cubic-bezier(.4,0,.2,1); }
+        .review-overlay.open .review-sheet { transform: translateY(0); }
+        .review-eyebrow { font-size: 11px; font-weight: 700; color: #D97706; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+        .review-title { font-size: 20px; font-weight: 800; color: #111827; }
+        .review-installer { font-size: 13px; color: #6B7280; margin-top: 4px; }
+        .review-note-box { background: #FFFBEB; border: 1.5px solid #FDE68A; border-radius: 14px; padding: 14px 16px; margin-top: 14px; }
+        .review-note-label { font-size: 10px; font-weight: 700; color: #D97706; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 6px; }
+        .review-note-text { font-size: 14px; color: #111827; line-height: 1.6; font-weight: 500; }
+        .review-divider { height: 1px; background: #F3F4F6; margin: 18px 0; }
+        .btn-cleared { width: 100%; padding: 15px; background: #2563EB; color: #fff; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 12px rgba(37,99,235,0.3); margin-bottom: 10px; transition: transform .15s; }
+        .btn-cleared:active { transform: scale(.975); }
+        .btn-cleared svg { width: 16px; height: 16px; }
+        .remove-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px; margin-top: 4px; }
+        .remove-textarea { width: 100%; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 12px; padding: 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #111827; outline: none; resize: none; transition: border-color .15s; }
+        .remove-textarea:focus { border-color: #DC2626; box-shadow: 0 0 0 3px rgba(220,38,38,0.1); }
+        .btn-remove { width: 100%; padding: 14px; background: #FEF2F2; color: #DC2626; border: 1.5px solid #FECACA; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; margin-top: 10px; transition: transform .15s; }
+        .btn-remove:active { transform: scale(.975); }
+        .btn-review-cancel { width: 100%; padding: 13px; background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: #9CA3AF; cursor: pointer; margin-top: 6px; }
         .issue-pill { display: inline-flex; align-items: center; gap: 3px; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 6px; }
         .pill-batt { background: #FEF2F2; color: #DC2626; } .pill-net { background: #EFF6FF; color: #2563EB; } .pill-cam { background: #FFF7ED; color: #F97316; }
         .issue-pill svg { width: 10px; height: 10px; }
@@ -137,17 +158,16 @@
             </div>
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
         </a>
-        <div  style="background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.24s ease both;opacity:0;text-decoration:none;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#9CA3AF;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S5</div>
+        <div onclick="openReview(5, 'Shelf bracket missing — rail won\'t clip into place. Tried two units both failed.', 'CW · Feb 10 · 11:32')" style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.24s ease both;opacity:0;cursor:pointer;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#D97706;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S5</div>
             <div style="flex:1;min-width:0;">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:14px;font-weight:700;color:#9CA3AF;">Section 5</span>
-                    <span class="s-notstarted" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Not Installed</span>
+                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 5</span>
+                    <span class="s-flagged" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;">🚩 Flagged</span>
                 </div>
-                <div style="font-size:11px;color:#D1D5DB;margin-top:2px;">Awaiting installation</div>
-                
+                <div style="font-size:11px;color:#D97706;margin-top:2px;font-weight:500;">Installation blocker reported · tap to review</div>
             </div>
-            
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
         </div>
         <div  style="background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.30s ease both;opacity:0;text-decoration:none;">
             <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#9CA3AF;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S6</div>
@@ -161,17 +181,16 @@
             </div>
             
         </div>
-        <div  style="background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.36s ease both;opacity:0;text-decoration:none;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#9CA3AF;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S7</div>
+        <div onclick="openReview(7, 'Display fixture blocking mount point — permanent endcap in the way, cannot remove.', 'CW · Feb 10 · 13:05')" style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.36s ease both;opacity:0;cursor:pointer;">
+            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#D97706;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S7</div>
             <div style="flex:1;min-width:0;">
                 <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:14px;font-weight:700;color:#9CA3AF;">Section 7</span>
-                    <span class="s-notstarted" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Not Installed</span>
+                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 7</span>
+                    <span class="s-flagged" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;">🚩 Flagged</span>
                 </div>
-                <div style="font-size:11px;color:#D1D5DB;margin-top:2px;">Awaiting installation</div>
-                
+                <div style="font-size:11px;color:#D97706;margin-top:2px;font-weight:500;">Installation blocker reported · tap to review</div>
             </div>
-            
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
         </div>
         <div  style="background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.42s ease both;opacity:0;text-decoration:none;">
             <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#9CA3AF;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S8</div>
@@ -226,6 +245,42 @@
     document.getElementById('hdrAisle').textContent = 'Aisle ' + aisle;
     document.getElementById('hdrZone').textContent  = 'Zone ' + zone.toUpperCase() + ' · 8 sections';
 
+    let _reviewSec = null;
+
+    function openReview(sec, note, installer) {
+        _reviewSec = sec;
+        document.getElementById('reviewTitle').textContent    = 'Section ' + sec + ' — Flagged';
+        document.getElementById('reviewInstaller').textContent = 'Flagged by ' + installer;
+        document.getElementById('reviewNote').textContent      = note;
+        document.getElementById('removeNotes').value           = '';
+        document.getElementById('reviewOverlay').classList.add('open');
+    }
+
+    function closeReview() {
+        document.getElementById('reviewOverlay').classList.remove('open');
+        _reviewSec = null;
+    }
+
+    function markCleared() {
+        showToast('Section ' + _reviewSec + ' — Blocker cleared, ready to install');
+        closeReview();
+    }
+
+    function removeSection() {
+        const notes = document.getElementById('removeNotes').value.trim();
+        if (!notes) { document.getElementById('removeNotes').focus(); return; }
+        showToast('Section ' + _reviewSec + ' removed from installation plan');
+        closeReview();
+    }
+
+    function showToast(msg) {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:400;opacity:0;transition:opacity .2s;white-space:nowrap;max-width:340px;text-align:center;';
+        document.body.appendChild(t);
+        requestAnimationFrame(() => { t.style.opacity='1'; setTimeout(() => { t.style.opacity='0'; setTimeout(() => t.remove(), 200); }, 2500); });
+    }
+
     function openAddModal() {
         document.getElementById('addInput').value = '';
         document.getElementById('addError').textContent = '';
@@ -257,15 +312,30 @@
         closeModal('deleteModal');
         showToast('Section ' + val + ' removed from Aisle ' + aisle);
     }
-    function showToast(msg) {
-        const t = document.createElement('div');
-        t.textContent = msg;
-        t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 20px;border-radius:12px;font-size:14px;font-weight:600;z-index:300;opacity:0;transition:opacity .2s;white-space:nowrap;';
-        document.body.appendChild(t);
-        requestAnimationFrame(() => { t.style.opacity='1'; setTimeout(() => { t.style.opacity='0'; setTimeout(() => t.remove(), 200); }, 2000); });
-    }
     document.getElementById('addInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
     document.getElementById('deleteInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
 </script>
+<!-- Supervisor review sheet -->
+<div class="review-overlay" id="reviewOverlay">
+    <div class="review-sheet">
+        <div class="review-eyebrow">🚩 Supervisor Review</div>
+        <div class="review-title" id="reviewTitle">Section 5 — Flagged</div>
+        <div class="review-installer" id="reviewInstaller">Flagged by CW · Feb 10 · 11:32</div>
+        <div class="review-note-box">
+            <div class="review-note-label">Installer Note</div>
+            <div class="review-note-text" id="reviewNote"></div>
+        </div>
+        <div class="review-divider"></div>
+        <button class="btn-cleared" onclick="markCleared()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Blocker Cleared — Ready to Install
+        </button>
+        <div class="remove-label">Remove from installation plan</div>
+        <textarea class="remove-textarea" id="removeNotes" rows="2" placeholder="Reason for removal (required)"></textarea>
+        <button class="btn-remove" onclick="removeSection()">Remove from Installation Plan</button>
+        <button class="btn-review-cancel" onclick="closeReview()">Cancel</button>
+    </div>
+</div>
+
 </body>
 </html>
