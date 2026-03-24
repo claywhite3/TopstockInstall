@@ -41,7 +41,7 @@
 <div class="shell">
 
     <div class="top-bar">
-        <a href="gt_location.html" class="btn-back">
+        <a href="flow_pick.html" class="btn-back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </a>
         <div class="avatar">CW</div>
@@ -77,9 +77,9 @@
         "L": {},
     };
 
-    const store     = sessionStorage.getItem('gtStore')     || '0100';
-    const storeName = sessionStorage.getItem('gtStoreName') || 'Store 0100';
-    const storeAddr = sessionStorage.getItem('gtStoreAddr') || '406 S Walton Blvd, Bentonville, AR';
+    const store     = sessionStorage.getItem('storeId')     || '0100';
+    const storeName = sessionStorage.getItem('storeName') || 'Store 0100';
+    const storeAddr = sessionStorage.getItem('storeAddr') || '406 S Walton Blvd, Bentonville, AR';
 
     document.getElementById('hdrStore').textContent = storeName;
     document.getElementById('hdrAddr').textContent  = storeAddr;

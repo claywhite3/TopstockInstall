@@ -61,7 +61,7 @@
 <body>
 <div class="shell">
     <div class="top-bar">
-        <a href="val_location.html" class="btn-back">
+        <a href="flow_pick.html" class="btn-back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </a>
         <div class="avatar">CW</div>
@@ -223,9 +223,9 @@
 </div>
 <script>
     (function() {
-        const store = sessionStorage.getItem('selectedStore') || '0100';
-        const name  = sessionStorage.getItem('selectedStoreName') || 'Store ' + store;
-        const addr  = sessionStorage.getItem('selectedStoreAddr') || '';
+        const store = sessionStorage.getItem('storeId') || '0100';
+        const name  = sessionStorage.getItem('storeName') || 'Store ' + store;
+        const addr  = sessionStorage.getItem('storeAddr') || '';
         document.getElementById('hdrStore').textContent   = name;
         document.getElementById('hdrAddress').textContent = addr;
     })();
