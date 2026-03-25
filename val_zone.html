@@ -48,6 +48,12 @@
         .modal-cancel  { flex: 1; padding: 14px; background: #F3F4F6; color: #374151; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; }
         .modal-confirm { flex: 2; padding: 14px; background: #2563EB; color: #fff; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer; box-shadow: 0 4px 12px rgba(37,99,235,0.3); }
         .modal-confirm.del { background: #DC2626; box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
+        .step { display: none; }
+        .step.active { display: block; }
+        .btn-skip { width: 100%; padding: 12px; background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: #9CA3AF; cursor: pointer; margin-top: 6px; }
+        .range-row { display: flex; align-items: center; gap: 8px; }
+        .range-row .modal-input { flex: 1; }
+        .range-dash { font-size: 20px; font-weight: 700; color: #9CA3AF; flex-shrink: 0; }
         .modal-error { font-size: 12px; color: #EF4444; font-weight: 600; margin-top: 6px; min-height: 18px; text-align: center; }
 
         .summary-card { margin:12px 20px 0; background:#fff; border-radius:20px; padding:16px 18px; box-shadow:0 2px 12px rgba(0,0,0,0.06); }
@@ -154,14 +160,36 @@
 
     <div class="modal-overlay" id="addModal">
         <div class="modal-sheet">
-            <div class="modal-title">Add Aisle</div>
-            <div class="modal-body">Enter the aisle number to add to this zone.</div>
-            <input class="modal-input" id="addInput" type="text" maxlength="2" placeholder="1–30" autocomplete="off" inputmode="numeric">
-            <div class="modal-error" id="addError"></div>
-            <div class="modal-btns">
-                <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
-                <button class="modal-confirm" onclick="submitAdd()">Add Aisle</button>
+
+            <!-- Step 1: Aisle number -->
+            <div class="step active" id="addStep1">
+                <div class="modal-title">Add Aisle</div>
+                <div class="modal-body">Enter the aisle number to add to this zone.</div>
+                <input class="modal-input" id="addInput" type="text" maxlength="2" placeholder="1–30" autocomplete="off" inputmode="numeric">
+                <div class="modal-error" id="addError"></div>
+                <div class="modal-btns">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                    <button class="modal-confirm" onclick="aisleGoStep2()">Next</button>
+                </div>
             </div>
+
+            <!-- Step 2: Sections -->
+            <div class="step" id="addStep2">
+                <div class="modal-title" id="aisleStep2Title">Sections in Aisle</div>
+                <div class="modal-body">Enter the section range. Start is pre-filled — just type the end number.</div>
+                <div class="range-row">
+                    <input class="modal-input" id="aisleSectionsFrom" type="text" maxlength="2" value="1" autocomplete="off" inputmode="numeric">
+                    <span class="range-dash">—</span>
+                    <input class="modal-input" id="aisleSections" type="text" maxlength="2" placeholder="16" autocomplete="off" inputmode="numeric">
+                </div>
+                <div class="modal-error" id="aisleSectionsError"></div>
+                <div class="modal-btns">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                    <button class="modal-confirm" onclick="aisleFinish(true)">Add Aisle</button>
+                </div>
+                <button class="btn-skip" onclick="aisleFinish(false)">Skip for now</button>
+            </div>
+
         </div>
     </div>
 
@@ -190,11 +218,57 @@
         if (label) label.textContent = 'Aisle ' + zone + num;
     });
 
+    let _newAisle = null;
+
+    function showAddStep(n) {
+        [1,2].forEach(i => document.getElementById('addStep'+i).classList.toggle('active', i===n));
+    }
+
     function openAddModal() {
+        _newAisle = null;
         document.getElementById('addInput').value = '';
         document.getElementById('addError').textContent = '';
+        document.getElementById('aisleSectionsFrom').value = '1';
+        document.getElementById('aisleSections').value = '';
+        document.getElementById('aisleSectionsError').textContent = '';
+        showAddStep(1);
         document.getElementById('addModal').classList.add('open');
         setTimeout(() => document.getElementById('addInput').focus(), 300);
+    }
+
+    function aisleGoStep2() {
+        const val = document.getElementById('addInput').value.trim().replace(/[^0-9]/g,'');
+        if (!val) { document.getElementById('addError').textContent = 'Please enter an aisle number.'; return; }
+        _newAisle = val;
+        document.getElementById('aisleStep2Title').textContent = 'Sections in Aisle ' + zone + val;
+        document.getElementById('aisleSectionsFrom').value = '1';
+        document.getElementById('aisleSections').value = '';
+        document.getElementById('aisleSectionsError').textContent = '';
+        showAddStep(2);
+        setTimeout(() => document.getElementById('aisleSections').focus(), 100);
+    }
+
+    function aisleFinish(withSections) {
+        if (withSections) {
+            const secFrom = parseInt(document.getElementById('aisleSectionsFrom').value) || 1;
+            const secTo   = parseInt(document.getElementById('aisleSections').value);
+            if (isNaN(secTo) || secTo < secFrom) { document.getElementById('aisleSectionsError').textContent = 'Enter a valid end section number.'; return; }
+            const secKey = 'addedSections_' + zone + _newAisle;
+            const sections = [];
+            for (let i = secFrom; i <= secTo; i++) sections.push(String(i));
+            sessionStorage.setItem(secKey, JSON.stringify(sections));
+        }
+        const key = 'addedAisles_' + zone;
+        const added = JSON.parse(sessionStorage.getItem(key) || '[]');
+        if (!added.includes(_newAisle)) { added.push(_newAisle); sessionStorage.setItem(key, JSON.stringify(added)); }
+        closeModal('addModal');
+        let msg = 'Aisle ' + zone + _newAisle + ' added';
+        if (withSections) {
+            const f = document.getElementById('aisleSectionsFrom').value || '1';
+            const t = document.getElementById('aisleSections').value;
+            msg += ' · Sections ' + f + '–' + t;
+        }
+        showToast(msg);
     }
     function openDeleteModal() {
         document.getElementById('deleteInput').value = '';
@@ -229,6 +303,8 @@
         requestAnimationFrame(() => { t.style.opacity='1'; setTimeout(() => { t.style.opacity='0'; setTimeout(() => t.remove(), 200); }, 2000); });
     }
     document.getElementById('addInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
+    document.getElementById('aisleSectionsFrom').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
+    document.getElementById('aisleSections').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
     document.getElementById('deleteInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
 </script>
 </body>
