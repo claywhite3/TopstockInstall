@@ -364,7 +364,8 @@
     }
 
     function openFlagModal() {
-        document.getElementById('flagSecInput').value = aisle + '-' + section;
+        const skipSec = nextSection && nextSection <= 30 ? nextSection : currentSection;
+        document.getElementById('flagSecInput').value = aisle + '-' + skipSec;
         document.getElementById('flagNotes').value = '';
         document.getElementById('flagModal').classList.add('open');
     }
@@ -377,37 +378,35 @@
         const notes = document.getElementById('flagNotes').value.trim();
         if (!notes) { document.getElementById('flagNotes').focus(); return; }
 
+        const skipSec    = nextSection && nextSection <= 30 ? nextSection : currentSection;
+        const afterSkip  = skipSec + 1;
+
         // Store flag for supervisor review
         const flags = JSON.parse(sessionStorage.getItem('installFlags') || '[]');
-        flags.push({ aisle, section: currentSection, notes, ts: Date.now(), installer: 'CW' });
+        flags.push({ aisle, section: skipSec, notes, ts: Date.now(), installer: 'CW' });
         sessionStorage.setItem('installFlags', JSON.stringify(flags));
 
-        // Mark section as flagged in section state
+        // Mark skipped section as flagged in section state
         try {
             const key  = 'sectionState_' + aisle;
             const data = JSON.parse(sessionStorage.getItem(key) || '{"installed":[],"flagged":{}}');
-            const sec  = parseInt(section, 10);
-            data.installed = (data.installed || []).filter(s => s !== sec);
+            data.installed = (data.installed || []).filter(s => s !== skipSec);
             data.flagged   = data.flagged || {};
-            data.flagged[sec] = notes;
+            data.flagged[skipSec] = notes;
             sessionStorage.setItem(key, JSON.stringify(data));
         } catch(e) {}
 
         closeFlagModal();
 
-        // Advance to next section — stay on page8, update pill and button
-        if (nextSection && nextSection <= 30) {
-            sessionStorage.setItem('selectedSection', String(nextSection));
-            // Update pill
-            document.getElementById('topPill').textContent = aisle + '-' + nextSection;
-            // Update next rail label
-            const afterNext = nextSection + 1;
+        // Advance past the skipped section
+        if (afterSkip <= 30) {
+            sessionStorage.setItem('selectedSection', String(afterSkip));
+            document.getElementById('topPill').textContent = aisle + '-' + afterSkip;
+            const afterAfter = afterSkip + 1;
             document.getElementById('nextRailLabel').textContent =
-                afterNext <= 30 ? 'Aisle ' + aisle + '  ·  Section ' + afterNext : 'Install Another Rail';
-            // Update flag section input for next potential skip
-            document.getElementById('flagSecInput').value = aisle + '-' + nextSection;
-            // Show toast
-            showToast('Section ' + aisle + '-' + nextSection + ' — flagged, now on section ' + nextSection);
+                afterAfter <= 30 ? 'Aisle ' + aisle + '  ·  Section ' + afterAfter : 'Install Another Rail';
+            document.getElementById('flagSecInput').value = aisle + '-' + afterSkip;
+            showToast('Section ' + aisle + '-' + skipSec + ' skipped — now on section ' + afterSkip);
         } else {
             showToast('All sections complete — returning to aisle select');
             setTimeout(() => { window.location.href = 'page3.html'; }, 1500);
