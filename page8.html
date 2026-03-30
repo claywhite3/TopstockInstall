@@ -402,10 +402,9 @@
         if (afterSkip <= 30) {
             sessionStorage.setItem('selectedSection', String(afterSkip));
             document.getElementById('topPill').textContent = aisle + '-' + afterSkip;
-            const afterAfter = afterSkip + 1;
             document.getElementById('nextRailLabel').textContent =
-                afterAfter <= 30 ? 'Aisle ' + aisle + '  ·  Section ' + afterAfter : 'Install Another Rail';
-            document.getElementById('flagSecInput').value = aisle + '-' + afterSkip;
+                'Aisle ' + aisle + '  ·  Section ' + afterSkip;
+            document.getElementById('flagSecInput').value = aisle + '-' + (afterSkip + 1 <= 30 ? afterSkip + 1 : afterSkip);
             showToast('Section ' + aisle + '-' + skipSec + ' skipped — now on section ' + afterSkip);
         } else {
             showToast('All sections complete — returning to aisle select');
