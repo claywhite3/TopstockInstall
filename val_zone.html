@@ -89,7 +89,7 @@
             <div style="height:100%;width:62%;background:#2563EB;border-radius:10px;"></div>
         </div>
     </div>
-    <div class="aisle-list">
+    <div class="aisle-list" id="aisleList">
         <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;">Aisles</div>
         
         <a href="val_aisle.html?aisle=C1" style="background:#fff;border:1.5px solid #86EFAC;text-decoration:none;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 2px 10px rgba(0,0,0,0.05);animation:fadeUp .35s 0.00s ease both;opacity:0;">
@@ -294,7 +294,8 @@
     let _aisleWizCurrentMod = 1;
 
     function showAddStep(n) {
-        [1,2,3,4,5,51,6].forEach(i => { const el = document.getElementById('addStep'+i); if(el) el.classList.toggle('active', i===n); });
+        [1,2,3,4,5,6].forEach(i => { const el = document.getElementById('addStep'+i); if(el) el.classList.toggle('active', i===n); });
+        const el51 = document.getElementById('addStep51'); if(el51) el51.classList.toggle('active', n===51);
     }
 
     function openAddModal() {
@@ -433,6 +434,33 @@
 
     function aisleWizSkipAll() { finishAisle(); }
 
+    function appendAisleRow(aisleNum) {
+        const list = document.getElementById('aisleList');
+        if (!list) return;
+        if (list.querySelector('[data-aisle="' + aisleNum + '"]')) return;
+        const row = document.createElement('a');
+        row.href = 'val_aisle.html?aisle=' + zone + aisleNum;
+        row.dataset.aisle = aisleNum;
+        row.style.cssText = 'background:#F9FAFB;border:1.5px dashed #D1D5DB;text-decoration:none;border-radius:16px;padding:14px 16px;display:flex;flex-direction:column;gap:8px;box-shadow:0 2px 10px rgba(0,0,0,0.05);animation:fadeUp .3s ease both;opacity:0;';
+        row.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:center;">
+                <span style="font-size:16px;font-weight:800;color:#111827;">Aisle ${zone}${aisleNum}</span>
+                <span class="s-notstarted" style="font-size:12px;font-weight:600;">New</span>
+            </div>
+            <div style="font-size:12px;font-weight:600;color:#9CA3AF;">0 sections installed</div>
+            <div style="height:5px;background:#E5E7EB;border-radius:10px;overflow:hidden;">
+                <div style="height:100%;width:0%;background:#D1D5DB;border-radius:10px;"></div>
+            </div>`;
+        list.appendChild(row);
+    }
+
+    function removeAisleRow(aisleNum) {
+        const list = document.getElementById('aisleList');
+        if (!list) return;
+        const existing = list.querySelector('[data-aisle="' + aisleNum + '"]');
+        if (existing) { existing.style.opacity = '0.3'; existing.style.pointerEvents = 'none'; }
+    }
+
     function finishAisle() {
         const key = 'addedAisles_' + zone;
         const added = JSON.parse(sessionStorage.getItem(key) || '[]');
@@ -446,6 +474,7 @@
         if (_aisleModAlignment) sessionStorage.setItem('modAlignment_' + zone + _newAisle, JSON.stringify(_aisleModAlignment));
         if (Object.keys(_aisleSubModMap).length > 0) sessionStorage.setItem('subMods_' + zone + _newAisle, JSON.stringify(_aisleSubModMap));
         closeModal('addModal');
+        appendAisleRow(_newAisle);
         let msg = 'Aisle ' + zone + _newAisle + ' added';
         if (_aisleOpp) msg += ' ↔ ' + zone + _aisleOpp;
         showToast(msg);
@@ -473,6 +502,7 @@
         const deleted = JSON.parse(sessionStorage.getItem(key) || '[]');
         if (!deleted.includes(val)) { deleted.push(val); sessionStorage.setItem(key, JSON.stringify(deleted)); }
         closeModal('deleteModal');
+        removeAisleRow(val);
         showToast('Aisle ' + zone + val + ' removed');
     }
     function showToast(msg) {

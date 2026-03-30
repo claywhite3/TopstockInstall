@@ -92,7 +92,7 @@
             <div class="stat-lbl">Active Issues</div>
         </div>
     </div>
-    <div class="zone-grid">
+    <div class="zone-grid" id="zoneGrid">
         
             <a href="val_zone.html?zone=A" style="background:#F0FDF4;border:1.5px solid #86EFAC;text-decoration:none;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:7px;box-shadow:0 2px 10px rgba(0,0,0,0.05);animation:fadeUp .35s 0s ease both;opacity:0;">
                 <div style="display:flex;justify-content:space-between;align-items:flex-start;">
@@ -352,6 +352,7 @@
 
     function showStep(n) {
         [1,2,3,4,5,6].forEach(i => { const el = document.getElementById('step'+i); if(el) el.classList.toggle('active', i===n); });
+        const el51 = document.getElementById('step51'); if(el51) el51.classList.toggle('active', n===51);
     }
 
     function openAddModal() {
@@ -403,6 +404,34 @@
         setTimeout(() => document.getElementById('oppSecondAisle').focus(), 100);
     }
 
+    function appendZoneCard(letter) {
+        const grid = document.getElementById('zoneGrid');
+        if (!grid) return;
+        // Don't add if already present
+        if (grid.querySelector('[data-zone="' + letter + '"]')) return;
+        const card = document.createElement('a');
+        card.href = 'val_zone.html?zone=' + letter;
+        card.dataset.zone = letter;
+        card.style.cssText = 'background:#F9FAFB;border:1.5px solid #E5E7EB;text-decoration:none;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:7px;box-shadow:0 2px 10px rgba(0,0,0,0.05);animation:fadeUp .35s ease both;opacity:0;';
+        card.innerHTML = `
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+                <span style="font-size:19px;font-weight:800;color:#111827;">Zone ${letter}</span>
+                <span class="s-notstarted"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg></span>
+            </div>
+            <div style="font-size:12px;font-weight:600;color:#9CA3AF;">New — no rails yet</div>
+            <div style="height:5px;background:#E5E7EB;border-radius:10px;overflow:hidden;">
+                <div style="height:100%;width:0%;background:#D1D5DB;border-radius:10px;"></div>
+            </div>`;
+        grid.appendChild(card);
+    }
+
+    function removeZoneCard(letter) {
+        const grid = document.getElementById('zoneGrid');
+        if (!grid) return;
+        const existing = grid.querySelector('[data-zone="' + letter + '"]');
+        if (existing) { existing.style.opacity = '0.3'; existing.style.pointerEvents = 'none'; }
+    }
+
     function finishAdd() {
         const aisleFromVal = parseInt(document.getElementById('aisleFrom').value);
         const aisleToVal   = parseInt(document.getElementById('aisleTo').value);
@@ -448,6 +477,7 @@
         }
 
         closeModal('addModal');
+        appendZoneCard(_newZone);
         let msg = 'Zone ' + _newZone + ' added · Aisles ' + aisleFromVal + '–' + aisleToVal;
         if (_secRange) msg += ' · Sections ' + _secRange.from + '–' + _secRange.to;
         showToast(msg);
@@ -580,6 +610,7 @@
         const deleted = JSON.parse(sessionStorage.getItem('deletedZones') || '[]');
         if (!deleted.includes(val)) { deleted.push(val); sessionStorage.setItem('deletedZones', JSON.stringify(deleted)); }
         closeModal('deleteModal');
+        removeZoneCard(val);
         showToast('Zone ' + val + ' removed');
     }
     function showToast(msg) {
