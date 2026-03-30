@@ -89,6 +89,7 @@
         <div class="eyebrow">Aisle Detail</div>
         <div style="font-size:22px;font-weight:800;color:#111827;margin-top:2px;" id="hdrAisle">Aisle C3</div>
         <div style="font-size:13px;color:#6B7280;font-weight:500;margin-top:1px;" id="hdrZone">Zone C · 8 sections</div>
+        <div style="font-size:11px;color:#9CA3AF;font-weight:500;margin-top:3px;" id="hdrOpposing"></div>
     </div>
     <div class="summary-card">
         <div style="height:8px;background:#E5E7EB;border-radius:10px;overflow:hidden;margin-bottom:10px;">
@@ -244,6 +245,13 @@
     const zone  = aisle.replace(/[^A-Z]/gi, '')[0] || 'C';
     document.getElementById('hdrAisle').textContent = 'Aisle ' + aisle;
     document.getElementById('hdrZone').textContent  = 'Zone ' + zone.toUpperCase() + ' · 8 sections';
+    // Show opposing aisle if stored
+    try {
+        const oppMap = JSON.parse(sessionStorage.getItem('opposingAisles_' + zone.toUpperCase()) || '{}');
+        const oppNum = oppMap[aisle.replace(/[^0-9]/g,'')] || oppMap[aisle];
+        const oppEl  = document.getElementById('hdrOpposing');
+        if (oppEl) oppEl.textContent = oppNum ? 'Opposing aisle: ' + zone.toUpperCase() + oppNum : '';
+    } catch(e) {}
 
     let _reviewSec = null;
 

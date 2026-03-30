@@ -50,6 +50,7 @@
         .modal-confirm.del { background: #DC2626; box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
         .step { display: none; }
         .step.active { display: block; }
+        #aisleWizYes.active, #aisleWizNo.active { background: #EFF6FF; border-color: #2563EB; color: #2563EB; }
         .btn-skip { width: 100%; padding: 12px; background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: #9CA3AF; cursor: pointer; margin-top: 6px; }
         .range-row { display: flex; align-items: center; gap: 8px; }
         .range-row .modal-input { flex: 1; }
@@ -190,6 +191,71 @@
                 <button class="btn-skip" onclick="aisleFinish(false)">Skip for now</button>
             </div>
 
+            <!-- Step 3: Opposing aisle -->
+            <div class="step" id="addStep3">
+                <div class="modal-title">Opposing Aisle</div>
+                <div class="modal-body">Aisle <strong id="aisleOppLabel"></strong> opposes which aisle number?</div>
+                <input class="modal-input" id="aisleOppInput" type="text" maxlength="2" placeholder="e.g. 9" autocomplete="off" inputmode="numeric">
+                <div class="modal-error" id="aisleOppError"></div>
+                <div class="modal-btns" style="margin-top:16px;">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                    <button class="modal-confirm" onclick="aisleGoStep4()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 4: Mod alignment yes/no -->
+            <div class="step" id="addStep4">
+                <div class="modal-title">Mod Alignment</div>
+                <div class="modal-body">For <strong><span id="aislePairDisplay"></span></strong> — do opposing mods share the same number?</div>
+                <div class="modal-btns" style="margin-top:16px;">
+                    <button class="modal-cancel" onclick="aisleModAlignNo()">No — different</button>
+                    <button class="modal-confirm" onclick="aisleModAlignYes()">Yes — same</button>
+                </div>
+            </div>
+
+            <!-- Step 4b: Mod offsets -->
+            <div class="step" id="addStep51">
+                <div class="modal-title">Mod Starting Numbers</div>
+                <div class="modal-body">Enter the starting mod number for each aisle.</div>
+                <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:4px;">
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="font-size:13px;font-weight:700;color:#374151;width:60px;" id="aisleOffsetLabelA"></div>
+                        <input class="modal-input" id="aisleOffsetA" type="text" maxlength="2" placeholder="1" autocomplete="off" inputmode="numeric" style="flex:1;">
+                    </div>
+                    <div style="display:flex;align-items:center;gap:10px;">
+                        <div style="font-size:13px;font-weight:700;color:#374151;width:60px;" id="aisleOffsetLabelB"></div>
+                        <input class="modal-input" id="aisleOffsetB" type="text" maxlength="2" placeholder="1" autocomplete="off" inputmode="numeric" style="flex:1;">
+                    </div>
+                </div>
+                <div class="modal-error" id="aisleAlignError"></div>
+                <div class="modal-btns" style="margin-top:16px;">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                    <button class="modal-confirm" onclick="aisleOffsetNext()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 6: Sub-mod wizard -->
+            <div class="step" id="addStep6">
+                <div style="height:4px;background:#E5E7EB;border-radius:4px;margin-bottom:16px;overflow:hidden;">
+                    <div id="aisleWizProgress" style="height:100%;background:#2563EB;border-radius:4px;transition:width .3s;width:0%;"></div>
+                </div>
+                <div style="font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;" id="aisleWizStep">1 of 8</div>
+                <div class="modal-title" id="aisleWizSecNum">Section 1</div>
+                <div class="modal-body">Starts at mod <strong id="aisleWizModStart">1</strong>. Does this section have sub-mods?</div>
+                <div style="display:flex;gap:8px;margin:12px 0;">
+                    <button id="aisleWizYes" onclick="aisleWizToggleYes()" style="flex:1;padding:12px;border-radius:12px;border:1.5px solid #E5E7EB;background:#F9FAFB;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:#374151;cursor:pointer;transition:all .15s;">Yes</button>
+                    <button id="aisleWizNo"  onclick="aisleWizToggleNo()"  style="flex:1;padding:12px;border-radius:12px;border:1.5px solid #E5E7EB;background:#F9FAFB;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:#374151;cursor:pointer;transition:all .15s;">No</button>
+                </div>
+                <div id="aisleWizSubInput" style="display:none;margin-bottom:4px;">
+                    <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Number of sub-mods</div>
+                    <input class="modal-input" id="aisleWizCount" type="text" maxlength="2" placeholder="e.g. 4" autocomplete="off" inputmode="numeric">
+                </div>
+                <div class="modal-error" id="aisleWizError"></div>
+                <div class="modal-btns" style="margin-top:12px;">
+                    <button class="modal-cancel" onclick="aisleWizSkipAll()">Skip all</button>
+                    <button class="modal-confirm" onclick="aisleWizNext()">Next</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -218,14 +284,22 @@
         if (label) label.textContent = 'Aisle ' + zone + num;
     });
 
-    let _newAisle = null;
+    let _newAisle        = null;
+    let _aisleSecRange   = null;
+    let _aisleOpp        = null;
+    let _aisleModAlignment = null;
+    let _aisleSubModMap  = {};
+    let _aisleWizSections = [];
+    let _aisleWizIndex   = 0;
+    let _aisleWizCurrentMod = 1;
 
     function showAddStep(n) {
-        [1,2].forEach(i => document.getElementById('addStep'+i).classList.toggle('active', i===n));
+        [1,2,3,4,5,51,6].forEach(i => { const el = document.getElementById('addStep'+i); if(el) el.classList.toggle('active', i===n); });
     }
 
     function openAddModal() {
         _newAisle = null;
+        _aisleSecRange = null; _aisleOpp = null; _aisleModAlignment = null; _aisleSubModMap = {};
         document.getElementById('addInput').value = '';
         document.getElementById('addError').textContent = '';
         document.getElementById('aisleSectionsFrom').value = '1';
@@ -253,21 +327,127 @@
             const secFrom = parseInt(document.getElementById('aisleSectionsFrom').value) || 1;
             const secTo   = parseInt(document.getElementById('aisleSections').value);
             if (isNaN(secTo) || secTo < secFrom) { document.getElementById('aisleSectionsError').textContent = 'Enter a valid end section number.'; return; }
+            _aisleSecRange = { from: secFrom, to: secTo };
             const secKey = 'addedSections_' + zone + _newAisle;
             const sections = [];
             for (let i = secFrom; i <= secTo; i++) sections.push(String(i));
             sessionStorage.setItem(secKey, JSON.stringify(sections));
         }
+        // Go to step 3 — opposing aisle
+        document.getElementById('aisleOppLabel').textContent = zone + _newAisle;
+        document.getElementById('aisleOppInput').value = '';
+        document.getElementById('aisleOppError').textContent = '';
+        showAddStep(3);
+        setTimeout(() => document.getElementById('aisleOppInput').focus(), 100);
+    }
+
+    function aisleGoStep4() {
+        const opp = parseInt(document.getElementById('aisleOppInput').value);
+        if (isNaN(opp) || opp < 1) { document.getElementById('aisleOppError').textContent = 'Enter the opposing aisle number.'; return; }
+        _aisleOpp = String(opp);
+        document.getElementById('aislePairDisplay').textContent = zone + _newAisle + ' ↔ ' + zone + opp;
+        showAddStep(4);
+    }
+
+    function aisleModAlignYes() {
+        _aisleModAlignment = { sameNumbers: true };
+        startAisleSubModWizard();
+    }
+
+    function aisleModAlignNo() {
+        _aisleModAlignment = { sameNumbers: false };
+        document.getElementById('aisleOffsetLabelA').textContent = zone + _newAisle;
+        document.getElementById('aisleOffsetLabelB').textContent = zone + _aisleOpp;
+        document.getElementById('aisleOffsetA').value = '';
+        document.getElementById('aisleOffsetB').value = '';
+        document.getElementById('aisleAlignError').textContent = '';
+        showAddStep(51);
+    }
+
+    function aisleOffsetNext() {
+        const a = parseInt(document.getElementById('aisleOffsetA').value);
+        const b = parseInt(document.getElementById('aisleOffsetB').value);
+        if (isNaN(a) || isNaN(b)) { document.getElementById('aisleAlignError').textContent = 'Enter starting mod numbers for both aisles.'; return; }
+        _aisleModAlignment.offsets = { a, b };
+        startAisleSubModWizard();
+    }
+
+    function startAisleSubModWizard() {
+        if (!_aisleSecRange) { finishAisle(); return; }
+        _aisleSubModMap = {};
+        _aisleWizSections = [];
+        for (let i = _aisleSecRange.from; i <= _aisleSecRange.to; i++) _aisleWizSections.push(i);
+        _aisleWizIndex = 0;
+        _aisleWizCurrentMod = _aisleModAlignment && _aisleModAlignment.offsets ? _aisleModAlignment.offsets.a : 1;
+        showAisleWizardSection();
+        showAddStep(6);
+    }
+
+    function showAisleWizardSection() {
+        const sec = _aisleWizSections[_aisleWizIndex];
+        const total = _aisleWizSections.length;
+        const pct   = Math.round((_aisleWizIndex / total) * 100);
+        document.getElementById('aisleWizProgress').style.width = pct + '%';
+        document.getElementById('aisleWizStep').textContent = (_aisleWizIndex+1) + ' of ' + total;
+        document.getElementById('aisleWizSecNum').textContent = 'Section ' + sec;
+        document.getElementById('aisleWizModStart').textContent = _aisleWizCurrentMod;
+        document.getElementById('aisleWizCount').value = '';
+        document.getElementById('aisleWizError').textContent = '';
+        document.getElementById('aisleWizSubInput').style.display = 'none';
+        document.getElementById('aisleWizYes').classList.remove('active');
+        document.getElementById('aisleWizNo').classList.remove('active');
+    }
+
+    function aisleWizToggleYes() {
+        document.getElementById('aisleWizSubInput').style.display = 'block';
+        document.getElementById('aisleWizYes').classList.add('active');
+        document.getElementById('aisleWizNo').classList.remove('active');
+        setTimeout(() => document.getElementById('aisleWizCount').focus(), 100);
+    }
+
+    function aisleWizToggleNo() {
+        document.getElementById('aisleWizSubInput').style.display = 'none';
+        document.getElementById('aisleWizNo').classList.add('active');
+        document.getElementById('aisleWizYes').classList.remove('active');
+        document.getElementById('aisleWizError').textContent = '';
+    }
+
+    function aisleWizNext() {
+        const sec = _aisleWizSections[_aisleWizIndex];
+        const hasSubMods = document.getElementById('aisleWizYes').classList.contains('active');
+        let modsInSection = 1;
+        if (hasSubMods) {
+            const count = parseInt(document.getElementById('aisleWizCount').value);
+            if (isNaN(count) || count < 2) { document.getElementById('aisleWizError').textContent = 'Enter 2 or more sub-mods.'; return; }
+            modsInSection = count;
+        }
+        if (modsInSection > 1) _aisleSubModMap[sec] = { startMod: _aisleWizCurrentMod, count: modsInSection };
+        _aisleWizCurrentMod += modsInSection;
+        _aisleWizIndex++;
+        if (_aisleWizIndex >= _aisleWizSections.length) {
+            finishAisle();
+        } else {
+            showAisleWizardSection();
+        }
+    }
+
+    function aisleWizSkipAll() { finishAisle(); }
+
+    function finishAisle() {
         const key = 'addedAisles_' + zone;
         const added = JSON.parse(sessionStorage.getItem(key) || '[]');
         if (!added.includes(_newAisle)) { added.push(_newAisle); sessionStorage.setItem(key, JSON.stringify(added)); }
+        if (_aisleOpp) {
+            const oppMap = JSON.parse(sessionStorage.getItem('opposingAisles_' + zone) || '{}');
+            oppMap[_newAisle] = _aisleOpp;
+            oppMap[_aisleOpp] = _newAisle;
+            sessionStorage.setItem('opposingAisles_' + zone, JSON.stringify(oppMap));
+        }
+        if (_aisleModAlignment) sessionStorage.setItem('modAlignment_' + zone + _newAisle, JSON.stringify(_aisleModAlignment));
+        if (Object.keys(_aisleSubModMap).length > 0) sessionStorage.setItem('subMods_' + zone + _newAisle, JSON.stringify(_aisleSubModMap));
         closeModal('addModal');
         let msg = 'Aisle ' + zone + _newAisle + ' added';
-        if (withSections) {
-            const f = document.getElementById('aisleSectionsFrom').value || '1';
-            const t = document.getElementById('aisleSections').value;
-            msg += ' · Sections ' + f + '–' + t;
-        }
+        if (_aisleOpp) msg += ' ↔ ' + zone + _aisleOpp;
         showToast(msg);
     }
     function openDeleteModal() {
@@ -306,6 +486,9 @@
     document.getElementById('aisleSectionsFrom').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
     document.getElementById('aisleSections').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
     document.getElementById('deleteInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
+    ['aisleOppInput','aisleOffsetA','aisleOffsetB','aisleWizCount'].forEach(id => {
+        const el = document.getElementById(id); if(el) el.addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
+    });
 </script>
 </body>
 </html>

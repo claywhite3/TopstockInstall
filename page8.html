@@ -379,7 +379,7 @@
 
         // Store flag for supervisor review
         const flags = JSON.parse(sessionStorage.getItem('installFlags') || '[]');
-        flags.push({ aisle, section, notes, ts: Date.now(), installer: 'CW' });
+        flags.push({ aisle, section: currentSection, notes, ts: Date.now(), installer: 'CW' });
         sessionStorage.setItem('installFlags', JSON.stringify(flags));
 
         // Mark section as flagged in section state
@@ -395,13 +395,31 @@
 
         closeFlagModal();
 
-        // Advance to next section after flagging
+        // Advance to next section — stay on page8, update pill and button
         if (nextSection && nextSection <= 30) {
             sessionStorage.setItem('selectedSection', String(nextSection));
-            window.location.href = 'page5.html';
+            // Update pill
+            document.getElementById('topPill').textContent = aisle + '-' + nextSection;
+            // Update next rail label
+            const afterNext = nextSection + 1;
+            document.getElementById('nextRailLabel').textContent =
+                afterNext <= 30 ? 'Aisle ' + aisle + '  ·  Section ' + afterNext : 'Install Another Rail';
+            // Update flag section input for next potential skip
+            document.getElementById('flagSecInput').value = aisle + '-' + nextSection;
+            // Show toast
+            showToast('Section ' + aisle + '-' + nextSection + ' — flagged, now on section ' + nextSection);
         } else {
-            window.location.href = 'page3.html';
+            showToast('All sections complete — returning to aisle select');
+            setTimeout(() => { window.location.href = 'page3.html'; }, 1500);
         }
+    }
+
+    function showToast(msg) {
+        const t = document.createElement('div');
+        t.textContent = msg;
+        t.style.cssText = 'position:fixed;bottom:120px;left:50%;transform:translateX(-50%);background:#111827;color:#fff;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:600;z-index:400;opacity:0;transition:opacity .2s;white-space:nowrap;max-width:340px;text-align:center;';
+        document.body.appendChild(t);
+        requestAnimationFrame(() => { t.style.opacity='1'; setTimeout(() => { t.style.opacity='0'; setTimeout(() => t.remove(), 200); }, 2500); });
     }
 </script>
 
