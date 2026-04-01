@@ -52,23 +52,54 @@
         </div>
     </div>
     <div class="nav-area">
-        <a href="#" class="btn-done" id="btnDone">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
-            Done
-        </a>
+        <button class="btn-done" id="btnDone" onclick="openTestModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Test New Rail
+        </button>
     </div>
 </div>
+
+<!-- Confirmation modal -->
+<div id="testModal" style="position:fixed;inset:0;background:rgba(0,0,0,0.5);display:none;align-items:flex-end;justify-content:center;z-index:200;">
+    <div id="testSheet" style="background:#fff;border-radius:24px 24px 0 0;padding:28px 24px 40px;width:100%;max-width:390px;transform:translateY(100%);transition:transform .25s cubic-bezier(.4,0,.2,1);">
+        <div style="width:36px;height:4px;background:#E5E7EB;border-radius:4px;margin:0 auto 20px;"></div>
+        <div style="width:56px;height:56px;background:#EFF6FF;border-radius:16px;display:flex;align-items:center;justify-content:center;margin:0 auto 16px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="26" height="26"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div style="font-size:19px;font-weight:800;color:#111827;text-align:center;margin-bottom:8px;">Full Test</div>
+        <div style="font-size:14px;color:#6B7280;text-align:center;line-height:1.6;margin-bottom:24px;">A full system test will run on the new rail. This can take up to <strong style="color:#111827;">5 minutes</strong>. You will be taken to the rail detail page where you can monitor the result.</div>
+        <a href="#" class="btn-done" id="btnConfirmTest" style="margin-bottom:10px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            Run Full Test
+        </a>
+        <button onclick="closeTestModal()" style="width:100%;padding:14px;background:none;border:none;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;color:#9CA3AF;cursor:pointer;">Cancel</button>
+    </div>
+</div>
+
 <script>
     (function() {
         const p = new URLSearchParams(window.location.search);
         const aisle = p.get('aisle')||'C3', section = p.get('section')||'2', rail = p.get('rail')||'Z001-0123';
         const userName = sessionStorage.getItem('userName') || 'CW';
-        document.getElementById('avatarEl').textContent   = userName.slice(0,2).toUpperCase();
+        document.getElementById('avatarEl').textContent    = userName.slice(0,2).toUpperCase();
         document.getElementById('chipAisle').textContent   = aisle;
         document.getElementById('chipSection').textContent = section;
         document.getElementById('chipRail').textContent    = rail;
-        document.getElementById('btnDone').href = 'rail_detail.html?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail);
+        document.getElementById('btnConfirmTest').href     = 'rail_detail.html?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail) + '&retest=1';
     })();
+
+    function openTestModal() {
+        const modal = document.getElementById('testModal');
+        modal.style.display = 'flex';
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+            document.getElementById('testSheet').style.transform = 'translateY(0)';
+        }));
+    }
+
+    function closeTestModal() {
+        document.getElementById('testSheet').style.transform = 'translateY(100%)';
+        setTimeout(() => { document.getElementById('testModal').style.display = 'none'; }, 260);
+    }
 </script>
 </body>
 </html>
