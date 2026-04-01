@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion — Clear Obstruction</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 40px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; flex-shrink: 0; }
+        .btn-back:active { transform: scale(.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+        .rail-header { padding: 4px 20px 0; }
+        .rail-id-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; }
+        .rail-id { font-size: 28px; font-weight: 800; color: #111827; line-height: 1.1; margin-top: 2px; letter-spacing: .5px; }
+        .rail-meta { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 4px; }
+        .fix-card { margin: 16px 20px 0; background: #fff; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.07); }
+        .fix-img { width: 100%; background: linear-gradient(135deg, #E0E7EF, #C7D2E0); }
+        .fix-img img { width: 100%; height: auto; display: block; max-height: 240px; object-fit: contain; background: #fff; }
+        .img-placeholder { width: 100%; height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        .img-placeholder svg { width: 32px; height: 32px; color: #94A3B8; }
+        .img-placeholder span { font-size: 11px; color: #94A3B8; font-weight: 500; }
+        .fix-body { padding: 20px 20px 24px; }
+        .fix-eyebrow { font-size: 11px; font-weight: 700; color: #D97706; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; }
+        .fix-title { font-size: 22px; font-weight: 800; color: #111827; line-height: 1.2; }
+        .fix-desc  { font-size: 15px; color: #6B7280; font-weight: 500; margin-top: 10px; line-height: 1.6; }
+        .btn-row-primary   { padding: 16px 20px 0; }
+        .btn-row-secondary { padding: 10px 20px 0; display: flex; gap: 10px; }
+        .btn-retest { width: 100%; padding: 16px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: transform .15s; }
+        .btn-retest:active { transform: scale(.975); }
+        .btn-back-nav { flex: 1; padding: 14px; background: #fff; color: #6B7280; border: 1.5px solid #E5E7EB; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; transition: transform .15s; }
+        .btn-back-nav:active { transform: scale(.975); }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="top-bar">
+        <a href="#" class="btn-back" id="backBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="avatar" id="avatarEl">CW</div>
+    </div>
+    <div class="rail-header">
+        <div class="rail-id-label">Rail ID</div>
+        <div class="rail-id" id="hdrRailId">—</div>
+        <div class="rail-meta" id="hdrMeta">—</div>
+    </div>
+    <div class="fix-card">
+        <div class="fix-img">
+            <img src="camera-obstruction.jpg" alt="Camera obstruction"
+                 onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><path d=\'M23 7l-7 5 7 5V7z\'/><rect x=\'1\' y=\'5\' width=\'15\' height=\'14\' rx=\'2\'/></svg><span>camera-obstruction.jpg</span></div>'">
+        </div>
+        <div class="fix-body">
+            <div class="fix-eyebrow">Camera Fix</div>
+            <div class="fix-title">Clear the Obstruction</div>
+            <div class="fix-desc">Remove anything blocking the camera lens — tags, wires, debris, or product overhang. The lens must have a clear line of sight with nothing in front of it. Once clear, tap Re-test.</div>
+        </div>
+    </div>
+    <div class="btn-row-primary">
+        <a href="#" class="btn-retest" id="btnRetest">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg>
+            Re-test
+        </a>
+    </div>
+    <div class="btn-row-secondary">
+        <a href="#" class="btn-back-nav" id="btnBack">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M15 18l-6-6 6-6"/></svg>
+            Back
+        </a>
+    </div>
+</div>
+<script>
+    (function() {
+        const p = new URLSearchParams(window.location.search);
+        const aisle = p.get('aisle') || 'C3', section = p.get('section') || '2', rail = p.get('rail') || 'Z001-0123';
+        const store = sessionStorage.getItem('storeName') || 'Store 0100';
+        const userName = sessionStorage.getItem('userName') || 'CW';
+        document.getElementById('avatarEl').textContent  = userName.slice(0,2).toUpperCase();
+        document.getElementById('hdrRailId').textContent = rail;
+        document.getElementById('hdrMeta').textContent   = store + '  ·  ' + aisle + '-' + section;
+        const rp = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail);
+        document.getElementById('backBtn').href   = 'rail_camera.html' + rp;
+        document.getElementById('btnBack').href   = 'rail_camera.html' + rp;
+        document.getElementById('btnRetest').href = 'rail_detail.html' + rp + '&status=issues&retest=1';
+    })();
+</script>
+</body>
+</html>

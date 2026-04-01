@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion — Scan to Register</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background-color: #F2F3F7;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #111827;
+        }
+
+        .phone-shell {
+            width: 100%;
+            max-width: 390px;
+            min-height: 100vh;
+            background: #F2F3F7;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Top bar ── */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 20px 8px;
+        }
+
+
+        /* Persistent selection pill */
+        .selected-pill { flex: 1; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 12px; padding: 7px 14px; display: flex; align-items: center; justify-content: space-between; min-width: 0; }
+        .pill-label { font-size: 10px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .4px; }
+        .pill-value { font-size: 16px; font-weight: 800; color: #2563EB; }
+
+        .back-btn {
+            width: 38px;
+            height: 38px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+        }
+        .back-btn svg { width: 18px; height: 18px; color: #111827; }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            background: #2563EB;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+        }
+
+        /* ── Hero ── */
+        .hero {
+            padding: 16px 20px 0;
+            animation: fadeUp 0.4s ease both;
+        }
+        .hero-title { font-size: 24px; font-weight: 700; color: #111827; line-height: 1.2; }
+        .hero-sub { font-size: 14px; color: #6B7280; margin-top: 4px; line-height: 1.5; }
+
+        /* ── Scanner window ── */
+        .scanner-card {
+            margin: 18px 20px 0;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+            position: relative;
+            background: #000;
+            animation: fadeUp 0.4s 0.1s ease both;
+            height: 210px;
+        }
+
+        .scanner-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            position: absolute;
+            top: 0; left: 0;
+        }
+
+        /* Corner brackets */
+        .scanner-card::before,
+        .scanner-card::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            z-index: 5;
+        }
+        .scanner-card::before {
+            top: 12px; left: 12px;
+            border-top: 3px solid #2563EB;
+            border-left: 3px solid #2563EB;
+            border-radius: 4px 0 0 0;
+        }
+        .scanner-card::after {
+            bottom: 12px; right: 12px;
+            border-bottom: 3px solid #2563EB;
+            border-right: 3px solid #2563EB;
+            border-radius: 0 0 4px 0;
+        }
+
+        /* Extra corners via inner div */
+        .scanner-corners::before,
+        .scanner-corners::after {
+            content: '';
+            position: absolute;
+            width: 28px;
+            height: 28px;
+            z-index: 5;
+        }
+        .scanner-corners::before {
+            top: 12px; right: 12px;
+            border-top: 3px solid #2563EB;
+            border-right: 3px solid #2563EB;
+            border-radius: 0 4px 0 0;
+        }
+        .scanner-corners::after {
+            bottom: 12px; left: 12px;
+            border-bottom: 3px solid #2563EB;
+            border-left: 3px solid #2563EB;
+            border-radius: 0 0 0 4px;
+        }
+        .scanner-corners {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        /* Laser line */
+        .laser-line {
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent 0%, #EF4444 20%, #EF4444 80%, transparent 100%);
+            position: absolute;
+            top: 0;
+            z-index: 10;
+            animation: scan 2s infinite linear;
+            box-shadow: 0 0 8px rgba(239,68,68,0.8);
+            display: none;
+        }
+        @keyframes scan { 0% { top: 10%; } 100% { top: 90%; } }
+
+        /* Complete overlay — entire area is the button */
+        .complete-ui {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+            background: #fff;
+            border: 3px solid #16A34A;
+            border-radius: 18px;
+            position: absolute;
+            top: 0; left: 0;
+            z-index: 20;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .complete-ui:active { background: #F0FDF4; }
+
+        .complete-check {
+            width: 64px;
+            height: 64px;
+            background: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid #16A34A;
+        }
+        .complete-check svg { width: 32px; height: 32px; color: #16A34A; }
+
+        .complete-label {
+            font-size: 15px;
+            font-weight: 700;
+            color: #16A34A;
+            letter-spacing: 0.5px;
+        }
+
+        .complete-tap-hint {
+            font-size: 12px;
+            color: #9CA3AF;
+            font-weight: 500;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: scale(1); }
+            30% { transform: scale(1.2); }
+            60% { transform: scale(0.92); }
+            80% { transform: scale(1.06); }
+        }
+        .bounce-trigger { animation: bounce 0.55s ease; }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-6px); }
+            75% { transform: translateX(6px); }
+        }
+        .shake-trigger { animation: shake 0.4s ease-in-out; }
+
+        /* Scanner sub-row */
+        .scanner-sub {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px 0;
+        }
+
+        .btn-text-link {
+            background: none;
+            border: none;
+            color: #6B7280;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: underline;
+            text-underline-offset: 2px;
+            padding: 0;
+        }
+        .btn-text-link:disabled,
+        .btn-text-link.hidden { visibility: hidden; }
+
+        /* ── Rail ID status card ── */
+        .rail-id-card {
+            margin: 16px 20px 0;
+            background: #fff;
+            border-radius: 16px;
+            padding: 14px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            animation: fadeUp 0.4s 0.15s ease both;
+            transition: border-color 0.3s;
+            border: 1.5px solid #E5E7EB;
+        }
+
+        .rail-id-card.found {
+            border-color: #86EFAC;
+            background: #F0FDF4;
+        }
+
+        .rail-id-text { flex: 1; }
+        .rail-id-label {
+            font-size: 10px;
+            font-weight: 700;
+            color: #9CA3AF;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .rail-id-card.found .rail-id-label { color: #16A34A; }
+        .rail-id-value {
+            font-size: 15px;
+            font-weight: 700;
+            color: #9CA3AF;
+            margin-top: 2px;
+            font-family: monospace;
+            letter-spacing: 1px;
+        }
+        .rail-id-card.found .rail-id-value { color: #111827; }
+
+        .rail-id-badge {
+            font-size: 11px;
+            font-weight: 700;
+            color: #9CA3AF;
+            background: #F3F4F6;
+            padding: 4px 10px;
+            border-radius: 20px;
+            transition: all 0.3s;
+        }
+        .rail-id-card.found .rail-id-badge {
+            color: #16A34A;
+            background: #DCFCE7;
+        }
+
+        /* Rail ID image */
+        .rail-id-img-wrap {
+            width: 64px;
+            height: 40px;
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            background: #F3F4F6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s;
+        }
+        .rail-id-card.found .rail-id-img-wrap { background: #DCFCE7; }
+        .rail-id-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+        .rail-id-img-fallback {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            height: 100%;
+        }
+        .rail-id-img-fallback svg { width: 28px; height: 28px; color: #9CA3AF; }
+        .rail-id-card.found .rail-id-img-fallback svg { color: #16A34A; }
+
+        /* ── Scan location hint card ── */
+        .hint-card {
+            margin: 14px 20px 0;
+            background: #fff;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+            animation: fadeUp 0.4s 0.2s ease both;
+        }
+
+        .hint-card img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .hint-placeholder {
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(135deg, #e0e7ef, #c7d2e0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .hint-placeholder svg { width: 32px; height: 32px; color: #94A3B8; }
+        .hint-placeholder span { font-size: 12px; color: #94A3B8; font-weight: 500; }
+
+        .hint-caption {
+            padding: 10px 16px 12px;
+            font-size: 12px;
+            color: #9CA3AF;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        /* ── Nav area ── */
+        .nav-area {
+            padding: 20px 20px 32px;
+            display: flex;
+            gap: 12px;
+            animation: fadeUp 0.4s 0.25s ease both;
+            margin-top: auto;
+        }
+
+        .btn-back-nav {
+            padding: 15px 20px;
+            background: #fff;
+            color: #6B7280;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            transition: transform 0.15s;
+            flex-shrink: 0;
+        }
+        .btn-back-nav:active { transform: scale(0.975); }
+        .btn-back-nav svg { width: 16px; height: 16px; }
+
+        .btn-next {
+            flex: 1;
+            padding: 15px;
+            background: #2563EB;
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s, box-shadow 0.15s;
+            box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+        }
+        .btn-next:active { transform: scale(0.975); box-shadow: 0 2px 6px rgba(37,99,235,0.2); }
+        .btn-next svg { width: 18px; height: 18px; }
+
+        /* ── Modal overlay ── */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(17, 24, 39, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            padding: 24px;
+            padding-bottom: 80px;
+        }
+
+        .modal-sheet {
+            background: #fff;
+            width: 100%;
+            max-width: 360px;
+            border-radius: 24px;
+            padding: 24px 20px 28px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+            transform: scale(0.92) translateY(12px);
+            opacity: 0;
+            transition: transform 0.28s cubic-bezier(0.32, 0.72, 0, 1), opacity 0.28s ease;
+        }
+
+        .modal-overlay.open .modal-sheet {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        .modal-img {
+            width: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+            margin-bottom: 16px;
+            background: #F8FAFC;
+        }
+        .modal-img img { width: 100%; height: auto; display: block; }
+        .modal-img-placeholder {
+            width: 100%;
+            height: 160px;
+            background: linear-gradient(135deg, #e0e7ef, #c7d2e0);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        .modal-img-placeholder svg { width: 36px; height: 36px; color: #94A3B8; }
+        .modal-img-placeholder span { font-size: 12px; color: #94A3B8; font-weight: 500; }
+
+        .modal-title {
+            font-size: 19px;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 6px;
+        }
+
+        .modal-text {
+            font-size: 14px;
+            color: #6B7280;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .modal-guide-btn {
+            width: 100%;
+            background: none;
+            border: none;
+            color: #2563EB;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 10px;
+            margin-bottom: 12px;
+            border-radius: 10px;
+            transition: background 0.15s;
+        }
+        .modal-guide-btn:active { background: #EFF6FF; }
+        .modal-guide-btn svg { width: 16px; height: 16px; }
+
+        .btn-modal-confirm {
+            width: 100%;
+            padding: 17px;
+            background: #2563EB;
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: transform 0.15s;
+            box-shadow: 0 4px 14px rgba(37,99,235,0.3);
+        }
+        .btn-modal-confirm:active { transform: scale(0.975); }
+        .btn-modal-confirm svg { width: 18px; height: 18px; }
+
+        /* ── Guide modal (placeholder) ── */
+        .guide-modal-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: rgba(17, 24, 39, 0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1100;
+            backdrop-filter: blur(4px);
+            padding: 24px;
+            padding-bottom: 80px;
+        }
+        .guide-modal-overlay.open .modal-sheet {
+            transform: scale(1) translateY(0);
+            opacity: 1;
+        }
+
+        /* ── Animations ── */
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="phone-shell">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+        <a href="#" class="back-btn" id="backBtnTop">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="selected-pill">
+            <div class="pill-label">Selected</div>
+            <div class="pill-value" id="topPill">—</div>
+        </div>
+        <div class="avatar">CW</div>
+    </div>
+
+    <!-- Hero -->
+    <div class="hero">
+        <div class="hero-title">Scan to Register</div>
+        <div class="hero-sub">Point your camera at the barcode on the new rail to register it.</div>
+    </div>
+
+    <!-- Scanner window -->
+    <div class="scanner-card" id="scannerBox">
+        <img src="blurry-image.png" id="blurryPlaceholder"
+             onerror="this.style.background='#1F2937'; this.style.display='block';">
+        <img src="rail-scanning.png" id="scanningImage" style="display:none;"
+             onerror="this.style.display='none';">
+        <div id="laser" class="laser-line"></div>
+        <div class="scanner-corners"></div>
+
+        <!-- Complete overlay — whole div is tappable -->
+        <div id="completeScreen" class="complete-ui" onclick="validateAndGo()">
+            <div class="complete-check" id="completeCheck">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <div class="complete-label">Scan Complete</div>
+            <div class="complete-tap-hint">Tap anywhere to continue</div>
+        </div>
+    </div>
+
+    <!-- Rescan / Manual Entry row -->
+    <div class="scanner-sub">
+        <button id="rescanBtn" class="btn-text-link hidden" onclick="startSequence()">Rescan</button>
+        <button class="btn-text-link" onclick="validateAndGo()">Manual Entry</button>
+    </div>
+
+    <!-- Rail ID status card -->
+    <div class="rail-id-card" id="railIdCard">
+        <div class="rail-id-img-wrap" id="railIdImgWrap">
+            <img src="rail-thumbnail.png" id="railIdImg" alt="Rail"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+            <div class="rail-id-img-fallback" id="railIdImgFallback">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="2" y="8" width="20" height="8" rx="2"/>
+                    <line x1="5" y1="11" x2="5" y2="13"/>
+                    <line x1="8" y1="11" x2="8" y2="13"/>
+                    <line x1="11" y1="11" x2="11" y2="13"/>
+                    <line x1="14" y1="11" x2="14" y2="13"/>
+                </svg>
+            </div>
+        </div>
+        <div class="rail-id-text">
+            <div class="rail-id-label">Rail ID</div>
+            <div class="rail-id-value" id="railIdValue">Awaiting scan…</div>
+        </div>
+        <div class="rail-id-badge" id="railIdBadge">Pending</div>
+    </div>
+
+    <!-- Scan location hint -->
+    <div class="hint-card">
+        <img src="simplified-scan-location.png" alt="Scan location guide"
+             onerror="this.parentElement.innerHTML='<div class=\'hint-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'2\' y=\'6\' width=\'20\' height=\'12\' rx=\'2\'/><line x1=\'6\' y1=\'9\' x2=\'6\' y2=\'15\'/><line x1=\'9\' y1=\'9\' x2=\'9\' y2=\'15\'/><line x1=\'12\' y1=\'9\' x2=\'12\' y2=\'12\'/><line x1=\'15\' y1=\'9\' x2=\'15\' y2=\'15\'/></svg><span>simplified-scan-location.png</span></div><div class=\'hint-caption\'>Scan the barcode on the end of the rail</div>'">
+        <div class="hint-caption">Scan the barcode on the end of the rail</div>
+    </div>
+
+    <!-- Nav area -->
+    <div class="nav-area">
+        <a href="#" class="btn-back-nav" id="backBtnNav">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+            Back
+        </a>
+        <button class="btn-next" onclick="validateAndGo()">
+            Next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+    </div>
+
+</div>
+
+<!-- ── Modal: Final Placement check ── -->
+<div class="modal-overlay" id="installModal">
+    <div class="modal-sheet">
+        <div class="modal-img">
+            <img src="installed-rail.png" alt="Installed Rail"
+                 onerror="this.parentElement.innerHTML='<div class=\'modal-img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'2\' y=\'8\' width=\'20\' height=\'8\' rx=\'2\'/><line x1=\'6\' y1=\'11\' x2=\'6\' y2=\'13\'/><line x1=\'9\' y1=\'11\' x2=\'9\' y2=\'13\'/><line x1=\'12\' y1=\'11\' x2=\'12\' y2=\'13\'/></svg><span>installed-rail.png</span></div>'">
+        </div>
+        <div class="modal-title">Final Placement</div>
+        <div class="modal-text">Make sure the rail is in its <strong style="color:#111827;">final installed location</strong> before scanning the barcode.</div>
+
+        <button class="modal-guide-btn" onclick="window.location.href='instructions_rail.html?return=page6'">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+            View Installation Guide
+        </button>
+
+        <button class="btn-modal-confirm" onclick="closeInstallModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Rail is Installed
+        </button>
+    </div>
+</div>
+
+<!-- ── Guide modal (placeholder) ── -->
+<div class="guide-modal-overlay" id="guideModal">
+    <div class="modal-sheet">
+        <div class="modal-img">
+            <div class="modal-img-placeholder">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
+                    <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
+                </svg>
+                <span>Installation guide image</span>
+            </div>
+        </div>
+        <div class="modal-title">Installation Guide</div>
+        <div class="modal-text">Drop your installation guide image into this folder and it will appear here automatically.</div>
+        <button class="btn-modal-confirm" onclick="closeGuideModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Got It
+        </button>
+    </div>
+</div>
+
+<script>
+    const successSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
+
+    // Start scanning immediately — rail is already installed
+    window.addEventListener('load', () => { startSequence(); });
+
+    function closeInstallModal() {
+        const overlay = document.getElementById('installModal');
+        overlay.classList.remove('open');
+        setTimeout(() => {
+            overlay.style.display = 'none';
+            startSequence();
+        }, 300);
+    }
+
+    function openGuideModal() {
+        const overlay = document.getElementById('guideModal');
+        overlay.style.display = 'flex';
+        requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add('open')));
+    }
+
+    function closeGuideModal() {
+        const overlay = document.getElementById('guideModal');
+        overlay.classList.remove('open');
+        setTimeout(() => { overlay.style.display = 'none'; }, 300);
+    }
+
+    function startSequence() {
+        const laser       = document.getElementById('laser');
+        const blurry      = document.getElementById('blurryPlaceholder');
+        const scanningImg = document.getElementById('scanningImage');
+        const complete    = document.getElementById('completeScreen');
+        const rescanBtn   = document.getElementById('rescanBtn');
+        const railIdCard  = document.getElementById('railIdCard');
+        const railIdValue = document.getElementById('railIdValue');
+        const railIdBadge = document.getElementById('railIdBadge');
+
+        // Reset
+        blurry.style.display = 'block';
+        scanningImg.style.display = 'none';
+        laser.style.display = 'none';
+        complete.style.display = 'none';
+        rescanBtn.classList.add('hidden');
+        railIdCard.classList.remove('found');
+        railIdValue.textContent = 'Awaiting scan…';
+        railIdBadge.textContent = 'Pending';
+
+        // Phase 1: blurry → scanning image + laser (3s)
+        setTimeout(() => {
+            blurry.style.display = 'none';
+            scanningImg.style.display = 'block';
+            laser.style.display = 'block';
+
+            // Phase 2: scan completes (2s)
+            setTimeout(() => { completeScan(); }, 2000);
+        }, 3000);
+    }
+
+    function completeScan() {
+        const laser       = document.getElementById('laser');
+        const complete    = document.getElementById('completeScreen');
+        const rescanBtn   = document.getElementById('rescanBtn');
+        const railIdCard  = document.getElementById('railIdCard');
+        const railIdValue = document.getElementById('railIdValue');
+        const railIdBadge = document.getElementById('railIdBadge');
+        // Sound + haptic
+        successSound.play().catch(() => {});
+        if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
+
+        // Scanner shows complete
+        laser.style.display = 'none';
+        complete.style.display = 'flex';
+
+        // Rail ID card goes green
+        railIdCard.classList.add('found');
+        railIdValue.textContent = '4Z1-9S8TW';
+        railIdBadge.textContent = 'Scanned ✓';
+
+        // Bounce the checkmark
+        const checkEl = document.getElementById('completeCheck');
+        setTimeout(() => {
+            checkEl.classList.add('bounce-trigger');
+            setTimeout(() => checkEl.classList.remove('bounce-trigger'), 550);
+        }, 300);
+
+        rescanBtn.classList.remove('hidden');
+    }
+
+    function validateAndGo() {
+        window.location.href = 'rail_registering.html' + (window._railReturnParams || '');
+    }
+</script>
+
+<script>
+    (function() {
+        var aisle   = sessionStorage.getItem('selectedAisle')   || '—';
+        var section = sessionStorage.getItem('selectedSection') || '—';
+        var pill = document.getElementById('topPill');
+        if (pill) pill.textContent = aisle + '-' + section;
+    })();
+
+    // ── Init from URL params ──
+    (function() {
+        const p       = new URLSearchParams(window.location.search);
+        const aisle   = p.get('aisle')   || 'C3';
+        const section = p.get('section') || '2';
+        const rail    = p.get('rail')    || 'Z001-0123';
+        const store   = sessionStorage.getItem('storeName') || 'Store 0100';
+        const userName = sessionStorage.getItem('userName') || 'CW';
+
+        // Update pill
+        const pill = document.getElementById('topPill');
+        if (pill) pill.textContent = aisle + '-' + section;
+
+        // Store return params
+        window._railReturnParams = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail);
+
+        // Back buttons
+        const rp = window._railReturnParams;
+        const backTop = document.getElementById('backBtnTop');
+        const backNav = document.getElementById('backBtnNav');
+        if (backTop) backTop.href = 'rail_camera_swap.html' + rp;
+        if (backNav) backNav.href = 'rail_camera_swap.html' + rp;
+
+        // Avatar
+        const avatarEl = document.querySelector('.avatar');
+        if (avatarEl && userName) avatarEl.textContent = userName.slice(0,2).toUpperCase();
+    })();
+</script>
+</body>
+</html>

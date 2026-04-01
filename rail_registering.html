@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion — Registering Rail</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; gap: 24px; }
+        .spinner-ring { width: 80px; height: 80px; border: 6px solid #E5E7EB; border-top-color: #2563EB; border-radius: 50%; animation: spin 1s linear infinite; }
+        .text-center { text-align: center; display: flex; flex-direction: column; gap: 8px; }
+        .reg-title { font-size: 24px; font-weight: 800; color: #111827; }
+        .reg-sub   { font-size: 14px; color: #6B7280; font-weight: 500; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="spinner-ring"></div>
+    <div class="text-center">
+        <div class="reg-title">Registering Rail</div>
+        <div class="reg-sub">Connecting to the network…</div>
+    </div>
+</div>
+<script>
+    (function() {
+        const p   = new URLSearchParams(window.location.search);
+        const rp  = '?aisle=' + (p.get('aisle')||'C3') + '&section=' + (p.get('section')||'2') + '&rail=' + encodeURIComponent(p.get('rail')||'Z001-0123');
+        // Simulate registration — 3s then navigate to success (demo always passes)
+        // Tap body to demo failure
+        let failed = false;
+        document.body.addEventListener('click', function() { failed = true; });
+        setTimeout(function() {
+            window.location.href = (failed ? 'rail_reg_fail.html' : 'rail_reg_success.html') + rp;
+        }, 3000);
+    })();
+</script>
+</body>
+</html>

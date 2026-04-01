@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion — Rail Registered</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 40px; }
+        .top-bar { display: flex; justify-content: flex-end; align-items: center; padding: 16px 20px 8px; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
+        .success-section { display: flex; flex-direction: column; align-items: center; padding: 48px 20px 0; animation: popIn .5s cubic-bezier(.34,1.56,.64,1) both; }
+        .check-ring { width: 120px; height: 120px; border-radius: 50%; background: #F0FDF4; border: 5px solid #16A34A; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 12px rgba(22,163,74,.08), 0 12px 32px rgba(22,163,74,.18); margin-bottom: 24px; }
+        .check-ring svg { width: 56px; height: 56px; color: #16A34A; }
+        .success-title { font-size: 32px; font-weight: 700; color: #111827; letter-spacing: -.5px; }
+        .success-badge { margin-top: 10px; background: #DCFCE7; border: 1.5px solid #86EFAC; border-radius: 20px; padding: 6px 18px; font-size: 14px; font-weight: 700; color: #16A34A; display: flex; align-items: center; gap: 6px; }
+        .success-badge svg { width: 14px; height: 14px; }
+        .rail-card { margin: 28px 20px 0; background: #fff; border-radius: 20px; padding: 18px 20px; box-shadow: 0 2px 12px rgba(0,0,0,.06); }
+        .rail-card-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 10px; }
+        .rail-meta-row { display: flex; gap: 10px; }
+        .rail-meta-chip { flex: 1; background: #F8FAFC; border: 1.5px solid #E5E7EB; border-radius: 12px; padding: 10px 12px; text-align: center; }
+        .chip-label { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; }
+        .chip-value { font-size: 15px; font-weight: 700; color: #111827; margin-top: 2px; }
+        .chip-value.green { color: #16A34A; }
+        .nav-area { padding: 24px 20px 0; margin-top: auto; }
+        .btn-done { width: 100%; padding: 16px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(37,99,235,.3); transition: transform .15s; }
+        .btn-done:active { transform: scale(.975); }
+        @keyframes popIn { 0% { opacity:0; transform:scale(.6); } 70% { transform:scale(1.04); } 100% { opacity:1; transform:scale(1); } }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="top-bar"><div class="avatar" id="avatarEl">CW</div></div>
+    <div class="success-section">
+        <div class="check-ring">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        <div class="success-title">Rail Registered</div>
+        <div class="success-badge">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12l2.5 2.5L16 9"/></svg>
+            Online &amp; Active
+        </div>
+    </div>
+    <div class="rail-card">
+        <div class="rail-card-label">Just Registered</div>
+        <div class="rail-meta-row">
+            <div class="rail-meta-chip"><div class="chip-label">Aisle</div><div class="chip-value" id="chipAisle">—</div></div>
+            <div class="rail-meta-chip"><div class="chip-label">Section</div><div class="chip-value" id="chipSection">—</div></div>
+            <div class="rail-meta-chip"><div class="chip-label">Rail ID</div><div class="chip-value green" id="chipRail">—</div></div>
+        </div>
+    </div>
+    <div class="nav-area">
+        <a href="#" class="btn-done" id="btnDone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg>
+            Done
+        </a>
+    </div>
+</div>
+<script>
+    (function() {
+        const p = new URLSearchParams(window.location.search);
+        const aisle = p.get('aisle')||'C3', section = p.get('section')||'2', rail = p.get('rail')||'Z001-0123';
+        const userName = sessionStorage.getItem('userName') || 'CW';
+        document.getElementById('avatarEl').textContent   = userName.slice(0,2).toUpperCase();
+        document.getElementById('chipAisle').textContent   = aisle;
+        document.getElementById('chipSection').textContent = section;
+        document.getElementById('chipRail').textContent    = rail;
+        document.getElementById('btnDone').href = 'rail_detail.html?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail);
+    })();
+</script>
+</body>
+</html>

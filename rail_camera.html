@@ -3,438 +3,155 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Vusion - Camera Status</title>
+    <title>Vusion — Camera Troubleshooting</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
-        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 32px; }
-
-        /* ── Top bar ── */
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 40px; }
         .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
-        .btn-icon { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; flex-shrink: 0; }
-        .btn-icon:active { transform: scale(.93); }
-        .btn-icon svg { width: 16px; height: 16px; color: #374151; }
-        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; }
-
-        /* ── Page header ── */
-        .page-header { padding: 4px 20px 0; }
-        .eyebrow { font-size: 11px; font-weight: 700; color: #F97316; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
-        .eyebrow svg { width: 13px; height: 13px; }
-        .page-title { font-size: 22px; font-weight: 800; color: #111827; }
-        .page-sub   { font-size: 13px; color: #9CA3AF; font-weight: 500; margin-top: 2px; }
-
-        /* ── Lens card ── */
-        .lens-card {
-            margin: 14px 20px 0;
-            background: #fff;
-            border-radius: 20px;
-            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-            overflow: hidden;
-            transition: box-shadow .2s;
-        }
-        .lens-card.state-fail { box-shadow: 0 2px 12px rgba(220,38,38,0.12); }
-        .lens-card.state-ok   { box-shadow: 0 2px 12px rgba(22,163,74,0.10); }
-
-        /* Coloured top accent bar */
-        .lens-accent { height: 4px; transition: background .3s; }
-        .accent-fail    { background: #DC2626; }
-        .accent-ok      { background: #16A34A; }
-        .accent-testing { background: #D97706; }
-
-        /* Card header row */
-        .lens-card-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px 10px; }
-        .lens-name { font-size: 16px; font-weight: 800; color: #111827; }
-        .lens-badge { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 9px; font-size: 12px; font-weight: 700; transition: background .3s, color .3s; }
-        .badge-fail    { background: #FEF2F2; color: #DC2626; border: 1.5px solid #FECACA; }
-        .badge-ok      { background: #F0FDF4; color: #16A34A; border: 1.5px solid #86EFAC; }
-        .badge-testing { background: #FFFBEB; color: #D97706; border: 1.5px solid #FDE68A; }
-        .lens-badge svg { width: 11px; height: 11px; }
-
-        /* ── Image preview ── */
-        .lens-preview {
-            margin: 0 16px 14px;
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            background: #111;
-            height: 130px;
-            cursor: pointer;
-        }
-        .lens-preview img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: opacity .3s;
-        }
-        .lens-preview img.dimmed { opacity: .35; }
-        /* Overlay badge on image */
-        .preview-overlay {
-            position: absolute;
-            inset: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            pointer-events: none;
-        }
-        .preview-overlay-badge {
-            background: rgba(0,0,0,0.55);
-            backdrop-filter: blur(4px);
-            border-radius: 10px;
-            padding: 7px 14px;
-            font-size: 12px;
-            font-weight: 700;
-            color: #fff;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .preview-overlay-badge svg { width: 14px; height: 14px; }
-        .preview-tap-hint {
-            position: absolute;
-            bottom: 8px;
-            right: 10px;
-            font-size: 10px;
-            font-weight: 700;
-            color: rgba(255,255,255,0.7);
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-        .preview-tap-hint svg { width: 10px; height: 10px; }
-
-        /* ── Data rows ── */
-        .data-rows { padding: 0 16px; display: flex; flex-direction: column; gap: 0; }
-        .data-row { display: flex; align-items: center; justify-content: space-between; padding: 9px 0; border-bottom: 1px solid #F3F4F6; gap: 10px; }
-        .data-row:last-child { border-bottom: none; }
-        .data-label { font-size: 12px; font-weight: 600; color: #6B7280; flex-shrink: 0; }
-        .data-val { font-size: 12px; font-weight: 700; }
-        .val-fail    { color: #DC2626; }
-        .val-ok      { color: #16A34A; }
-        .val-warn    { color: #D97706; }
-        .val-muted   { color: #9CA3AF; font-weight: 500; }
-
-        /* ── Action row ── */
-        .lens-actions { display: flex; gap: 8px; padding: 12px 16px 16px; }
-        .act-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; padding: 11px 6px; background: #F9FAFB; border: 1.5px solid #E5E7EB; border-radius: 14px; cursor: pointer; text-decoration: none; font-family: 'DM Sans', sans-serif; font-size: 11px; font-weight: 700; color: #374151; transition: background .15s, transform .1s; }
-        .act-btn:active { transform: scale(.95); background: #F3F4F6; }
-        .act-btn svg { width: 18px; height: 18px; }
-        .act-btn.primary { background: #EFF6FF; border-color: #BFDBFE; color: #2563EB; }
-        .act-btn.danger  { background: #FEF2F2; border-color: #FECACA; color: #DC2626; }
-
-        /* ── Spinner ── */
-        @keyframes spin { 100% { transform: rotate(360deg); } }
-        .spin { animation: spin 1s linear infinite; display: inline-block; }
-
-        /* ── Image lightbox ── */
-        .lightbox { position: fixed; inset: 0; background: rgba(0,0,0,0.88); z-index: 100; display: flex; flex-direction: column; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
-        .lightbox.open { opacity: 1; pointer-events: all; }
-        .lightbox-img { max-width: 90vw; max-height: 75vh; border-radius: 12px; object-fit: contain; }
-        .lightbox-label { color: #fff; font-size: 14px; font-weight: 700; margin-top: 16px; opacity: .8; }
-        .lightbox-close { position: absolute; top: 20px; right: 20px; width: 36px; height: 36px; background: rgba(255,255,255,0.15); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; }
-        .lightbox-close svg { width: 16px; height: 16px; color: #fff; }
-
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; flex-shrink: 0; }
+        .btn-back:active { transform: scale(.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+        .rail-header { padding: 4px 20px 0; }
+        .rail-id-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; }
+        .rail-id { font-size: 28px; font-weight: 800; color: #111827; line-height: 1.1; margin-top: 2px; letter-spacing: .5px; }
+        .rail-meta { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 4px; }
+        .progress-wrap { margin: 16px 20px 0; }
+        .progress-track { height: 4px; background: #E5E7EB; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #DC2626; border-radius: 4px; transition: width .4s cubic-bezier(.4,0,.2,1); }
+        .progress-label { display: flex; justify-content: space-between; margin-top: 6px; }
+        .prog-step  { font-size: 11px; font-weight: 700; color: #DC2626; text-transform: uppercase; letter-spacing: .4px; }
+        .prog-count { font-size: 11px; font-weight: 600; color: #9CA3AF; }
+        .q-wrap { padding: 14px 20px 0; }
+        .q-card { background: #fff; border-radius: 18px; padding: 24px 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .q-eyebrow { font-size: 10px; font-weight: 700; color: #DC2626; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 8px; }
+        .q-text { font-size: 20px; font-weight: 800; color: #111827; line-height: 1.3; margin-bottom: 24px; }
+        .yn-row { display: flex; gap: 12px; }
+        .yn-btn { flex: 1; padding: 16px; border-radius: 14px; border: 1.5px solid #E5E7EB; background: #F9FAFB; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; color: #6B7280; cursor: pointer; transition: all .15s; }
+        .yn-btn:active { transform: scale(.975); }
+        .yn-btn.sel-no  { background: #F0FDF4; border-color: #86EFAC; color: #16A34A; }
+        .yn-btn.sel-yes { background: #FEF2F2; border-color: #FECACA; color: #DC2626; }
+        .btn-row-primary { padding: 16px 20px 0; }
+        .btn-next { width: 100%; padding: 16px; background: #DC2626; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(220,38,38,0.3); transition: transform .15s; }
+        .btn-next:active { transform: scale(.975); }
+        .btn-next:disabled { opacity: .4; pointer-events: none; }
+        .btn-row-secondary { padding: 10px 20px 0; }
+        .btn-retest { width: 100%; padding: 14px; background: #2563EB; color: #fff; border: none; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; box-shadow: 0 4px 12px rgba(37,99,235,0.2); transition: transform .15s; }
+        .btn-retest:active { transform: scale(.975); }
         @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
-        .lens-card { animation: fadeUp .35s ease both; }
-        .lens-card:nth-child(2) { animation-delay: .07s; }
-        .lens-card:nth-child(3) { animation-delay: .14s; }
+        .q-card { animation: fadeUp .3s ease both; }
     </style>
 </head>
 <body>
 <div class="shell">
-
     <div class="top-bar">
-        <a href="rail_detail.html" class="btn-icon">
+        <a href="#" class="btn-back" id="backBtn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </a>
-        <div class="avatar">CW</div>
+        <div class="avatar" id="avatarEl">CW</div>
     </div>
-
-    <div class="page-header">
-        <div class="eyebrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
-            Camera Detail
-        </div>
-        <div class="page-title">Camera Status</div>
-        <div class="page-sub">Rail Z001-0123 · Aisle C3 · Section 2</div>
+    <div class="rail-header">
+        <div class="rail-id-label">Rail ID</div>
+        <div class="rail-id" id="hdrRailId">—</div>
+        <div class="rail-meta" id="hdrMeta">—</div>
     </div>
-
-    <!-- ── LEFT LENS ── -->
-    <div class="lens-card state-fail" id="card-left">
-        <div class="lens-accent accent-fail" id="accent-left"></div>
-        <div class="lens-card-head">
-            <span class="lens-name">Left Lens</span>
-            <span class="lens-badge badge-fail" id="badge-left">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                Fault
-            </span>
-        </div>
-
-        <!-- Image preview -->
-        <div class="lens-preview" id="preview-left" onclick="openLightbox('left_pic.jpg','Left Lens')">
-            <img src="left_pic.jpg" alt="Left lens" id="img-left" onerror="this.src='blurry-image.png'" class="dimmed">
-            <div class="preview-overlay">
-                <div class="preview-overlay-badge" id="overlay-left">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                    Blurry — image degraded
-                </div>
-            </div>
-            <div class="preview-tap-hint">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-                Tap to expand
-            </div>
-        </div>
-
-        <div class="data-rows">
-            <div class="data-row">
-                <span class="data-label">Image Quality</span>
-                <span class="data-val val-warn" id="val-left-qual">Blurry</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Topstock Detected</span>
-                <span class="data-val val-fail" id="val-left-det">Not detected</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Last Check</span>
-                <span class="data-val val-warn" id="val-left-check">Blurry</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Last Success</span>
-                <span class="data-val val-muted">2026/01/25 · 12:06 pm</span>
-            </div>
-        </div>
-
-        <div class="lens-actions">
-            <button class="act-btn" onclick="runRetest('left','bad')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg>
-                Retest
-            </button>
-            <a href="left_pic.jpg" target="_blank" class="act-btn primary" onclick="openLightbox('left_pic.jpg','Left Lens'); return false;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                View Image
-            </a>
-            <a href="camerarepair.html" class="act-btn danger">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                Fix This
-            </a>
+    <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:33%"></div></div>
+        <div class="progress-label">
+            <div class="prog-step" id="progStep">Question 1 of 3</div>
+            <div class="prog-count" id="progTitle">Camera Damage</div>
         </div>
     </div>
-
-    <!-- ── CENTER LENS ── -->
-    <div class="lens-card state-ok" id="card-center">
-        <div class="lens-accent accent-ok" id="accent-center"></div>
-        <div class="lens-card-head">
-            <span class="lens-name">Center Lens</span>
-            <span class="lens-badge badge-ok" id="badge-center">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                OK
-            </span>
-        </div>
-
-        <div class="lens-preview" id="preview-center" onclick="openLightbox('center_pic.jpg','Center Lens')">
-            <img src="center_pic.jpg" alt="Center lens" id="img-center" onerror="this.src='rail-thumbnail.png'">
-            <div class="preview-overlay" id="overlay-wrap-center" style="display:none;">
-                <div class="preview-overlay-badge" id="overlay-center"></div>
+    <div class="q-wrap">
+        <div class="q-card" id="qCard">
+            <div class="q-eyebrow" id="qEyebrow">Question 1 of 3</div>
+            <div class="q-text"   id="qText">—</div>
+            <div class="yn-row">
+                <button class="yn-btn" id="btnNo"  onclick="selectAnswer('no')">No</button>
+                <button class="yn-btn" id="btnYes" onclick="selectAnswer('yes')">Yes</button>
             </div>
-            <div class="preview-tap-hint">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-                Tap to expand
-            </div>
-        </div>
-
-        <div class="data-rows">
-            <div class="data-row">
-                <span class="data-label">Image Quality</span>
-                <span class="data-val val-ok" id="val-center-qual">Clear</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Topstock Detected</span>
-                <span class="data-val val-ok" id="val-center-det">Detected</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Last Check</span>
-                <span class="data-val val-ok" id="val-center-check">2026/01/27 · 1:05 pm</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Last Success</span>
-                <span class="data-val val-muted">2026/01/27 · 1:05 pm</span>
-            </div>
-        </div>
-
-        <div class="lens-actions">
-            <button class="act-btn" onclick="runRetest('center','good')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg>
-                Retest
-            </button>
-            <a href="center_pic.jpg" target="_blank" class="act-btn primary" onclick="openLightbox('center_pic.jpg','Center Lens'); return false;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                View Image
-            </a>
-            <a href="camerarepair.html" class="act-btn danger">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                Fix This
-            </a>
         </div>
     </div>
-
-    <!-- ── RIGHT LENS ── -->
-    <div class="lens-card state-fail" id="card-right">
-        <div class="lens-accent accent-fail" id="accent-right"></div>
-        <div class="lens-card-head">
-            <span class="lens-name">Right Lens</span>
-            <span class="lens-badge badge-fail" id="badge-right">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                Fault
-            </span>
-        </div>
-
-        <div class="lens-preview" id="preview-right" onclick="openLightbox('right_pic.jpg','Right Lens')">
-            <img src="right_pic.jpg" alt="Right lens" id="img-right" onerror="this.src='blurry-image.png'" class="dimmed">
-            <div class="preview-overlay">
-                <div class="preview-overlay-badge" id="overlay-right">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
-                    Blurry — image degraded
-                </div>
-            </div>
-            <div class="preview-tap-hint">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/></svg>
-                Tap to expand
-            </div>
-        </div>
-
-        <div class="data-rows">
-            <div class="data-row">
-                <span class="data-label">Image Quality</span>
-                <span class="data-val val-warn" id="val-right-qual">Blurry</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Topstock Detected</span>
-                <span class="data-val val-fail" id="val-right-det">Not detected</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Last Check</span>
-                <span class="data-val val-warn" id="val-right-check">Blurry</span>
-            </div>
-            <div class="data-row">
-                <span class="data-label">Last Success</span>
-                <span class="data-val val-muted">2026/01/25 · 12:06 pm</span>
-            </div>
-        </div>
-
-        <div class="lens-actions">
-            <button class="act-btn" onclick="runRetest('right','bad')">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg>
-                Retest
-            </button>
-            <a href="right_pic.jpg" target="_blank" class="act-btn primary" onclick="openLightbox('right_pic.jpg','Right Lens'); return false;">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-                View Image
-            </a>
-            <a href="camerarepair.html" class="act-btn danger">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
-                Fix This
-            </a>
-        </div>
+    <div class="btn-row-primary">
+        <button class="btn-next" id="btnNext" onclick="advance()" disabled>Next</button>
     </div>
-
+    <div class="btn-row-secondary">
+        <a href="#" class="btn-retest" id="btnRetest">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg>
+            Re-test
+        </a>
+    </div>
 </div>
-
-<!-- ── Lightbox ── -->
-<div class="lightbox" id="lightbox" onclick="closeLightbox()">
-    <div class="lightbox-close">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </div>
-    <img src="" alt="" class="lightbox-img" id="lightboxImg">
-    <div class="lightbox-label" id="lightboxLabel"></div>
-</div>
-
 <script>
-    // ── Lightbox ──────────────────────────────────────────────────────────────
-    function openLightbox(src, label) {
-        document.getElementById('lightboxImg').src  = src;
-        document.getElementById('lightboxImg').onerror = function() {
-            this.src = src.includes('left') || src.includes('right') ? 'blurry-image.png' : 'rail-thumbnail.png';
-        };
-        document.getElementById('lightboxLabel').textContent = label;
-        document.getElementById('lightbox').classList.add('open');
+    const QUESTIONS = [
+        { text: 'Is there visible damage to the camera?', eyebrow: 'Question 1 of 3', short: 'Camera Damage',     yesPage: 'rail_camera_uninstall.html'  },
+        { text: 'Is the camera obstructed?',             eyebrow: 'Question 2 of 3', short: 'Obstruction',        yesPage: 'rail_camera_clear.html' },
+        { text: 'Is the camera dirty or fogged?',        eyebrow: 'Question 3 of 3', short: 'Lens Condition',     yesPage: 'rail_camera_clean.html' },
+    ];
+
+    let currentQ  = 0;
+    let answer    = null;
+    let _railParams = '';
+
+    function renderQ(index) {
+        const q = QUESTIONS[index];
+        answer = null;
+        document.getElementById('progressFill').style.width = ((index + 1) / QUESTIONS.length * 100) + '%';
+        document.getElementById('progStep').textContent  = q.eyebrow;
+        document.getElementById('progTitle').textContent = q.short;
+        document.getElementById('qEyebrow').textContent  = q.eyebrow;
+        document.getElementById('qText').textContent     = q.text;
+        document.getElementById('btnNo').className  = 'yn-btn';
+        document.getElementById('btnYes').className = 'yn-btn';
+        document.getElementById('btnNext').disabled = true;
+        const card = document.getElementById('qCard');
+        card.style.animation = 'none';
+        requestAnimationFrame(() => { card.style.animation = 'fadeUp .3s ease both'; });
     }
-    function closeLightbox() {
-        document.getElementById('lightbox').classList.remove('open');
+
+    function selectAnswer(val) {
+        answer = val;
+        document.getElementById('btnNo').className  = 'yn-btn' + (val === 'no'  ? ' sel-no'  : '');
+        document.getElementById('btnYes').className = 'yn-btn' + (val === 'yes' ? ' sel-yes' : '');
+        document.getElementById('btnNext').disabled = false;
+        // Update Next label for last question
+        const isLast = currentQ === QUESTIONS.length - 1;
+        document.getElementById('btnNext').textContent = isLast ? (val === 'yes' ? 'Go to Fix' : 'Go to Reset') : (val === 'yes' ? 'Go to Fix' : 'Next');
     }
 
-    // ── Retest ────────────────────────────────────────────────────────────────
-    function runRetest(lens, outcome) {
-        const accent = document.getElementById('accent-' + lens);
-        const badge  = document.getElementById('badge-'  + lens);
-        const card   = document.getElementById('card-'   + lens);
-        const img    = document.getElementById('img-'    + lens);
-
-        // Testing state
-        accent.className = 'lens-accent accent-testing';
-        badge.className  = 'lens-badge badge-testing';
-        badge.innerHTML  = '<span class="spin">↻</span> Testing';
-        card.className   = 'lens-card';
-
-        setVals(lens, 'testing');
-        if (img) img.style.opacity = '.3';
-
-        setTimeout(() => {
-            if (outcome === 'bad') {
-                accent.className = 'lens-accent accent-fail';
-                badge.className  = 'lens-badge badge-fail';
-                badge.innerHTML  = failIcon() + ' Fault';
-                card.className   = 'lens-card state-fail';
-                setVals(lens, 'fail');
-                if (img) img.style.opacity = '';
+    function advance() {
+        const q = QUESTIONS[currentQ];
+        if (answer === 'yes') {
+            window.location.href = q.yesPage + _railParams;
+        } else {
+            // No — check if last question
+            if (currentQ < QUESTIONS.length - 1) {
+                currentQ++;
+                renderQ(currentQ);
             } else {
-                accent.className = 'lens-accent accent-ok';
-                badge.className  = 'lens-badge badge-ok';
-                badge.innerHTML  = okIcon() + ' OK';
-                card.className   = 'lens-card state-ok';
-                setVals(lens, 'ok');
-                if (img) { img.style.opacity = ''; img.classList.remove('dimmed'); }
-                // hide fault overlay if present
-                const ov = document.querySelector('#preview-' + lens + ' .preview-overlay');
-                if (ov) ov.style.display = 'none';
+                // All no — go to reset
+                window.location.href = 'rail_camera_cycle.html' + _railParams;
             }
-        }, 3000);
-    }
-
-    function setVals(lens, state) {
-        const qual  = document.getElementById('val-' + lens + '-qual');
-        const det   = document.getElementById('val-' + lens + '-det');
-        const check = document.getElementById('val-' + lens + '-check');
-        if (!qual) return;
-
-        if (state === 'testing') {
-            [qual, det, check].forEach(el => {
-                el.className = 'data-val val-warn';
-                el.innerHTML = '<span class="spin">↻</span> Testing…';
-            });
-        } else if (state === 'fail') {
-            qual.className  = 'data-val val-warn'; qual.textContent  = 'Blurry';
-            det.className   = 'data-val val-fail';  det.textContent   = 'Not detected';
-            check.className = 'data-val val-warn'; check.textContent = 'Blurry';
-        } else if (state === 'ok') {
-            const t = nowStr();
-            qual.className  = 'data-val val-ok'; qual.textContent  = 'Clear';
-            det.className   = 'data-val val-ok';  det.textContent   = 'Detected';
-            check.className = 'data-val val-ok'; check.textContent = t;
         }
     }
 
-    function nowStr() {
-        const d = new Date();
-        return d.getFullYear() + '/' +
-               String(d.getMonth()+1).padStart(2,'0') + '/' +
-               String(d.getDate()).padStart(2,'0') + ' · ' +
-               String(d.getHours()).padStart(2,'0') + ':' +
-               String(d.getMinutes()).padStart(2,'0');
-    }
-
-    function okIcon()   { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><polyline points="20 6 9 17 4 12"/></svg>'; }
-    function failIcon() { return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="11" height="11"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'; }
+    (function() {
+        const p       = new URLSearchParams(window.location.search);
+        const aisle   = p.get('aisle')   || 'C3';
+        const section = p.get('section') || '2';
+        const rail    = p.get('rail')    || 'Z001-0123';
+        const store   = sessionStorage.getItem('storeName') || 'Store 0100';
+        const userName = sessionStorage.getItem('userName') || 'CW';
+        document.getElementById('avatarEl').textContent = userName.slice(0,2).toUpperCase();
+        document.getElementById('hdrRailId').textContent = rail;
+        document.getElementById('hdrMeta').textContent   = store + '  ·  ' + aisle + '-' + section;
+        _railParams = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail);
+        document.getElementById('backBtn').href   = 'rail_detail.html' + _railParams + '&status=issues';
+        document.getElementById('btnRetest').href = 'rail_detail.html' + _railParams + '&status=issues&retest=1';
+        renderQ(0);
+    })();
 </script>
 </body>
 </html>
