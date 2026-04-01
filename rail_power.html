@@ -194,7 +194,7 @@
             title:   'Inspect the Battery Packs',
             eyebrow: 'Check 5 of 5',
             short:   'Battery Packs',
-            desc:    'Check both packs for tears, punctures, or damage to the ends. If a pack is torn, punctured, or damaged, replace it. If everything looks intact but power is still below 10%, replace both packs.',
+            desc:    'Check both packs for tears, punctures, or damage to the ends. If any pack is torn, punctured, or damaged — or if power is below 10% — replace both packs as a pair. Never replace one without the other.',
             img:     'power-battery-pack.jpg',
             imgAlt:  'Battery pack inspection',
         },
@@ -290,7 +290,7 @@
         _railParams = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail);
         document.getElementById('backBtn').href  = 'rail_detail.html' + _railParams + '&status=issues';
         document.getElementById('btnRetest').href = 'rail_detail.html' + _railParams + '&status=issues&retest=1';
-        document.getElementById('btnSwap').href   = 'page5.html' + _railParams + '&retest=1';
+        document.getElementById('btnSwap').href   = 'rail_battery_swap.html' + _railParams;
 
         renderStep(0);
     })();
