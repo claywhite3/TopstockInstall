@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion — Check Your Parts</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 40px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; }
+        .btn-back:active { transform: scale(.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+        .hero { padding: 8px 20px 0; animation: fadeUp .4s ease both; }
+        .eyebrow { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+        .hero-title { font-size: 26px; font-weight: 800; color: #111827; }
+        .hero-sub { font-size: 14px; color: #6B7280; font-weight: 500; margin-top: 6px; }
+
+        .section-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; padding: 20px 20px 10px; }
+
+        /* Image step cards */
+        .steps { padding: 0 20px; display: flex; flex-direction: column; gap: 14px; }
+        .step-card { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.06); animation: fadeUp .35s ease both; opacity: 0; }
+        .step-img { width: 100%; background: linear-gradient(135deg, #E0E7EF, #C7D2E0); }
+        .step-img img { width: 100%; height: auto; display: block; max-height: 220px; object-fit: cover; }
+        .img-placeholder { width: 100%; height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        .img-placeholder svg { width: 32px; height: 32px; color: #94A3B8; }
+        .img-placeholder span { font-size: 11px; color: #94A3B8; font-weight: 500; }
+        .step-body { padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; }
+        .step-num { width: 28px; height: 28px; background: #2563EB; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; flex-shrink: 0; margin-top: 1px; }
+        .step-text { flex: 1; }
+        .step-title { font-size: 15px; font-weight: 800; color: #111827; }
+        .step-desc { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 4px; line-height: 1.5; }
+
+        /* Adapter nav cards */
+        .adapter-cards { padding: 0 20px; display: flex; flex-direction: column; gap: 12px; }
+        .adapter-card { background: #fff; border-radius: 18px; padding: 18px 20px; display: flex; align-items: center; gap: 16px; text-decoration: none; box-shadow: 0 2px 10px rgba(0,0,0,0.06); transition: transform .15s, box-shadow .15s; border: 1.5px solid #E5E7EB; animation: fadeUp .35s ease both; opacity: 0; }
+        .adapter-card:active { transform: scale(.975); border-color: #2563EB; }
+        .adapter-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .adapter-icon svg { width: 24px; height: 24px; }
+        .icon-blue  { background: #EFF6FF; } .icon-blue svg  { color: #2563EB; }
+        .icon-amber { background: #FFFBEB; } .icon-amber svg { color: #D97706; }
+        .icon-teal  { background: #F0FDFA; } .icon-teal svg  { color: #0D9488; }
+        .adapter-body { flex: 1; }
+        .adapter-name { font-size: 16px; font-weight: 800; color: #111827; }
+        .adapter-desc { font-size: 12px; color: #6B7280; font-weight: 500; margin-top: 2px; }
+        .adapter-arrow { color: #D1D5DB; flex-shrink: 0; }
+        .adapter-arrow svg { width: 16px; height: 16px; }
+
+        .nav-area { padding: 24px 20px 0; display: flex; gap: 12px; margin-top: auto; }
+        .btn-menu { padding: 15px 20px; background: #fff; color: #6B7280; border: 1.5px solid #E5E7EB; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none; transition: transform .15s; flex-shrink: 0; }
+        .btn-menu:active { transform: scale(.975); }
+        .btn-next { flex: 1; padding: 15px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: transform .15s; }
+        .btn-next:active { transform: scale(.975); }
+
+        @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="top-bar">
+        <a href="instructions.html" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="avatar" id="avatarEl">CW</div>
+    </div>
+
+    <div class="hero">
+        <div class="eyebrow">Step 1</div>
+        <div class="hero-title">Check Your Parts</div>
+        <div class="hero-sub">Make sure you have everything before starting.</div>
+    </div>
+
+    <div class="section-label">What You'll Need</div>
+    <div class="steps">
+
+        <div class="step-card" style="animation-delay:.05s;">
+            <div class="step-img">
+                <img src="parts-rails.jpg" alt="TopStock Rails"
+                     onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'2\' y=\'7\' width=\'20\' height=\'10\' rx=\'2\'/><path d=\'M2 12h20\'/></svg><span>parts-rails.jpg</span></div>'">
+            </div>
+            <div class="step-body">
+                <div class="step-num">1</div>
+                <div class="step-text">
+                    <div class="step-title">TopStock Rails</div>
+                    <div class="step-desc">4 rails per box · 128 rails per pallet. Confirm your quantity matches the section count before starting.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card" style="animation-delay:.1s;">
+            <div class="step-img">
+                <img src="parts-adapter-standard.jpg" alt="Standard Adapter"
+                     onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'2\' y=\'3\' width=\'20\' height=\'4\' rx=\'1\'/><rect x=\'2\' y=\'10\' width=\'20\' height=\'4\' rx=\'1\'/><rect x=\'2\' y=\'17\' width=\'20\' height=\'4\' rx=\'1\'/></svg><span>parts-adapter-standard.jpg</span></div>'">
+            </div>
+            <div class="step-body">
+                <div class="step-num">2</div>
+                <div class="step-text">
+                    <div class="step-title">Standard Adapter</div>
+                    <div class="step-desc">35 per box · 4 push-in rivets each · 150-qty rivet bag included. Most common grocery &amp; retail shelving.</div>
+                </div>
+            </div>
+            <div style="padding: 0 18px 16px;">
+                <a href="instructions_adapter_standard.html" style="display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:12px;background:#EFF6FF;color:#2563EB;border:1.5px solid #BFDBFE;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;transition:transform .15s;">
+                    View Standard Guide
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="step-card" style="animation-delay:.15s;">
+            <div class="step-img">
+                <img src="parts-adapter-warehouse.jpg" alt="Warehouse Adapter"
+                     onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><path d=\'M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z\'/><polyline points=\'9 22 9 12 15 12 15 22\'/></svg><span>parts-adapter-warehouse.jpg</span></div>'">
+            </div>
+            <div class="step-body">
+                <div class="step-num">3</div>
+                <div class="step-text">
+                    <div class="step-title">Warehouse Adapter</div>
+                    <div class="step-desc">35 per box · 4 push-in rivets each · 150-qty rivet bag included. Heavy-duty pallet &amp; bulk shelving.</div>
+                </div>
+            </div>
+            <div style="padding: 0 18px 16px;">
+                <a href="instructions_adapter_warehouse.html" style="display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:12px;background:#FFFBEB;color:#D97706;border:1.5px solid #FDE68A;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;transition:transform .15s;">
+                    View Warehouse Guide
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+
+        <div class="step-card" style="animation-delay:.2s;">
+            <div class="step-img">
+                <img src="parts-adapter-wireframe.jpg" alt="Wire Frame Adapter"
+                     onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'2\' y=\'3\' width=\'20\' height=\'18\' rx=\'2\'/><path d=\'M2 9h20M2 15h20M9 3v18M15 3v18\'/></svg><span>parts-adapter-wireframe.jpg</span></div>'">
+            </div>
+            <div class="step-body">
+                <div class="step-num">4</div>
+                <div class="step-text">
+                    <div class="step-title">Wire Frame Adapter</div>
+                    <div class="step-desc">35 per box · 4 push-in rivets each · 150-qty rivet bag included. Open wire grid shelving.</div>
+                </div>
+            </div>
+            <div style="padding: 0 18px 16px;">
+                <a href="instructions_adapter_wireframe.html" style="display:flex;align-items:center;justify-content:center;gap:6px;width:100%;padding:12px;background:#F0FDFA;color:#0D9488;border:1.5px solid #99F6E4;border-radius:12px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;text-decoration:none;transition:transform .15s;">
+                    View Wire Frame Guide
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="nav-area">
+        <a href="instructions.html" class="btn-menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>
+            Menu
+        </a>
+        <a href="instructions_shelf.html" class="btn-next">
+            Next
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+    </div>
+</div>
+<script>
+    const userName = sessionStorage.getItem('userName') || 'CW';
+    document.getElementById('avatarEl').textContent = userName.slice(0,2).toUpperCase();
+</script>
+</body>
+</html>

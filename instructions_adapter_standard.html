@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion — Standard Adapter</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 40px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; }
+        .btn-back:active { transform: scale(.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+        .hero { padding: 8px 20px 0; animation: fadeUp .4s ease both; }
+        .eyebrow { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 4px; }
+        .hero-title { font-size: 26px; font-weight: 800; color: #111827; }
+        .hero-sub { font-size: 14px; color: #6B7280; font-weight: 500; margin-top: 6px; }
+
+        /* Main hero image */
+        .hero-img { margin: 16px 20px 0; border-radius: 20px; overflow: hidden; box-shadow: 0 2px 12px rgba(0,0,0,0.08); animation: fadeUp .4s .06s ease both; opacity: 0; background: linear-gradient(135deg, #E0E7EF, #C7D2E0); }
+        .hero-img img { width: 100%; height: auto; display: block; max-height: 240px; object-fit: cover; }
+        .hero-img-placeholder { width: 100%; height: 200px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        .hero-img-placeholder svg { width: 36px; height: 36px; color: #94A3B8; }
+        .hero-img-placeholder span { font-size: 11px; color: #94A3B8; font-weight: 500; }
+
+        .section-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; padding: 20px 20px 10px; }
+
+        .steps { padding: 0 20px; display: flex; flex-direction: column; gap: 14px; }
+        .step-card { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.06); animation: fadeUp .35s ease both; opacity: 0; }
+        .step-img { width: 100%; background: linear-gradient(135deg, #E0E7EF, #C7D2E0); }
+        .step-img img { width: 100%; height: auto; display: block; max-height: 220px; object-fit: cover; }
+        .img-placeholder { width: 100%; height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        .img-placeholder svg { width: 32px; height: 32px; color: #94A3B8; }
+        .img-placeholder span { font-size: 11px; color: #94A3B8; font-weight: 500; }
+        .step-body { padding: 16px 18px; display: flex; align-items: flex-start; gap: 14px; }
+        .step-num { width: 28px; height: 28px; background: #2563EB; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 800; color: #fff; flex-shrink: 0; margin-top: 1px; }
+        .step-text { flex: 1; }
+        .step-title { font-size: 15px; font-weight: 800; color: #111827; }
+        .step-desc { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 4px; line-height: 1.5; }
+
+        .nav-area { padding: 24px 20px 0; display: flex; gap: 12px; margin-top: auto; }
+        .btn-back-nav { padding: 15px 20px; background: #fff; color: #6B7280; border: 1.5px solid #E5E7EB; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 15px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 8px; text-decoration: none; transition: transform .15s; flex-shrink: 0; }
+        .btn-back-nav:active { transform: scale(.975); }
+        .btn-next { flex: 1; padding: 15px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: transform .15s; }
+        .btn-next:active { transform: scale(.975); }
+
+        @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="top-bar">
+        <a href="instructions_shelf.html" class="btn-back">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <div class="avatar" id="avatarEl">CW</div>
+    </div>
+
+    <div class="hero">
+        <div class="eyebrow">Step 2 — Adapter</div>
+        <div class="hero-title">Standard</div>
+        <div class="hero-sub">Install the adapter on standard grocery or retail shelving.</div>
+    </div>
+
+    <!-- Main image -->
+    <div class="hero-img">
+        <img src="standard-main.jpg" alt="Standard Adapter"
+             onerror="this.innerHTML='<div class=\'hero-img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'2\' y=\'3\' width=\'20\' height=\'4\' rx=\'1\'/><rect x=\'2\' y=\'10\' width=\'20\' height=\'4\' rx=\'1\'/></svg><span>standard-main.jpg</span></div>'">
+    </div>
+
+    <div class="section-label">Installation Steps</div>
+    <div class="steps">
+
+        <div class="step-card" style="animation-delay:.08s;">
+            <div class="step-img">
+                <img src="standard-tight.jpg" alt="Tight to shelf"
+                     onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><rect x=\'2\' y=\'3\' width=\'20\' height=\'18\' rx=\'2\'/></svg><span>standard-tight.jpg</span></div>'">
+            </div>
+            <div class="step-body">
+                <div class="step-num">1</div>
+                <div class="step-text">
+                    <div class="step-title">Tight to Shelf</div>
+                    <div class="step-desc">Press the adapter firmly against the front edge of the shelf. No gap between the adapter and the shelf edge.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card" style="animation-delay:.13s;">
+            <div class="step-img">
+                <img src="standard-flat.jpg" alt="Flat on shelf"
+                     onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><path d=\'M4 6h16M4 12h16\'/></svg><span>standard-flat.jpg</span></div>'">
+            </div>
+            <div class="step-body">
+                <div class="step-num">2</div>
+                <div class="step-text">
+                    <div class="step-title">Flat on Shelf</div>
+                    <div class="step-desc">The back of the adapter must lie completely flat on the shelf surface. Any tilt will cause the rail to sit at an angle.</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step-card" style="animation-delay:.18s;">
+            <div class="step-img">
+                <img src="standard-rivets.jpg" alt="Insert push-in rivets"
+                     onerror="this.parentElement.innerHTML='<div class=\'img-placeholder\'><svg viewBox=\'0 0 24 24\' fill=\'none\' stroke=\'currentColor\' stroke-width=\'1.5\'><circle cx=\'12\' cy=\'12\' r=\'10\'/><line x1=\'12\' y1=\'8\' x2=\'12\' y2=\'16\'/></svg><span>standard-rivets.jpg</span></div>'">
+            </div>
+            <div class="step-body">
+                <div class="step-num">3</div>
+                <div class="step-text">
+                    <div class="step-title">Insert 4 Push-In Rivets</div>
+                    <div class="step-desc">Press one rivet firmly into each of the four mounting holes until it clicks flush with the adapter surface. The adapter is now secured.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="nav-area">
+        <a href="instructions_shelf.html" class="btn-back-nav">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>
+            Back
+        </a>
+        <a href="instructions_rail.html" class="btn-next">
+            Rail Install
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+    </div>
+</div>
+<script>
+    const userName = sessionStorage.getItem('userName') || 'CW';
+    document.getElementById('avatarEl').textContent = userName.slice(0,2).toUpperCase();
+</script>
+</body>
+</html>
