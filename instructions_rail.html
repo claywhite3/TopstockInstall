@@ -124,11 +124,11 @@
     </div>
 
     <div class="nav-area">
-        <a href="instructions.html" class="btn-menu">
+        <a href="instructions.html" class="btn-menu" id="btnMenu">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg>
             Menu
         </a>
-        <a href="page3.html" class="btn-done">
+        <a href="page3.html" class="btn-done" id="btnDone">
             Done — Go Install
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 18l6-6-6-6"/></svg>
         </a>
@@ -137,6 +137,14 @@
 <script>
     const userName = sessionStorage.getItem('userName') || 'CW';
     document.getElementById('avatarEl').textContent = userName.slice(0,2).toUpperCase();
+
+    // If we came from page6 (scanning), swap buttons to return there
+    if (new URLSearchParams(window.location.search).get('return') === 'page6') {
+        document.getElementById('btnMenu').href  = 'page6.html';
+        document.getElementById('btnMenu').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M15 18l-6-6 6-6"/></svg> Back';
+        document.getElementById('btnDone').href  = 'page6.html';
+        document.getElementById('btnDone').innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="20 6 9 17 4 12"/></svg> Back to Scanning';
+    }
 </script>
 </body>
 </html>
