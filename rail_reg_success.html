@@ -85,7 +85,9 @@
         document.getElementById('chipAisle').textContent   = aisle;
         document.getElementById('chipSection').textContent = section;
         document.getElementById('chipRail').textContent    = rail;
-        document.getElementById('btnConfirmTest').href     = 'rail_detail.html?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail) + '&retest=1';
+        const from = p.get('from') || '';
+        const detailHref = 'rail_detail.html?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail) + '&retest=1';
+        document.getElementById('btnConfirmTest').href = 'rail_rma_offer.html?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail) + '&next=' + encodeURIComponent(detailHref);
     })();
 
     function openTestModal() {

@@ -121,10 +121,12 @@
         document.getElementById('avatarEl').textContent  = userName.slice(0,2).toUpperCase();
         document.getElementById('hdrRailId').textContent = rail;
         document.getElementById('hdrMeta').textContent   = store + '  ·  ' + aisle + '-' + section;
-        const rp = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail);
-        document.getElementById('backBtn').href  = 'rail_camera.html' + rp;
-        document.getElementById('btnBack').href  = 'rail_camera.html' + rp;
-        document.getElementById('btnNext').href  = 'rail_camera_install.html' + rp;
+        const rp   = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail);
+        const from = p.get('from') || 'rail_camera.html';
+        const backHref = from + rp;
+        document.getElementById('backBtn').href  = backHref;
+        document.getElementById('btnBack').href  = backHref;
+        document.getElementById('btnNext').href  = 'rail_camera_install.html' + rp + '&from=' + encodeURIComponent(from);
     })();
 </script>
 </body>

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion — RMA Process</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 40px; }
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; position: relative; }
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; flex-shrink: 0; }
+        .btn-back:active { transform: scale(.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .btn-home { position: absolute; left: 50%; transform: translateX(-50%); width: 38px; height: 38px; background: #fff; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+        .stub-card { margin: 40px 20px 0; background: #fff; border-radius: 20px; padding: 32px 24px; box-shadow: 0 2px 12px rgba(0,0,0,0.06); text-align: center; }
+        .stub-icon { width: 64px; height: 64px; background: #FFFBEB; border-radius: 18px; display: flex; align-items: center; justify-content: center; margin: 0 auto 16px; border: 1.5px solid #FDE68A; }
+        .stub-icon svg { width: 32px; height: 32px; color: #D97706; }
+        .stub-title { font-size: 20px; font-weight: 800; color: #111827; margin-bottom: 8px; }
+        .stub-desc  { font-size: 14px; color: #6B7280; line-height: 1.6; }
+        .nav-area { padding: 20px 20px 0; }
+        .btn-continue { width: 100%; padding: 16px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: transform .15s; }
+        .btn-continue:active { transform: scale(.975); }
+    </style>
+</head>
+<body>
+<div class="shell">
+    <div class="top-bar">
+        <a href="#" class="btn-back" id="backBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <a href="flow_pick.html" class="btn-home">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </a>
+        <div class="avatar" id="avatarEl">CW</div>
+    </div>
+    <div class="stub-card">
+        <div class="stub-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="stub-title">RMA Process</div>
+        <div class="stub-desc">This page is coming soon. RMA instructions will be added here. Continue to complete the rail test.</div>
+    </div>
+    <div class="nav-area">
+        <a href="#" class="btn-continue" id="btnContinue">
+            Continue to Rail Test
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 18l6-6-6-6"/></svg>
+        </a>
+    </div>
+</div>
+<script>
+    (function() {
+        const p    = new URLSearchParams(window.location.search);
+        const next = p.get('next') || 'rail_detail.html';
+        const userName = sessionStorage.getItem('userName') || 'CW';
+        document.getElementById('avatarEl').textContent = userName.slice(0,2).toUpperCase();
+        document.getElementById('backBtn').href     = document.referrer || 'rail_rma_offer.html';
+        document.getElementById('btnContinue').href = next;
+    })();
+</script>
+</body>
+</html>
