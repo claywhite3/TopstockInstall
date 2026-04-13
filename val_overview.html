@@ -56,6 +56,16 @@
         .step.active { display: block; }
         #wizYesBtn.active, #wizNoBtn.active { background: #EFF6FF; border-color: #2563EB; color: #2563EB; }
         .btn-skip { width: 100%; padding: 12px; background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: #9CA3AF; cursor: pointer; margin-top: 6px; }
+        .ns-pill { flex:1; padding: 11px 6px; border-radius: 12px; border: 1.5px solid #E5E7EB; background: #F9FAFB; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: #6B7280; cursor: pointer; transition: all .15s; text-align: center; }
+        .ns-pill.selected { border-color: #2563EB; background: #EFF6FF; color: #2563EB; }
+        .aisle-bubble { padding: 9px 13px; border-radius: 10px; border: 1.5px solid #E5E7EB; background: #F9FAFB; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: #374151; cursor: pointer; transition: all .15s; }
+        .aisle-bubble.selected { border-color: #2563EB; background: #2563EB; color: #fff; }
+        .eightft-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: #F9FAFB; border-radius: 10px; }
+        .eightft-label { font-size: 14px; font-weight: 700; color: #111827; }
+        .eightft-pills { display: flex; gap: 6px; }
+        .eightft-pill { padding: 6px 12px; border-radius: 8px; border: 1.5px solid #E5E7EB; background: #fff; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; color: #6B7280; cursor: pointer; transition: all .15s; }
+        .eightft-pill.sel4 { border-color: #86EFAC; background: #F0FDF4; color: #16A34A; }
+        .eightft-pill.sel8 { border-color: #BFDBFE; background: #EFF6FF; color: #2563EB; }
         .modal-error { font-size: 12px; color: #EF4444; font-weight: 600; margin-top: 6px; min-height: 18px; text-align: center; }
 
         .stat-card { flex:1; background:#fff; border-radius:14px; padding:12px 14px; box-shadow:0 2px 10px rgba(0,0,0,0.05); display:flex;flex-direction:column;gap:2px; }
@@ -67,9 +77,12 @@
 </head>
 <body>
 <div class="shell">
-    <div class="top-bar">
+    <div class="top-bar" style="position:relative;">
         <a href="flow_pick.html" class="btn-back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <a href="flow_pick.html" style="position:absolute;left:50%;transform:translateX(-50%);width:38px;height:38px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);text-decoration:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </a>
         <div class="avatar">CW</div>
     </div>
@@ -232,7 +245,7 @@
                 <button class="btn-skip" onclick="finishAdd(null, null)">Skip for now</button>
             </div>
 
-            <!-- Step 3: Sections range — left pre-filled with 1 -->
+            <!-- Step 3: Sections range -->
             <div class="step" id="step3">
                 <div class="modal-title" id="step3Title">Sections per Aisle</div>
                 <div class="modal-body">Enter the section range for each aisle. Start is pre-filled — just type the end number.</div>
@@ -244,9 +257,58 @@
                 <div class="modal-error" id="sectionsError"></div>
                 <div class="modal-btns">
                     <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
-                    <button class="modal-confirm" onclick="finishAddWithSections()">Add Zone</button>
+                    <button class="modal-confirm" onclick="finishAddWithSections()">Next</button>
                 </div>
                 <button class="btn-skip" onclick="finishAdd(parseInt(document.getElementById('aisleFrom').value), parseInt(document.getElementById('aisleTo').value))">Skip for now</button>
+            </div>
+
+            <!-- Step 3b: Non-standard gate -->
+            <div class="step" id="step3b">
+                <div class="modal-title">Non-Standard Sections?</div>
+                <div class="modal-body">Does this zone have any sub-sections or 8 ft sections?</div>
+                <div style="display:flex;gap:8px;margin-top:16px;">
+                    <button onclick="goNonStdNo()" style="flex:1;padding:14px;border-radius:12px;border:1.5px solid #E5E7EB;background:#F9FAFB;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#374151;cursor:pointer;">No</button>
+                    <button onclick="goNonStdYes()" style="flex:1;padding:14px;border-radius:12px;border:1.5px solid #BFDBFE;background:#EFF6FF;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#2563EB;cursor:pointer;">Yes</button>
+                </div>
+            </div>
+
+            <!-- Step 3c: Aisle bubble selector -->
+            <div class="step" id="step3c">
+                <div class="modal-title" id="nonStdTitle">Select Aisles</div>
+                <div class="modal-body">Tap each aisle that has non-standard sections.</div>
+                <div id="aisleBubbles" style="display:flex;flex-wrap:wrap;gap:8px;margin:14px 0;"></div>
+                <div class="modal-btns">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                    <button class="modal-confirm" onclick="goNonStdAisles()">Done</button>
+                </div>
+            </div>
+
+            <!-- Step 3d: Type picker (per aisle) -->
+            <div class="step" id="step3d">
+                <div class="modal-title" id="nonStdTypeTitle">Aisle Q8</div>
+                <div class="modal-body">What kind of non-standard sections does this aisle have?</div>
+                <div style="display:flex;gap:8px;margin:14px 0;" id="nonStdTypePills">
+                    <button class="ns-pill" data-val="subsections" onclick="toggleNsType(this)">Sub-sections</button>
+                    <button class="ns-pill" data-val="8ft"         onclick="toggleNsType(this)">8 ft Section</button>
+                    <button class="ns-pill" data-val="both"        onclick="toggleNsType(this)">Both</button>
+                </div>
+                <div class="modal-error" id="nonStdTypeError"></div>
+                <div class="modal-btns" style="margin-top:8px;">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                    <button class="modal-confirm" onclick="goNonStdType()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 3e: 8ft section picker -->
+            <div class="step" id="step3e">
+                <div class="modal-title" id="eightFtTitle">8 ft Sections</div>
+                <div class="modal-body">Sections are 4 ft by default. Tap any that are 8 ft.</div>
+                <button onclick="selectAll8ft()" style="width:100%;padding:10px;background:#F3F4F6;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:#374151;cursor:pointer;margin-bottom:10px;">Select All 8 ft</button>
+                <div id="eightFtList" style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;"></div>
+                <div class="modal-btns" style="margin-top:12px;">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                    <button class="modal-confirm" onclick="goAfter8ft()">Done</button>
+                </div>
             </div>
 
             <!-- Step 4: Opposing aisles -->
@@ -267,51 +329,51 @@
 
             <!-- Step 5: Mod alignment yes/no -->
             <div class="step" id="step5">
-                <div class="modal-title">Mod Alignment</div>
-                <div class="modal-body">For opposing pair <strong><span id="oppPairDisplay"></span></strong> — do opposing mods share the same number? (e.g. mod 1 faces mod 1)</div>
-                <div class="modal-error" id="modAlignError"></div>
+                <div class="modal-title">Section Alignment</div>
+                <div class="modal-body">For opposing pair <strong><span id="oppPairDisplay"></span></strong> — do opposing sections share the same number? (e.g. section 1 faces section 1)</div>
+                <div class="modal-error" id="secAlignError"></div>
                 <div class="modal-btns" style="margin-top:16px;">
-                    <button class="modal-cancel" onclick="goModAlignNo()">No — different</button>
-                    <button class="modal-confirm" onclick="goModAlignYes()">Yes — same</button>
+                    <button class="modal-cancel" onclick="goSecAlignNo()">No — different</button>
+                    <button class="modal-confirm" onclick="goSecAlignYes()">Yes — same</button>
                 </div>
             </div>
 
             <!-- Step 5b: Mod offset inputs -->
             <div class="step" id="step51">
-                <div class="modal-title">Mod Starting Numbers</div>
-                <div class="modal-body">Enter the starting mod number for each aisle in the first pair.</div>
+                <div class="modal-title">Section Starting Numbers</div>
+                <div class="modal-body">Enter the starting section number for each aisle in the first pair.</div>
                 <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:4px;">
                     <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="font-size:13px;font-weight:700;color:#374151;width:60px;" id="offsetAisleA"></div>
-                        <input class="modal-input" id="offsetInputA" type="text" maxlength="2" placeholder="1" autocomplete="off" inputmode="numeric" style="flex:1;">
+                        <div style="font-size:13px;font-weight:700;color:#374151;width:60px;" id="secOffsetLabelA"></div>
+                        <input class="modal-input" id="secOffsetA" type="text" maxlength="2" placeholder="1" autocomplete="off" inputmode="numeric" style="flex:1;">
                     </div>
                     <div style="display:flex;align-items:center;gap:10px;">
-                        <div style="font-size:13px;font-weight:700;color:#374151;width:60px;" id="offsetAisleB"></div>
-                        <input class="modal-input" id="offsetInputB" type="text" maxlength="2" placeholder="1" autocomplete="off" inputmode="numeric" style="flex:1;">
+                        <div style="font-size:13px;font-weight:700;color:#374151;width:60px;" id="secOffsetLabelB"></div>
+                        <input class="modal-input" id="secOffsetB" type="text" maxlength="2" placeholder="1" autocomplete="off" inputmode="numeric" style="flex:1;">
                     </div>
                 </div>
-                <div class="modal-error" id="modAlignError"></div>
+                <div class="modal-error" id="secAlignError"></div>
                 <div class="modal-btns" style="margin-top:16px;">
                     <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
-                    <button class="modal-confirm" onclick="goOffsetNext()">Next</button>
+                    <button class="modal-confirm" onclick="goSecOffsetNext()">Next</button>
                 </div>
             </div>
 
-            <!-- Step 6: Sub-mod wizard -->
+            <!-- Step 6: Sub-section wizard -->
             <div class="step" id="step6">
                 <div style="height:4px;background:#E5E7EB;border-radius:4px;margin-bottom:16px;overflow:hidden;">
                     <div id="wizProgress" style="height:100%;background:#2563EB;border-radius:4px;transition:width .3s;width:0%;"></div>
                 </div>
                 <div style="font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;" id="wizStep">1 of 8</div>
                 <div class="modal-title" id="wizSecNum">Section 1</div>
-                <div class="modal-body">Starts at mod <strong id="wizModStart">1</strong>. Does this section have sub-mods?</div>
+                <div class="modal-body">Starts at section <strong id="wizSecStart">1</strong>. Does this section have sub-sections?</div>
                 <div style="display:flex;gap:8px;margin:12px 0;">
                     <button id="wizYesBtn" onclick="wizToggleYes()" style="flex:1;padding:12px;border-radius:12px;border:1.5px solid #E5E7EB;background:#F9FAFB;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:#374151;cursor:pointer;transition:all .15s;">Yes</button>
                     <button id="wizNoBtn"  onclick="wizToggleNo()"  style="flex:1;padding:12px;border-radius:12px;border:1.5px solid #E5E7EB;background:#F9FAFB;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:#374151;cursor:pointer;transition:all .15s;">No</button>
                 </div>
-                <div id="wizSubModInput" style="display:none;margin-bottom:4px;">
-                    <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Number of sub-mods</div>
-                    <input class="modal-input" id="wizSubModCount" type="text" maxlength="2" placeholder="e.g. 4" autocomplete="off" inputmode="numeric">
+                <div id="wizSubSectionInput" style="display:none;margin-bottom:4px;">
+                    <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Number of sub-sections</div>
+                    <input class="modal-input" id="wizSubSectionCount" type="text" maxlength="2" placeholder="e.g. 4" autocomplete="off" inputmode="numeric">
                 </div>
                 <div class="modal-error" id="wizError"></div>
                 <div class="modal-btns" style="margin-top:12px;">
@@ -351,12 +413,15 @@
     let _newZone = null;
 
     function showStep(n) {
-        [1,2,3,4,5,6].forEach(i => { const el = document.getElementById('step'+i); if(el) el.classList.toggle('active', i===n); });
-        const el51 = document.getElementById('step51'); if(el51) el51.classList.toggle('active', n===51);
+        ['1','2','3','3b','3c','3d','3e','4','5','6','51'].forEach(i => {
+            const el = document.getElementById('step'+i);
+            if (el) el.classList.toggle('active', String(i) === String(n));
+        });
     }
 
     function openAddModal() {
         _newZone = null;
+        _nonStdAisles = []; _nonStdAisleIdx = 0; _nonStdTypes = {}; _8ftMap = {}; _selectedNsType = null;
         ['addInput','aisleFrom','aisleTo','sectionsFrom','sectionsPerAisle'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
         ['addError','aisleError','sectionsError'].forEach(id => { const el = document.getElementById(id); if(el) el.textContent=''; });
         showStep(1);
@@ -394,14 +459,7 @@
             document.getElementById('sectionsError').textContent = 'Enter a valid end section number.'; return;
         }
         _secRange = { from: secFrom, to: secTo };
-        // Go to step 4 — opposing aisles
-        const aisleFromVal = parseInt(document.getElementById('aisleFrom').value);
-        document.getElementById('oppPromptZone').textContent = _newZone;
-        document.getElementById('oppFirstAisle').value = String(aisleFromVal);
-        document.getElementById('oppSecondAisle').value = '';
-        document.getElementById('oppError').textContent = '';
-        showStep(4);
-        setTimeout(() => document.getElementById('oppSecondAisle').focus(), 100);
+        showStep('3b');
     }
 
     function appendZoneCard(letter) {
@@ -445,9 +503,22 @@
 
         if (_secRange) {
             aisles.forEach(a => {
-                const secKey = 'addedSections_' + _newZone + a;
-                const sections = [];
+                const secKey  = 'addedSections_' + _newZone + a;
+                let sections  = [];
                 for (let i = _secRange.from; i <= _secRange.to; i++) sections.push(String(i));
+                // Apply 8ft splits — section N → N-L and N-R
+                const aisleId = _newZone + a;
+                if (_8ftMap[aisleId]) {
+                    const expanded = [];
+                    sections.forEach(sec => {
+                        if (_8ftMap[aisleId][sec] === '8ft') {
+                            expanded.push(sec + '-L', sec + '-R');
+                        } else {
+                            expanded.push(sec);
+                        }
+                    });
+                    sections = expanded;
+                }
                 sessionStorage.setItem(secKey, JSON.stringify(sections));
             });
         }
@@ -464,15 +535,15 @@
             sessionStorage.setItem('opposingAisles_' + _newZone, JSON.stringify(pairs));
         }
 
-        // Store mod alignment
-        if (_modAlignment !== null) {
-            sessionStorage.setItem('modAlignment_' + _newZone, JSON.stringify(_modAlignment));
+        // Store section alignment
+        if (_secAlignment !== null) {
+            sessionStorage.setItem('secAlignment_' + _newZone, JSON.stringify(_secAlignment));
         }
 
-        // Store sub-mod map
-        if (Object.keys(_subModMap).length > 0) {
+        // Store sub-section map
+        if (Object.keys(_subSectionMap).length > 0) {
             aisles.forEach(a => {
-                sessionStorage.setItem('subMods_' + _newZone + a, JSON.stringify(_subModMap));
+                sessionStorage.setItem('subSections_' + _newZone + a, JSON.stringify(_subSectionMap));
             });
         }
 
@@ -486,14 +557,172 @@
     // State for multi-step wizard
     let _secRange    = null;
     let _oppPair     = null;
-    let _modAlignment = null; // { sameNumbers: bool, offsets: {aisleA: n, aisleB: m} }
-    let _subModMap   = {};    // { sectionNum: totalMods }
+    let _secAlignment = null; // { sameNumbers: bool, offsets: {aisleA: n, aisleB: m} }
+    let _subSectionMap   = {};    // { sectionNum: totalMods }
     let _wizSections = [];    // section numbers to walk through
     let _wizIndex    = 0;
-    let _wizCurrentMod = 1;   // running mod counter
+    let _wizCurrentSec = 1;   // running mod counter
+
+    // ── Non-standard sections state ──────────────────────────────────────────
+    let _nonStdAisles    = [];   // aisles user selected as having non-standard
+    let _nonStdAisleIdx  = 0;    // current aisle being configured
+    let _nonStdTypes     = {};   // { aisleId: 'subsections'|'8ft'|'both' }
+    let _8ftMap          = {};   // { aisleId: { sectionId: '4ft'|'8ft' } }
+    let _selectedNsType  = null;
+
+    function goNonStdNo() {
+        goToOpposing();
+    }
+
+    function goNonStdYes() {
+        // Build aisle bubbles from _newZone + aisle range
+        const from = parseInt(document.getElementById('aisleFrom').value);
+        const to   = parseInt(document.getElementById('aisleTo').value);
+        const container = document.getElementById('aisleBubbles');
+        container.innerHTML = '';
+        for (let i = from; i <= to; i++) {
+            const id = _newZone + i;
+            const btn = document.createElement('button');
+            btn.className = 'aisle-bubble';
+            btn.textContent = id;
+            btn.dataset.aisle = id;
+            btn.onclick = function() { this.classList.toggle('selected'); };
+            container.appendChild(btn);
+        }
+        document.getElementById('nonStdTitle').textContent = 'Aisles with Non-Standard Sections';
+        showStep('3c');
+    }
+
+    function goNonStdAisles() {
+        const selected = [...document.querySelectorAll('.aisle-bubble.selected')].map(b => b.dataset.aisle);
+        _nonStdAisles   = selected;
+        _nonStdAisleIdx = 0;
+        _nonStdTypes    = {};
+        _8ftMap         = {};
+        if (_nonStdAisles.length === 0) { goToOpposing(); return; }
+        showNonStdTypePicker();
+    }
+
+    function showNonStdTypePicker() {
+        if (_nonStdAisleIdx >= _nonStdAisles.length) { goToOpposing(); return; }
+        const aisle = _nonStdAisles[_nonStdAisleIdx];
+        document.getElementById('nonStdTypeTitle').textContent = 'Aisle ' + aisle;
+        document.querySelectorAll('.ns-pill').forEach(p => p.classList.remove('selected'));
+        _selectedNsType = null;
+        document.getElementById('nonStdTypeError').textContent = '';
+        showStep('3d');
+    }
+
+    function toggleNsType(btn) {
+        document.querySelectorAll('.ns-pill').forEach(p => p.classList.remove('selected'));
+        btn.classList.add('selected');
+        _selectedNsType = btn.dataset.val;
+    }
+
+    function goNonStdType() {
+        if (!_selectedNsType) { document.getElementById('nonStdTypeError').textContent = 'Please select a type.'; return; }
+        const aisle = _nonStdAisles[_nonStdAisleIdx];
+        _nonStdTypes[aisle] = _selectedNsType;
+        if (_selectedNsType === 'subsections') {
+            startSubSecWizardForAisle(aisle, () => {
+                _nonStdAisleIdx++;
+                showNonStdTypePicker();
+            });
+        } else if (_selectedNsType === '8ft') {
+            show8ftPicker(aisle, () => {
+                _nonStdAisleIdx++;
+                showNonStdTypePicker();
+            });
+        } else { // both — sub-sections first, then 8ft
+            startSubSecWizardForAisle(aisle, () => {
+                show8ftPicker(aisle, () => {
+                    _nonStdAisleIdx++;
+                    showNonStdTypePicker();
+                });
+            });
+        }
+    }
+
+    // 8ft picker
+    let _8ftCallback = null;
+    function show8ftPicker(aisle, callback) {
+        _8ftCallback = callback;
+        const sections = _secRange ? (() => { const a=[]; for(let i=_secRange.from;i<=_secRange.to;i++) a.push(i); return a; })() : [];
+        document.getElementById('eightFtTitle').textContent = '8 ft Sections — Aisle ' + aisle;
+        const list = document.getElementById('eightFtList');
+        list.innerHTML = '';
+        if (!_8ftMap[aisle]) _8ftMap[aisle] = {};
+        sections.forEach(sec => {
+            if (!_8ftMap[aisle][sec]) _8ftMap[aisle][sec] = '4ft';
+            const row = document.createElement('div');
+            row.className = 'eightft-row';
+            row.innerHTML = `<div class="eightft-label">Section ${sec}</div>
+                <div class="eightft-pills">
+                    <button class="eightft-pill sel4" data-sec="${sec}" data-size="4ft" onclick="set8ft('${aisle}',${sec},'4ft',this)">4 ft</button>
+                    <button class="eightft-pill" data-sec="${sec}" data-size="8ft" onclick="set8ft('${aisle}',${sec},'8ft',this)">8 ft</button>
+                </div>`;
+            list.appendChild(row);
+        });
+        showStep('3e');
+    }
+
+    function set8ft(aisle, sec, size, btn) {
+        _8ftMap[aisle][sec] = size;
+        const row = btn.closest('.eightft-row');
+        row.querySelectorAll('.eightft-pill').forEach(p => { p.classList.remove('sel4','sel8'); });
+        btn.classList.add(size === '4ft' ? 'sel4' : 'sel8');
+    }
+
+    function selectAll8ft() {
+        const aisle = _nonStdAisles[_nonStdAisleIdx];
+        document.querySelectorAll('#eightFtList .eightft-pill').forEach(p => {
+            const size = p.dataset.size;
+            const sec  = p.dataset.sec;
+            p.classList.remove('sel4','sel8');
+            if (size === '8ft') { p.classList.add('sel8'); _8ftMap[aisle][sec] = '8ft'; }
+            else p.classList.add('sel4');
+        });
+        // Only keep 8ft pills active
+        document.querySelectorAll('#eightFtList .eightft-pill[data-size="4ft"]').forEach(p => {
+            _8ftMap[aisle][p.dataset.sec] = '8ft';
+            p.classList.remove('sel4');
+        });
+        document.querySelectorAll('#eightFtList .eightft-pill[data-size="8ft"]').forEach(p => {
+            p.classList.add('sel8');
+        });
+        document.querySelectorAll('#eightFtList .eightft-pill[data-size="4ft"]').forEach(p => p.classList.remove('sel4'));
+    }
+
+    function goAfter8ft() {
+        if (_8ftCallback) { const cb = _8ftCallback; _8ftCallback = null; cb(); }
+    }
+
+    // Sub-section wizard scoped to a single aisle (for non-standard flow)
+    let _nsWizCallback = null;
+    function startSubSecWizardForAisle(aisle, callback) {
+        _nsWizCallback = callback;
+        // reuse existing sub-section wizard state
+        _subSecMap   = {};
+        _wizSections = [];
+        if (_secRange) for (let i = _secRange.from; i <= _secRange.to; i++) _wizSections.push(i);
+        _wizIndex      = 0;
+        _wizCurrentSec = _secAlignment && _secAlignment.offsets ? _secAlignment.offsets.a : 1;
+        showWizStep();
+        showStep(6);
+    }
+
+    function goToOpposing() {
+        const aisleFromVal = parseInt(document.getElementById('aisleFrom').value);
+        document.getElementById('oppPromptZone').textContent = _newZone;
+        document.getElementById('oppFirstAisle').value = String(aisleFromVal);
+        document.getElementById('oppSecondAisle').value = '';
+        document.getElementById('oppError').textContent = '';
+        showStep(4);
+        setTimeout(() => document.getElementById('oppSecondAisle').focus(), 100);
+    }
 
     function goStep4() {
-        // opposing aisles — validate and proceed to mod alignment
+        // opposing aisles — validate and proceed to section alignment
         const a = parseInt(document.getElementById('oppFirstAisle').value);
         const b = parseInt(document.getElementById('oppSecondAisle').value);
         if (isNaN(a) || isNaN(b) || a === b) {
@@ -501,44 +730,44 @@
         }
         _oppPair = [a, b];
         document.getElementById('oppPairDisplay').textContent = _newZone + a + ' ↔ ' + _newZone + b;
-        document.getElementById('modAlignError').textContent = '';
+        document.getElementById('secAlignError').textContent = '';
         showStep(5);
     }
 
-    function goModAlignYes() {
-        _modAlignment = { sameNumbers: true };
-        startSubModWizard();
+    function goSecAlignYes() {
+        _secAlignment = { sameNumbers: true };
+        startSubSectionWizard();
     }
 
-    function goModAlignNo() {
+    function goSecAlignNo() {
         // ask for offsets
-        _modAlignment = { sameNumbers: false };
+        _secAlignment = { sameNumbers: false };
         const a = _oppPair[0], b = _oppPair[1];
-        document.getElementById('offsetAisleA').textContent = _newZone + a;
-        document.getElementById('offsetAisleB').textContent = _newZone + b;
-        document.getElementById('offsetInputA').value = '';
-        document.getElementById('offsetInputB').value = '';
-        document.getElementById('modAlignError').textContent = '';
+        document.getElementById('secOffsetLabelA').textContent = _newZone + a;
+        document.getElementById('secOffsetLabelB').textContent = _newZone + b;
+        document.getElementById('secOffsetA').value = '';
+        document.getElementById('secOffsetB').value = '';
+        document.getElementById('secAlignError').textContent = '';
         showStep(51); // step 5b
     }
 
-    function goOffsetNext() {
-        const offA = parseInt(document.getElementById('offsetInputA').value);
-        const offB = parseInt(document.getElementById('offsetInputB').value);
+    function goSecOffsetNext() {
+        const offA = parseInt(document.getElementById('secOffsetA').value);
+        const offB = parseInt(document.getElementById('secOffsetB').value);
         if (isNaN(offA) || isNaN(offB)) {
-            document.getElementById('modAlignError').textContent = 'Enter starting mod numbers for both aisles.'; return;
+            document.getElementById('secAlignError').textContent = 'Enter starting section numbers for both aisles.'; return;
         }
-        _modAlignment.offsets = { a: offA, b: offB };
-        startSubModWizard();
+        _secAlignment.offsets = { a: offA, b: offB };
+        startSubSectionWizard();
     }
 
-    function startSubModWizard() {
+    function startSubSectionWizard() {
         if (!_secRange) { finishAdd(); return; }
-        _subModMap = {};
+        _subSectionMap = {};
         _wizSections = [];
         for (let i = _secRange.from; i <= _secRange.to; i++) _wizSections.push(i);
         _wizIndex = 0;
-        _wizCurrentMod = _modAlignment && _modAlignment.offsets ? _modAlignment.offsets.a : 1;
+        _wizCurrentSec = _secAlignment && _secAlignment.offsets ? _secAlignment.offsets.a : 1;
         showWizardSection();
         showStep(6);
     }
@@ -550,23 +779,23 @@
         document.getElementById('wizProgress').style.width = pct + '%';
         document.getElementById('wizStep').textContent = (_wizIndex + 1) + ' of ' + total;
         document.getElementById('wizSecNum').textContent = 'Section ' + sec;
-        document.getElementById('wizModStart').textContent = _wizCurrentMod;
-        document.getElementById('wizSubModCount').value = '';
+        document.getElementById('wizSecStart').textContent = _wizCurrentSec;
+        document.getElementById('wizSubSectionCount').value = '';
         document.getElementById('wizError').textContent = '';
-        document.getElementById('wizSubModInput').style.display = 'none';
+        document.getElementById('wizSubSectionInput').style.display = 'none';
         document.getElementById('wizYesBtn').classList.remove('active');
         document.getElementById('wizNoBtn').classList.remove('active');
     }
 
     function wizToggleYes() {
-        document.getElementById('wizSubModInput').style.display = 'block';
+        document.getElementById('wizSubSectionInput').style.display = 'block';
         document.getElementById('wizYesBtn').classList.add('active');
         document.getElementById('wizNoBtn').classList.remove('active');
-        setTimeout(() => document.getElementById('wizSubModCount').focus(), 100);
+        setTimeout(() => document.getElementById('wizSubSectionCount').focus(), 100);
     }
 
     function wizToggleNo() {
-        document.getElementById('wizSubModInput').style.display = 'none';
+        document.getElementById('wizSubSectionInput').style.display = 'none';
         document.getElementById('wizNoBtn').classList.add('active');
         document.getElementById('wizYesBtn').classList.remove('active');
         document.getElementById('wizError').textContent = '';
@@ -574,17 +803,17 @@
 
     function wizNext() {
         const sec = _wizSections[_wizIndex];
-        const hasSubMods = document.getElementById('wizYesBtn').classList.contains('active');
+        const hasSubSections = document.getElementById('wizYesBtn').classList.contains('active');
         let modsInSection = 1;
-        if (hasSubMods) {
-            const count = parseInt(document.getElementById('wizSubModCount').value);
+        if (hasSubSections) {
+            const count = parseInt(document.getElementById('wizSubSectionCount').value);
             if (isNaN(count) || count < 2) {
-                document.getElementById('wizError').textContent = 'Enter 2 or more sub-mods.'; return;
+                document.getElementById('wizError').textContent = 'Enter 2 or more sub-sections.'; return;
             }
             modsInSection = count;
         }
-        if (modsInSection > 1) _subModMap[sec] = { startMod: _wizCurrentMod, count: modsInSection };
-        _wizCurrentMod += modsInSection;
+        if (modsInSection > 1) _subSectionMap[sec] = { startMod: _wizCurrentSec, count: modsInSection };
+        _wizCurrentSec += modsInSection;
         _wizIndex++;
         if (_wizIndex >= _wizSections.length) {
             finishAdd();
@@ -625,7 +854,7 @@
         document.getElementById(id).addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
     });
     document.getElementById('deleteInput').addEventListener('input', e => { e.target.value = e.target.value.toUpperCase().replace(/[^A-Z]/g,''); });
-    ['oppFirstAisle','oppSecondAisle','offsetInputA','offsetInputB','wizSubModCount'].forEach(id => {
+    ['oppFirstAisle','oppSecondAisle','secOffsetA','secOffsetB','wizSubSectionCount'].forEach(id => {
         const el = document.getElementById(id); if(el) el.addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
     });
 </script>

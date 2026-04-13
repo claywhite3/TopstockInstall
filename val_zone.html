@@ -52,6 +52,14 @@
         .step.active { display: block; }
         #aisleWizYes.active, #aisleWizNo.active { background: #EFF6FF; border-color: #2563EB; color: #2563EB; }
         .btn-skip { width: 100%; padding: 12px; background: none; border: none; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: #9CA3AF; cursor: pointer; margin-top: 6px; }
+        .ns-pill { flex:1; padding: 11px 6px; border-radius: 12px; border: 1.5px solid #E5E7EB; background: #F9FAFB; font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 700; color: #6B7280; cursor: pointer; transition: all .15s; text-align: center; }
+        .ns-pill.selected { border-color: #2563EB; background: #EFF6FF; color: #2563EB; }
+        .eightft-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 12px; background: #F9FAFB; border-radius: 10px; }
+        .eightft-label { font-size: 14px; font-weight: 700; color: #111827; }
+        .eightft-pills { display: flex; gap: 6px; }
+        .eightft-pill { padding: 6px 12px; border-radius: 8px; border: 1.5px solid #E5E7EB; background: #fff; font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 700; color: #6B7280; cursor: pointer; transition: all .15s; }
+        .eightft-pill.sel4 { border-color: #86EFAC; background: #F0FDF4; color: #16A34A; }
+        .eightft-pill.sel8 { border-color: #BFDBFE; background: #EFF6FF; color: #2563EB; }
         .range-row { display: flex; align-items: center; gap: 8px; }
         .range-row .modal-input { flex: 1; }
         .range-dash { font-size: 20px; font-weight: 700; color: #9CA3AF; flex-shrink: 0; }
@@ -64,9 +72,12 @@
 </head>
 <body>
 <div class="shell">
-    <div class="top-bar">
+    <div class="top-bar" style="position:relative;">
         <a href="val_overview.html" class="btn-back">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <a href="flow_pick.html" style="position:absolute;left:50%;transform:translateX(-50%);width:38px;height:38px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);text-decoration:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </a>
         <div class="avatar">CW</div>
     </div>
@@ -186,9 +197,47 @@
                 <div class="modal-error" id="aisleSectionsError"></div>
                 <div class="modal-btns">
                     <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
-                    <button class="modal-confirm" onclick="aisleFinish(true)">Add Aisle</button>
+                    <button class="modal-confirm" onclick="aisleGoNonStdGate()">Next</button>
                 </div>
                 <button class="btn-skip" onclick="aisleFinish(false)">Skip for now</button>
+            </div>
+
+            <!-- Step 2b: Non-standard gate -->
+            <div class="step" id="addStep2b">
+                <div class="modal-title">Non-Standard Sections?</div>
+                <div class="modal-body">Does this aisle have any sub-sections or 8 ft sections?</div>
+                <div style="display:flex;gap:8px;margin-top:16px;">
+                    <button onclick="aisleNonStdNo()" style="flex:1;padding:14px;border-radius:12px;border:1.5px solid #E5E7EB;background:#F9FAFB;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#374151;cursor:pointer;">No</button>
+                    <button onclick="aisleNonStdYes()" style="flex:1;padding:14px;border-radius:12px;border:1.5px solid #BFDBFE;background:#EFF6FF;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:700;color:#2563EB;cursor:pointer;">Yes</button>
+                </div>
+            </div>
+
+            <!-- Step 2c: Non-standard type picker -->
+            <div class="step" id="addStep2c">
+                <div class="modal-title" id="aisleNsTypeTitle">Non-Standard Type</div>
+                <div class="modal-body">What kind of non-standard sections does this aisle have?</div>
+                <div style="display:flex;gap:8px;margin:14px 0;" id="aisleNsTypePills">
+                    <button class="ns-pill" data-val="subsections" onclick="aisleToggleNsType(this)">Sub-sections</button>
+                    <button class="ns-pill" data-val="8ft"         onclick="aisleToggleNsType(this)">8 ft Section</button>
+                    <button class="ns-pill" data-val="both"        onclick="aisleToggleNsType(this)">Both</button>
+                </div>
+                <div class="modal-error" id="aisleNsTypeError"></div>
+                <div class="modal-btns" style="margin-top:8px;">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                    <button class="modal-confirm" onclick="aisleGoNsType()">Next</button>
+                </div>
+            </div>
+
+            <!-- Step 2d: 8ft section picker -->
+            <div class="step" id="addStep2d">
+                <div class="modal-title" id="aisle8ftTitle">8 ft Sections</div>
+                <div class="modal-body">Sections are 4 ft by default. Tap any that are 8 ft.</div>
+                <button onclick="aisleSelectAll8ft()" style="width:100%;padding:10px;background:#F3F4F6;border:none;border-radius:10px;font-family:'DM Sans',sans-serif;font-size:13px;font-weight:700;color:#374151;cursor:pointer;margin-bottom:10px;">Select All 8 ft</button>
+                <div id="aisle8ftList" style="display:flex;flex-direction:column;gap:6px;max-height:220px;overflow-y:auto;"></div>
+                <div class="modal-btns" style="margin-top:12px;">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                    <button class="modal-confirm" onclick="aisleGoAfter8ft()">Done</button>
+                </div>
             </div>
 
             <!-- Step 3: Opposing aisle -->
@@ -205,18 +254,18 @@
 
             <!-- Step 4: Mod alignment yes/no -->
             <div class="step" id="addStep4">
-                <div class="modal-title">Mod Alignment</div>
-                <div class="modal-body">For <strong><span id="aislePairDisplay"></span></strong> — do opposing mods share the same number?</div>
+                <div class="modal-title">Section Alignment</div>
+                <div class="modal-body">For <strong><span id="aislePairDisplay"></span></strong> — do opposing sections share the same number?</div>
                 <div class="modal-btns" style="margin-top:16px;">
-                    <button class="modal-cancel" onclick="aisleModAlignNo()">No — different</button>
-                    <button class="modal-confirm" onclick="aisleModAlignYes()">Yes — same</button>
+                    <button class="modal-cancel" onclick="aisleSecAlignNo()">No — different</button>
+                    <button class="modal-confirm" onclick="aisleSecAlignYes()">Yes — same</button>
                 </div>
             </div>
 
             <!-- Step 4b: Mod offsets -->
             <div class="step" id="addStep51">
-                <div class="modal-title">Mod Starting Numbers</div>
-                <div class="modal-body">Enter the starting mod number for each aisle.</div>
+                <div class="modal-title">Section Starting Numbers</div>
+                <div class="modal-body">Enter the starting section number for each aisle.</div>
                 <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:4px;">
                     <div style="display:flex;align-items:center;gap:10px;">
                         <div style="font-size:13px;font-weight:700;color:#374151;width:60px;" id="aisleOffsetLabelA"></div>
@@ -230,25 +279,25 @@
                 <div class="modal-error" id="aisleAlignError"></div>
                 <div class="modal-btns" style="margin-top:16px;">
                     <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
-                    <button class="modal-confirm" onclick="aisleOffsetNext()">Next</button>
+                    <button class="modal-confirm" onclick="aisleSecOffsetNext()">Next</button>
                 </div>
             </div>
 
-            <!-- Step 6: Sub-mod wizard -->
+            <!-- Step 6: Sub-section wizard -->
             <div class="step" id="addStep6">
                 <div style="height:4px;background:#E5E7EB;border-radius:4px;margin-bottom:16px;overflow:hidden;">
                     <div id="aisleWizProgress" style="height:100%;background:#2563EB;border-radius:4px;transition:width .3s;width:0%;"></div>
                 </div>
                 <div style="font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;" id="aisleWizStep">1 of 8</div>
                 <div class="modal-title" id="aisleWizSecNum">Section 1</div>
-                <div class="modal-body">Starts at mod <strong id="aisleWizModStart">1</strong>. Does this section have sub-mods?</div>
+                <div class="modal-body">Starts at section <strong id="aisleWizSecStart">1</strong>. Does this section have sub-sections?</div>
                 <div style="display:flex;gap:8px;margin:12px 0;">
                     <button id="aisleWizYes" onclick="aisleWizToggleYes()" style="flex:1;padding:12px;border-radius:12px;border:1.5px solid #E5E7EB;background:#F9FAFB;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:#374151;cursor:pointer;transition:all .15s;">Yes</button>
                     <button id="aisleWizNo"  onclick="aisleWizToggleNo()"  style="flex:1;padding:12px;border-radius:12px;border:1.5px solid #E5E7EB;background:#F9FAFB;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;color:#374151;cursor:pointer;transition:all .15s;">No</button>
                 </div>
-                <div id="aisleWizSubInput" style="display:none;margin-bottom:4px;">
-                    <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Number of sub-mods</div>
-                    <input class="modal-input" id="aisleWizCount" type="text" maxlength="2" placeholder="e.g. 4" autocomplete="off" inputmode="numeric">
+                <div id="aisleWizSubSecInput" style="display:none;margin-bottom:4px;">
+                    <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.4px;margin-bottom:6px;">Number of sub-sections</div>
+                    <input class="modal-input" id="aisleWizSubSecCount" type="text" maxlength="2" placeholder="e.g. 4" autocomplete="off" inputmode="numeric">
                 </div>
                 <div class="modal-error" id="aisleWizError"></div>
                 <div class="modal-btns" style="margin-top:12px;">
@@ -287,28 +336,112 @@
     let _newAisle        = null;
     let _aisleSecRange   = null;
     let _aisleOpp        = null;
-    let _aisleModAlignment = null;
-    let _aisleSubModMap  = {};
+    let _aisleSecAlignment = null;
+    let _aisleSubSecMap  = {};
     let _aisleWizSections = [];
     let _aisleWizIndex   = 0;
-    let _aisleWizCurrentMod = 1;
+    let _aisleWizCurrentSec = 1;
+    let _aisleNsType     = null;
+    let _aisle8ftMap     = {};
 
-    function showAddStep(n) {
-        [1,2,3,4,5,6].forEach(i => { const el = document.getElementById('addStep'+i); if(el) el.classList.toggle('active', i===n); });
-        const el51 = document.getElementById('addStep51'); if(el51) el51.classList.toggle('active', n===51);
+    // Non-standard gate
+    function aisleGoNonStdGate() {
+        const secFrom = parseInt(document.getElementById('aisleSectionsFrom').value) || 1;
+        const secTo   = parseInt(document.getElementById('aisleSections').value);
+        if (isNaN(secTo) || secTo < secFrom) { document.getElementById('aisleSectionsError').textContent = 'Enter a valid end section number.'; return; }
+        _aisleSecRange = { from: secFrom, to: secTo };
+        showAddStep('2b');
     }
 
-    function openAddModal() {
-        _newAisle = null;
-        _aisleSecRange = null; _aisleOpp = null; _aisleModAlignment = null; _aisleSubModMap = {};
-        document.getElementById('addInput').value = '';
-        document.getElementById('addError').textContent = '';
-        document.getElementById('aisleSectionsFrom').value = '1';
-        document.getElementById('aisleSections').value = '';
-        document.getElementById('aisleSectionsError').textContent = '';
-        showAddStep(1);
-        document.getElementById('addModal').classList.add('open');
-        setTimeout(() => document.getElementById('addInput').focus(), 300);
+    function aisleNonStdNo() {
+        aisleGoToOpposing();
+    }
+
+    function aisleNonStdYes() {
+        document.getElementById('aisleNsTypeTitle').textContent = 'Aisle ' + zone + _newAisle;
+        document.querySelectorAll('#aisleNsTypePills .ns-pill').forEach(p => p.classList.remove('selected'));
+        _aisleNsType = null;
+        showAddStep('2c');
+    }
+
+    function aisleToggleNsType(btn) {
+        document.querySelectorAll('#aisleNsTypePills .ns-pill').forEach(p => p.classList.remove('selected'));
+        btn.classList.add('selected');
+        _aisleNsType = btn.dataset.val;
+    }
+
+    function aisleGoNsType() {
+        if (!_aisleNsType) { document.getElementById('aisleNsTypeError').textContent = 'Please select a type.'; return; }
+        if (_aisleNsType === 'subsections') {
+            startAisleSubSecWizard();
+        } else if (_aisleNsType === '8ft') {
+            aisleShow8ftPicker(() => aisleGoToOpposing());
+        } else {
+            // both — sub-sections first, then 8ft
+            startAisleSubSecWizard(); // wizard will call aisleGoToOpposing after finishing
+        }
+    }
+
+    function aisleShow8ftPicker(callback) {
+        window._aisle8ftCallback = callback;
+        const sections = [];
+        if (_aisleSecRange) for (let i = _aisleSecRange.from; i <= _aisleSecRange.to; i++) sections.push(i);
+        document.getElementById('aisle8ftTitle').textContent = '8 ft Sections — Aisle ' + zone + _newAisle;
+        const list = document.getElementById('aisle8ftList');
+        list.innerHTML = '';
+        sections.forEach(sec => {
+            if (!_aisle8ftMap[sec]) _aisle8ftMap[sec] = '4ft';
+            const row = document.createElement('div');
+            row.className = 'eightft-row';
+            row.innerHTML = `<div class="eightft-label">Section ${sec}</div>
+                <div class="eightft-pills">
+                    <button class="eightft-pill sel4" data-sec="${sec}" data-size="4ft" onclick="aisleSet8ft(${sec},'4ft',this)">4 ft</button>
+                    <button class="eightft-pill" data-sec="${sec}" data-size="8ft" onclick="aisleSet8ft(${sec},'8ft',this)">8 ft</button>
+                </div>`;
+            list.appendChild(row);
+        });
+        showAddStep('2d');
+    }
+
+    function aisleSet8ft(sec, size, btn) {
+        _aisle8ftMap[sec] = size;
+        btn.closest('.eightft-row').querySelectorAll('.eightft-pill').forEach(p => p.classList.remove('sel4','sel8'));
+        btn.classList.add(size === '4ft' ? 'sel4' : 'sel8');
+    }
+
+    function aisleSelectAll8ft() {
+        document.querySelectorAll('#aisle8ftList .eightft-pill').forEach(p => {
+            p.classList.remove('sel4','sel8');
+            if (p.dataset.size === '8ft') { p.classList.add('sel8'); _aisle8ftMap[p.dataset.sec] = '8ft'; }
+        });
+        document.querySelectorAll('#aisle8ftList .eightft-pill[data-size="4ft"]').forEach(p => { _aisle8ftMap[p.dataset.sec] = '8ft'; });
+    }
+
+    function aisleGoAfter8ft() {
+        if (window._aisle8ftCallback) { const cb = window._aisle8ftCallback; window._aisle8ftCallback = null; cb(); }
+    }
+
+    function aisleGoToOpposing() {
+        // Write section data now — 8ft map may have been populated by non-standard flow
+        if (_aisleSecRange) {
+            const secKey = 'addedSections_' + zone + _newAisle;
+            let sections = [];
+            for (let i = _aisleSecRange.from; i <= _aisleSecRange.to; i++) sections.push(String(i));
+            if (Object.keys(_aisle8ftMap).length > 0) {
+                const expanded = [];
+                sections.forEach(sec => {
+                    if (_aisle8ftMap[sec] === '8ft') { expanded.push(sec+'-L', sec+'-R'); }
+                    else { expanded.push(sec); }
+                });
+                sections = expanded;
+            }
+            sessionStorage.setItem(secKey, JSON.stringify(sections));
+        }
+        document.getElementById('aisleOppLabel').textContent = zone + _newAisle;
+        document.getElementById('aisleOppInput').value = '';
+        document.getElementById('aisleOppError').textContent = '';
+        showAddStep(3);
+        setTimeout(() => document.getElementById('aisleOppInput').focus(), 100);
     }
 
     function aisleGoStep2() {
@@ -327,20 +460,33 @@
         if (withSections) {
             const secFrom = parseInt(document.getElementById('aisleSectionsFrom').value) || 1;
             const secTo   = parseInt(document.getElementById('aisleSections').value);
-            if (isNaN(secTo) || secTo < secFrom) { document.getElementById('aisleSectionsError').textContent = 'Enter a valid end section number.'; return; }
-            _aisleSecRange = { from: secFrom, to: secTo };
-            const secKey = 'addedSections_' + zone + _newAisle;
-            const sections = [];
-            for (let i = secFrom; i <= secTo; i++) sections.push(String(i));
-            sessionStorage.setItem(secKey, JSON.stringify(sections));
+            if (!isNaN(secTo) && secTo >= secFrom) _aisleSecRange = { from: secFrom, to: secTo };
         }
-        // Go to step 3 — opposing aisle
-        document.getElementById('aisleOppLabel').textContent = zone + _newAisle;
-        document.getElementById('aisleOppInput').value = '';
-        document.getElementById('aisleOppError').textContent = '';
-        showAddStep(3);
-        setTimeout(() => document.getElementById('aisleOppInput').focus(), 100);
+        aisleGoToOpposing();
     }
+
+    function showAddStep(n) {
+        ['1','2','2b','2c','2d','3','4','5','6','51'].forEach(i => {
+            const el = document.getElementById('addStep'+i);
+            if (el) el.classList.toggle('active', String(i) === String(n));
+        });
+    }
+
+    function openAddModal() {
+        _newAisle = null;
+        _aisleSecRange = null; _aisleOpp = null; _aisleSecAlignment = null; _aisleSubSecMap = {};
+        _aisleNsType = null; _aisle8ftMap = {};
+        document.getElementById('addInput').value = '';
+        document.getElementById('addError').textContent = '';
+        document.getElementById('aisleSectionsFrom').value = '1';
+        document.getElementById('aisleSections').value = '';
+        document.getElementById('aisleSectionsError').textContent = '';
+        showAddStep(1);
+        document.getElementById('addModal').classList.add('open');
+        setTimeout(() => document.getElementById('addInput').focus(), 300);
+    }
+
+
 
     function aisleGoStep4() {
         const opp = parseInt(document.getElementById('aisleOppInput').value);
@@ -350,13 +496,13 @@
         showAddStep(4);
     }
 
-    function aisleModAlignYes() {
-        _aisleModAlignment = { sameNumbers: true };
-        startAisleSubModWizard();
+    function aisleSecAlignYes() {
+        _aisleSecAlignment = { sameNumbers: true };
+        finishAisle();
     }
 
-    function aisleModAlignNo() {
-        _aisleModAlignment = { sameNumbers: false };
+    function aisleSecAlignNo() {
+        _aisleSecAlignment = { sameNumbers: false };
         document.getElementById('aisleOffsetLabelA').textContent = zone + _newAisle;
         document.getElementById('aisleOffsetLabelB').textContent = zone + _aisleOpp;
         document.getElementById('aisleOffsetA').value = '';
@@ -365,21 +511,25 @@
         showAddStep(51);
     }
 
-    function aisleOffsetNext() {
+    function aisleSecOffsetNext() {
         const a = parseInt(document.getElementById('aisleOffsetA').value);
         const b = parseInt(document.getElementById('aisleOffsetB').value);
-        if (isNaN(a) || isNaN(b)) { document.getElementById('aisleAlignError').textContent = 'Enter starting mod numbers for both aisles.'; return; }
-        _aisleModAlignment.offsets = { a, b };
-        startAisleSubModWizard();
+        if (isNaN(a) || isNaN(b)) { document.getElementById('aisleAlignError').textContent = 'Enter starting section numbers for both aisles.'; return; }
+        _aisleSecAlignment.offsets = { a, b };
+        finishAisle();
     }
 
-    function startAisleSubModWizard() {
-        if (!_aisleSecRange) { finishAisle(); return; }
-        _aisleSubModMap = {};
+    function startAisleSubSecWizard() {
+        if (!_aisleSecRange) {
+            if (_aisleNsType === "both") aisleShow8ftPicker(() => aisleGoToOpposing());
+            else aisleGoToOpposing();
+            return;
+        }
+        _aisleSubSecMap = {};
         _aisleWizSections = [];
         for (let i = _aisleSecRange.from; i <= _aisleSecRange.to; i++) _aisleWizSections.push(i);
         _aisleWizIndex = 0;
-        _aisleWizCurrentMod = _aisleModAlignment && _aisleModAlignment.offsets ? _aisleModAlignment.offsets.a : 1;
+        _aisleWizCurrentSec = _aisleSecAlignment && _aisleSecAlignment.offsets ? _aisleSecAlignment.offsets.a : 1;
         showAisleWizardSection();
         showAddStep(6);
     }
@@ -391,23 +541,23 @@
         document.getElementById('aisleWizProgress').style.width = pct + '%';
         document.getElementById('aisleWizStep').textContent = (_aisleWizIndex+1) + ' of ' + total;
         document.getElementById('aisleWizSecNum').textContent = 'Section ' + sec;
-        document.getElementById('aisleWizModStart').textContent = _aisleWizCurrentMod;
-        document.getElementById('aisleWizCount').value = '';
+        document.getElementById('aisleWizSecStart').textContent = _aisleWizCurrentSec;
+        document.getElementById('aisleWizSubSecCount').value = '';
         document.getElementById('aisleWizError').textContent = '';
-        document.getElementById('aisleWizSubInput').style.display = 'none';
+        document.getElementById('aisleWizSubSecInput').style.display = 'none';
         document.getElementById('aisleWizYes').classList.remove('active');
         document.getElementById('aisleWizNo').classList.remove('active');
     }
 
     function aisleWizToggleYes() {
-        document.getElementById('aisleWizSubInput').style.display = 'block';
+        document.getElementById('aisleWizSubSecInput').style.display = 'block';
         document.getElementById('aisleWizYes').classList.add('active');
         document.getElementById('aisleWizNo').classList.remove('active');
-        setTimeout(() => document.getElementById('aisleWizCount').focus(), 100);
+        setTimeout(() => document.getElementById('aisleWizSubSecCount').focus(), 100);
     }
 
     function aisleWizToggleNo() {
-        document.getElementById('aisleWizSubInput').style.display = 'none';
+        document.getElementById('aisleWizSubSecInput').style.display = 'none';
         document.getElementById('aisleWizNo').classList.add('active');
         document.getElementById('aisleWizYes').classList.remove('active');
         document.getElementById('aisleWizError').textContent = '';
@@ -415,24 +565,28 @@
 
     function aisleWizNext() {
         const sec = _aisleWizSections[_aisleWizIndex];
-        const hasSubMods = document.getElementById('aisleWizYes').classList.contains('active');
+        const hasSubSecs = document.getElementById('aisleWizYes').classList.contains('active');
         let modsInSection = 1;
-        if (hasSubMods) {
-            const count = parseInt(document.getElementById('aisleWizCount').value);
-            if (isNaN(count) || count < 2) { document.getElementById('aisleWizError').textContent = 'Enter 2 or more sub-mods.'; return; }
+        if (hasSubSecs) {
+            const count = parseInt(document.getElementById('aisleWizSubSecCount').value);
+            if (isNaN(count) || count < 2) { document.getElementById('aisleWizError').textContent = 'Enter 2 or more sub-sections.'; return; }
             modsInSection = count;
         }
-        if (modsInSection > 1) _aisleSubModMap[sec] = { startMod: _aisleWizCurrentMod, count: modsInSection };
-        _aisleWizCurrentMod += modsInSection;
+        if (modsInSection > 1) _aisleSubSecMap[sec] = { startMod: _aisleWizCurrentSec, count: modsInSection };
+        _aisleWizCurrentSec += modsInSection;
         _aisleWizIndex++;
         if (_aisleWizIndex >= _aisleWizSections.length) {
-            finishAisle();
+            if (_aisleNsType === "both") aisleShow8ftPicker(() => aisleGoToOpposing());
+            else aisleGoToOpposing();
         } else {
             showAisleWizardSection();
         }
     }
 
-    function aisleWizSkipAll() { finishAisle(); }
+    function aisleWizSkipAll() {
+        if (_aisleNsType === "both") aisleShow8ftPicker(() => aisleGoToOpposing());
+        else aisleGoToOpposing();
+    }
 
     function appendAisleRow(aisleNum) {
         const list = document.getElementById('aisleList');
@@ -471,8 +625,8 @@
             oppMap[_aisleOpp] = _newAisle;
             sessionStorage.setItem('opposingAisles_' + zone, JSON.stringify(oppMap));
         }
-        if (_aisleModAlignment) sessionStorage.setItem('modAlignment_' + zone + _newAisle, JSON.stringify(_aisleModAlignment));
-        if (Object.keys(_aisleSubModMap).length > 0) sessionStorage.setItem('subMods_' + zone + _newAisle, JSON.stringify(_aisleSubModMap));
+        if (_aisleSecAlignment) sessionStorage.setItem('secAlignment_' + zone + _newAisle, JSON.stringify(_aisleSecAlignment));
+        if (Object.keys(_aisleSubSecMap).length > 0) sessionStorage.setItem('subSections_' + zone + _newAisle, JSON.stringify(_aisleSubSecMap));
         closeModal('addModal');
         appendAisleRow(_newAisle);
         let msg = 'Aisle ' + zone + _newAisle + ' added';
@@ -516,7 +670,7 @@
     document.getElementById('aisleSectionsFrom').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
     document.getElementById('aisleSections').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
     document.getElementById('deleteInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
-    ['aisleOppInput','aisleOffsetA','aisleOffsetB','aisleWizCount'].forEach(id => {
+    ['aisleOppInput','aisleOffsetA','aisleOffsetB','aisleWizSubSecCount'].forEach(id => {
         const el = document.getElementById(id); if(el) el.addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
     });
 </script>
