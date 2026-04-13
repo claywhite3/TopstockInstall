@@ -707,7 +707,7 @@
         if (_secRange) for (let i = _secRange.from; i <= _secRange.to; i++) _wizSections.push(i);
         _wizIndex      = 0;
         _wizCurrentSec = _secAlignment && _secAlignment.offsets ? _secAlignment.offsets.a : 1;
-        showWizStep();
+        showWizardSection();
         showStep(6);
     }
 
@@ -736,7 +736,7 @@
 
     function goSecAlignYes() {
         _secAlignment = { sameNumbers: true };
-        startSubSectionWizard();
+        finishAdd();
     }
 
     function goSecAlignNo() {
@@ -758,7 +758,7 @@
             document.getElementById('secAlignError').textContent = 'Enter starting section numbers for both aisles.'; return;
         }
         _secAlignment.offsets = { a: offA, b: offB };
-        startSubSectionWizard();
+        finishAdd();
     }
 
     function startSubSectionWizard() {
@@ -816,14 +816,16 @@
         _wizCurrentSec += modsInSection;
         _wizIndex++;
         if (_wizIndex >= _wizSections.length) {
-            finishAdd();
+            if (_nsWizCallback) { const cb = _nsWizCallback; _nsWizCallback = null; cb(); }
+            else finishAdd();
         } else {
             showWizardSection();
         }
     }
 
     function wizSkipAll() {
-        finishAdd();
+        if (_nsWizCallback) { const cb = _nsWizCallback; _nsWizCallback = null; cb(); }
+        else finishAdd();
     }
 
     function openDeleteModal() {

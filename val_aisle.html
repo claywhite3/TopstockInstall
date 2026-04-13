@@ -75,6 +75,17 @@
         .btn-install:active { transform:scale(.975); }
         .btn-install svg { width:16px; height:16px; }
         @keyframes fadeUp { from { opacity:0; transform:translateY(14px); } to { opacity:1; transform:translateY(0); } }
+        .step { display: none; }
+        .step.active { display: block; }
+        .sec-type-btn { width:100%; padding:13px 16px; background:#F9FAFB; border:1.5px solid #E5E7EB; border-radius:14px; font-family:"DM Sans",sans-serif; text-align:left; cursor:pointer; transition:all .15s; }
+        .sec-type-btn:active { transform:scale(.98); }
+        .sec-type-btn.selected { border-color:#2563EB; background:#EFF6FF; }
+        .sec-type-label { font-size:15px; font-weight:700; color:#111827; }
+        .sec-type-btn.selected .sec-type-label { color:#2563EB; }
+        .sec-type-desc  { font-size:12px; color:#9CA3AF; font-weight:500; margin-top:2px; }
+        /* 8ft section badge in list */
+        .badge-8ft { display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;background:#EFF6FF;color:#2563EB;border:1px solid #BFDBFE;margin-left:6px;vertical-align:middle; }
+        .badge-sub { display:inline-flex;align-items:center;gap:3px;font-size:9px;font-weight:800;padding:2px 6px;border-radius:5px;background:#F5F3FF;color:#7C3AED;border:1px solid #DDD6FE;margin-left:6px;vertical-align:middle; }
     </style>
 </head>
 <body>
@@ -111,7 +122,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
         Install Remaining 4 Sections
     </a>
-    <div class="section-list">
+    <div class="section-list" id="sectionList">
         <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;">Sections — tap to inspect</div>
         
         <a href="rail_detail.html?aisle=C3&section=1&rail=Z001-0121&status=issues" style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.00s ease both;opacity:0;text-decoration:none;cursor:pointer;">
@@ -218,14 +229,55 @@
 
     <div class="modal-overlay" id="addModal">
         <div class="modal-sheet">
-            <div class="modal-title">Add Section</div>
-            <div class="modal-body">Enter the section number to add to this aisle.</div>
-            <input class="modal-input" id="addInput" type="text" maxlength="2" placeholder="1–30" autocomplete="off" inputmode="numeric">
-            <div class="modal-error" id="addError"></div>
-            <div class="modal-btns">
-                <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
-                <button class="modal-confirm" onclick="submitAdd()">Add Section</button>
+
+            <!-- Step 1: Section number -->
+            <div class="step active" id="secStep1">
+                <div class="modal-title">Add Section</div>
+                <div class="modal-body">Enter the section number to add to this aisle.</div>
+                <input class="modal-input" id="addInput" type="text" maxlength="4" placeholder="e.g. 9" autocomplete="off" inputmode="numeric">
+                <div class="modal-error" id="addError"></div>
+                <div class="modal-btns">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                    <button class="modal-confirm" onclick="secGoStep2()">Next</button>
+                </div>
             </div>
+
+            <!-- Step 2: Type gate -->
+            <div class="step" id="secStep2">
+                <div class="modal-title" id="secTypeTitle">Section Type</div>
+                <div class="modal-body">What kind of section is this?</div>
+                <div style="display:flex;flex-direction:column;gap:8px;margin:14px 0;">
+                    <button class="sec-type-btn" onclick="secSelectType('standard')">
+                        <div class="sec-type-label">Standard — 4 ft</div>
+                        <div class="sec-type-desc">Single rail, no sub-sections</div>
+                    </button>
+                    <button class="sec-type-btn" onclick="secSelectType('subsections')">
+                        <div class="sec-type-label">Has Sub-sections</div>
+                        <div class="sec-type-desc">4 ft section split into 1 ft slots</div>
+                    </button>
+                    <button class="sec-type-btn" onclick="secSelectType('8ft')">
+                        <div class="sec-type-label">8 ft Section</div>
+                        <div class="sec-type-desc">Becomes two rails: Left and Right</div>
+                    </button>
+                </div>
+                <div class="modal-error" id="secTypeError"></div>
+                <div class="modal-btns">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                </div>
+            </div>
+
+            <!-- Step 3: Sub-section count -->
+            <div class="step" id="secStep3">
+                <div class="modal-title" id="secSubTitle">Sub-sections</div>
+                <div class="modal-body">How many sub-sections does this section have?</div>
+                <input class="modal-input" id="subSecCount" type="text" maxlength="2" placeholder="e.g. 4" autocomplete="off" inputmode="numeric">
+                <div class="modal-error" id="subSecError"></div>
+                <div class="modal-btns">
+                    <button class="modal-cancel" onclick="closeModal('addModal')">Cancel</button>
+                    <button class="modal-confirm" onclick="secFinishSubSec()">Add Section</button>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -292,12 +344,88 @@
         requestAnimationFrame(() => { t.style.opacity='1'; setTimeout(() => { t.style.opacity='0'; setTimeout(() => t.remove(), 200); }, 2500); });
     }
 
+    let _secNum = null;
+    let _secType = null;
+
+    function showSecStep(n) {
+        ['1','2','3'].forEach(i => {
+            const el = document.getElementById('secStep'+i);
+            if (el) el.classList.toggle('active', i === String(n));
+        });
+    }
+
     function openAddModal() {
+        _secNum = null; _secType = null;
         document.getElementById('addInput').value = '';
         document.getElementById('addError').textContent = '';
+        document.querySelectorAll('.sec-type-btn').forEach(b => b.classList.remove('selected'));
+        showSecStep(1);
         document.getElementById('addModal').classList.add('open');
         setTimeout(() => document.getElementById('addInput').focus(), 300);
     }
+
+    function secGoStep2() {
+        const raw = document.getElementById('addInput').value.trim().toUpperCase();
+        const val = raw.replace(/[^0-9]/g,'');
+        if (!val) { document.getElementById('addError').textContent = 'Enter a section number.'; return; }
+        _secNum = val;
+        document.getElementById('secTypeTitle').textContent = 'Section ' + val + ' — Type';
+        document.getElementById('secSubTitle').textContent  = 'Section ' + val + ' — Sub-sections';
+        showSecStep(2);
+    }
+
+    function secSelectType(type) {
+        _secType = type;
+        document.querySelectorAll('.sec-type-btn').forEach(b => b.classList.remove('selected'));
+        event.currentTarget.classList.add('selected');
+        if (type === 'standard') {
+            secSave([_secNum]);
+        } else if (type === '8ft') {
+            secSave([_secNum + '-L', _secNum + '-R']);
+        } else {
+            // sub-sections — go to step 3
+            document.getElementById('subSecCount').value = '';
+            document.getElementById('subSecError').textContent = '';
+            showSecStep(3);
+            setTimeout(() => document.getElementById('subSecCount').focus(), 100);
+        }
+    }
+
+    function secFinishSubSec() {
+        const count = parseInt(document.getElementById('subSecCount').value);
+        if (isNaN(count) || count < 2) { document.getElementById('subSecError').textContent = 'Enter 2 or more sub-sections.'; return; }
+        const subs = [];
+        for (let i = 1; i <= count; i++) subs.push(_secNum + '.' + i);
+        secSave(subs);
+    }
+
+    function secSave(slots) {
+        const key   = 'addedSections_' + aisle;
+        const added = JSON.parse(sessionStorage.getItem(key) || '[]');
+        let changed = false;
+        slots.forEach(s => { if (!added.includes(s)) { added.push(s); changed = true; } });
+        if (changed) sessionStorage.setItem(key, JSON.stringify(added));
+        closeModal('addModal');
+        slots.forEach(s => appendSectionRow(s));
+        showToast(slots.length > 1 ? slots.join(' + ') + ' added' : 'Section ' + slots[0] + ' added');
+    }
+
+    function appendSectionRow(secId) {
+        const list = document.getElementById('sectionList');
+        if (!list) return;
+        if (list.querySelector('[data-sec="' + secId + '"]')) return;
+        const is8ft = secId.endsWith('-L') || secId.endsWith('-R');
+        const isSub = secId.includes('.');
+        const label = is8ft ? secId : (isSub ? secId : 'Section ' + secId);
+        const badge = is8ft ? '<span class="badge-8ft">8 FT</span>' : (isSub ? '<span class="badge-sub">SUB</span>' : '');
+        const row = document.createElement('div');
+        row.dataset.sec = secId;
+        row.style.cssText = 'background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s ease both;opacity:0;';
+        row.innerHTML = '<div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;color:#9CA3AF;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">' + (is8ft ? secId.slice(-1) : (isSub ? secId.split('.')[1] : secId)) + '</div>'
+            + '<div style="flex:1;"><div style="font-size:14px;font-weight:700;color:#9CA3AF;">' + label + badge + '</div><div style="font-size:11px;color:#D1D5DB;margin-top:2px;">Awaiting installation</div></div>';
+        list.appendChild(row);
+    }
+
     function openDeleteModal() {
         document.getElementById('deleteInput').value = '';
         document.getElementById('deleteError').textContent = '';
@@ -305,16 +433,7 @@
         setTimeout(() => document.getElementById('deleteInput').focus(), 300);
     }
     function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-    function submitAdd() {
-        const raw = document.getElementById('addInput').value.trim().toUpperCase();
-        const val = raw.replace(/[^0-9LR\-]/g,'');
-        if (!val || !/^[0-9]+(\-[LR])?$/.test(val)) { document.getElementById('addError').textContent = 'Enter a section number e.g. 5 or 5-L'; return; }
-        const key = 'addedSections_' + aisle;
-        const added = JSON.parse(sessionStorage.getItem(key) || '[]');
-        if (!added.includes(val)) { added.push(val); sessionStorage.setItem(key, JSON.stringify(added)); }
-        closeModal('addModal');
-        showToast('Section ' + val + ' added to Aisle ' + aisle);
-    }
+
     function submitDelete() {
         const val = document.getElementById('deleteInput').value.trim().replace(/[^0-9]/g,'');
         if (!val) { document.getElementById('deleteError').textContent = 'Please enter a section number.'; return; }
@@ -324,7 +443,7 @@
         closeModal('deleteModal');
         showToast('Section ' + val + ' removed from Aisle ' + aisle);
     }
-    document.getElementById('addInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9LRlr\-]/g,'').toUpperCase().slice(0,4); });
+    document.getElementById('addInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
     document.getElementById('deleteInput').addEventListener('input', e => { e.target.value = e.target.value.replace(/[^0-9]/g,'').slice(0,2); });
 </script>
 <!-- Supervisor review sheet -->
