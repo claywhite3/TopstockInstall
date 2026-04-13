@@ -270,12 +270,17 @@
 <div class="phone-shell">
 
     <!-- Top bar -->
-    <div class="top-bar">
+    <div class="top-bar" style="position:relative;">
+        <a href="flow_pick.html" style="position:absolute;left:50%;transform:translateX(-50%);width:38px;height:38px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);text-decoration:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </a>
+        <div class="avatar">CW</div>
+    </div>
+    <div style="padding: 6px 20px 0;">
         <div class="selected-pill">
             <div class="pill-label">Selected</div>
             <div class="pill-value" id="topPill">—</div>
         </div>
-        <div class="avatar">CW</div>
     </div>
 
     <!-- Success graphic -->
@@ -347,24 +352,49 @@
     document.getElementById('chipSection').textContent = section;
     document.getElementById('topPill').textContent     = aisle + '-' + section;
 
-    const currentSection = parseInt(section, 10);
-    const nextSection    = isNaN(currentSection) ? null : currentSection + 1;
+    // Get ordered section list for current aisle — from sessionStorage or fallback logic
+    function getAisleSections() {
+        try {
+            const stored = sessionStorage.getItem('aisleSections_' + aisle);
+            if (stored) return JSON.parse(stored);
+        } catch(e) {}
+        return null;
+    }
 
-    if (nextSection && nextSection <= 30) {
+    // Advance to next section — uses stored list if available, falls back to pattern matching
+    function nextSectionId(sec) {
+        if (!sec || sec === '—') return null;
+        const list = getAisleSections();
+        if (list && list.length > 0) {
+            const idx = list.indexOf(sec);
+            if (idx === -1) return null;
+            return idx + 1 < list.length ? list[idx + 1] : null;
+        }
+        // Fallback: pattern matching
+        if (sec.endsWith('-L')) return sec.replace('-L', '-R');
+        if (sec.endsWith('-R')) {
+            const base = parseInt(sec.replace('-R',''), 10);
+            return isNaN(base) ? null : String(base + 1);
+        }
+        const n = parseInt(sec, 10);
+        return isNaN(n) ? null : String(n + 1);
+    }
+
+    const nextSection = nextSectionId(section);
+
+    if (nextSection) {
         document.getElementById('nextRailLabel').textContent = 'Aisle ' + aisle + '  ·  Section ' + nextSection;
     } else {
         document.getElementById('nextRailLabel').textContent = 'Install Another Rail';
     }
 
     function goNextRail() {
-        if (nextSection && nextSection <= 30) {
-            sessionStorage.setItem('selectedSection', String(nextSection));
-        }
+        if (nextSection) sessionStorage.setItem('selectedSection', nextSection);
         window.location.href = 'page5.html';
     }
 
     function openFlagModal() {
-        const skipSec = nextSection && nextSection <= 30 ? nextSection : currentSection;
+        const skipSec = nextSection || section;
         document.getElementById('flagSecInput').value = aisle + '-' + skipSec;
         document.getElementById('flagNotes').value = '';
         document.getElementById('flagModal').classList.add('open');
@@ -378,8 +408,8 @@
         const notes = document.getElementById('flagNotes').value.trim();
         if (!notes) { document.getElementById('flagNotes').focus(); return; }
 
-        const skipSec    = nextSection && nextSection <= 30 ? nextSection : currentSection;
-        const afterSkip  = skipSec + 1;
+        const skipSec   = nextSection || section;
+        const afterSkip = nextSectionId(skipSec);
 
         // Store flag for supervisor review
         const flags = JSON.parse(sessionStorage.getItem('installFlags') || '[]');
@@ -399,8 +429,8 @@
         closeFlagModal();
 
         // Advance past the skipped section
-        if (afterSkip <= 30) {
-            sessionStorage.setItem('selectedSection', String(afterSkip));
+        if (afterSkip) {
+            sessionStorage.setItem('selectedSection', afterSkip);
             document.getElementById('topPill').textContent = aisle + '-' + afterSkip;
             document.getElementById('nextRailLabel').textContent =
                 'Aisle ' + aisle + '  ·  Section ' + afterSkip;

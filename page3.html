@@ -77,9 +77,12 @@
 <body>
 <div class="phone-shell">
 
-    <div class="top-bar">
+    <div class="top-bar" style="position:relative;">
         <a href="flow_pick.html" class="back-btn">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <a href="flow_pick.html" style="position:absolute;left:50%;transform:translateX(-50%);width:38px;height:38px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);text-decoration:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
         </a>
         <div class="avatar">CW</div>
     </div>
@@ -170,6 +173,25 @@
         'A17': { installed:[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16], flagged:{} },
         'A18': { installed:[1,2,3], flagged:{} },
         'A19': { installed:[], flagged:{} },
+        'H12': { installed:[], flagged:{} },
+        'H13': { installed:[], flagged:{} },
+    };
+    // Per-aisle section lists — 8ft sections show as N-L and N-R
+    const AISLE_SECTIONS = {
+        'A8':  ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'A9':  ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'A10': ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'A11': ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'A12': ['1','2','3-L','3-R','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'A13': ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'A14': ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'A15': ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'A16': ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'A17': ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'A18': ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'A19': ['1','2','3','4','5','6','7','8','9','10','11','12','13','14','15','16'],
+        'H12': ['1','2','3-L','3-R','4','5-L','5-R','6','7','8'],
+        'H13': ['1','2','3-L','3-R','4','5-L','5-R','6','7','8'],
     };
     const TOTAL_SEC = 16;
 
@@ -198,9 +220,30 @@
         return ALL_LETTERS.filter(l => ALL_NUMBERS.some(n => aisleQualifies(l, n)));
     }
 
+    function getSections(letter, number) {
+        const key = letter + number;
+        // Check sessionStorage first
+        try {
+            const stored = sessionStorage.getItem('addedSections_' + key);
+            if (stored) return JSON.parse(stored);
+        } catch(e) {}
+        // Fall back to seed data
+        return AISLE_SECTIONS[key] || ALL_NUMBERS;
+    }
+
     function filteredNumbers(letter) {
         if (!letter) return currentFilter === 'all' ? ALL_NUMBERS : [];
-        return ALL_NUMBERS.filter(n => aisleQualifies(letter, n));
+        // For each aisle number, check if the aisle qualifies
+        // Collect all unique aisle numbers visible under this letter
+        const aisleNums = currentFilter === 'all'
+            ? ALL_NUMBERS
+            : ALL_NUMBERS.filter(n => aisleQualifies(letter, n));
+        return aisleNums;
+    }
+
+    function getSectionsForSelected() {
+        if (!selectedLetter || !selectedNumber) return [];
+        return getSections(selectedLetter, selectedNumber);
     }
 
     function dotClass(letter, number) {
@@ -286,7 +329,7 @@
     }
 
     wireInput('letter', renderLetterDropdown, v => v.toUpperCase().replace(/[^A-Z]/g,''));
-    wireInput('number', renderNumberDropdown, v => v.replace(/[^0-9]/g,'').slice(0,2));
+    wireInput('number', renderNumberDropdown, v => v.toUpperCase().replace(/[^0-9LR\-]/g,'').slice(0,4));
 
     function setFilter(f) {
         currentFilter = f;
@@ -312,7 +355,13 @@
         if (!selectedLetter) { lw.classList.add('error'); valid = false; } else lw.classList.remove('error');
         if (!selectedNumber) { nw.classList.add('error'); valid = false; } else nw.classList.remove('error');
         if (!valid) { document.getElementById('errorMsg').textContent = 'Please select a valid letter and number.'; return; }
-        sessionStorage.setItem('selectedAisle', selectedLetter + selectedNumber);
+        const aisleId = selectedLetter + selectedNumber;
+        sessionStorage.setItem('selectedAisle', aisleId);
+        // Seed first section for this aisle
+        const secs = getSections(selectedLetter, selectedNumber);
+        if (secs.length > 0) sessionStorage.setItem('selectedSection', secs[0]);
+        // Seed full section list so page4/page8 can use it
+        sessionStorage.setItem('aisleSections_' + aisleId, JSON.stringify(secs));
         window.location.href = 'page4.html';
     }
 
