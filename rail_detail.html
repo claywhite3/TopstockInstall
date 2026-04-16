@@ -94,6 +94,32 @@
         .btn-retest  { background: #FFF7ED; color: #C2410C; border: 1.5px solid #FED7AA; }
         .btn-fulltest{ background: #2563EB; color: #fff; box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
 
+        /* Swap confirmation modal */
+        .modal-overlay { position: fixed; inset: 0; background: rgba(17,24,39,0.55); display: none; align-items: center; justify-content: center; padding: 24px; z-index: 100; }
+        .modal-overlay.active { display: flex; animation: fadeUp .2s ease both; }
+        .modal-card { background: #fff; border-radius: 20px; width: 100%; max-width: 340px; padding: 24px 20px 20px; box-shadow: 0 20px 60px rgba(0,0,0,0.25); }
+        .modal-icon { width: 56px; height: 56px; background: #FEF2F2; border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 14px; }
+        .modal-icon svg { width: 28px; height: 28px; color: #DC2626; }
+        .modal-title { font-size: 18px; font-weight: 800; color: #111827; text-align: center; margin-bottom: 6px; }
+        .modal-desc { font-size: 13px; color: #6B7280; font-weight: 500; text-align: center; line-height: 1.5; margin-bottom: 16px; }
+        .modal-railid { font-size: 13px; font-weight: 700; color: #111827; background: #F3F4F6; padding: 8px 12px; border-radius: 10px; text-align: center; margin-bottom: 16px; font-family: monospace; letter-spacing: .5px; }
+        .check-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 18px; }
+        .check-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 12px; border: 1.5px solid #E5E7EB; border-radius: 12px; cursor: pointer; transition: background .15s, border-color .15s; }
+        .check-item:active { background: #F9FAFB; }
+        .check-item.checked { background: #F0FDF4; border-color: #86EFAC; }
+        .check-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #D1D5DB; flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; background: #fff; transition: background .15s, border-color .15s; }
+        .check-item.checked .check-box { background: #16A34A; border-color: #16A34A; }
+        .check-box svg { width: 14px; height: 14px; color: #fff; opacity: 0; transition: opacity .15s; }
+        .check-item.checked .check-box svg { opacity: 1; }
+        .check-text { font-size: 13px; font-weight: 600; color: #374151; line-height: 1.4; }
+        .modal-btn-row { display: flex; gap: 10px; }
+        .btn-modal-cancel { flex: 1; padding: 13px; background: #fff; color: #374151; border: 1.5px solid #E5E7EB; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; transition: transform .15s; }
+        .btn-modal-cancel:active { transform: scale(.97); }
+        .btn-modal-continue { flex: 1.2; padding: 13px; background: #DC2626; color: #fff; border: none; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; box-shadow: 0 4px 14px rgba(220,38,38,0.25); text-decoration: none; transition: transform .15s, opacity .15s; }
+        .btn-modal-continue:active { transform: scale(.97); }
+        .btn-modal-continue.disabled { opacity: .4; cursor: not-allowed; pointer-events: none; box-shadow: none; }
+        .btn-modal-continue svg { width: 14px; height: 14px; }
+
         /* Spinner */
         @keyframes spin { 100% { transform: rotate(360deg); } }
         .spin { animation: spin 1s linear infinite; display: inline-block; }
@@ -268,7 +294,7 @@
 
     <!-- Action strip -->
     <div class="action-strip">
-        <button class="btn-action btn-swap" id="btnSwap" disabled onclick="doSwap()">
+        <button class="btn-action btn-swap" id="btnSwap" disabled onclick="openSwapModal()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="5" width="8" height="10" rx="1"/><rect x="10" y="8" width="8" height="10" rx="1"/><path d="M5 11C5 9 6 7 8 7"/><path d="M20 12C20 14 19 16 17 16"/></svg>
             Swap Rail
         </button>
@@ -282,6 +308,41 @@
         </button>
     </div>
 
+</div>
+
+<!-- Swap confirmation modal -->
+<div class="modal-overlay" id="swapModal">
+    <div class="modal-card">
+        <div class="modal-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="modal-title">Swap this rail?</div>
+        <div class="modal-desc">Before you continue, confirm both items below.</div>
+        <div class="modal-railid" id="modalRailId">—</div>
+
+        <div class="check-list">
+            <div class="check-item" id="chkReady" onclick="toggleCheck('chkReady')">
+                <div class="check-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="check-text">I have a replacement rail ready</div>
+            </div>
+            <div class="check-item" id="chkRemove" onclick="toggleCheck('chkRemove')">
+                <div class="check-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                </div>
+                <div class="check-text">I understand this removes the current rail from service</div>
+            </div>
+        </div>
+
+        <div class="modal-btn-row">
+            <button class="btn-modal-cancel" onclick="closeSwapModal()">Cancel</button>
+            <a href="#" class="btn-modal-continue disabled" id="btnContinueSwap">
+                Continue
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </a>
+        </div>
+    </div>
 </div>
 
 <script>
@@ -414,7 +475,25 @@
         }, 4700);
     }
 
-    function doSwap() { window.location.href = 'page5.html'; }
+    // ── Swap confirmation modal ──
+    function openSwapModal() {
+        document.getElementById('chkReady').classList.remove('checked');
+        document.getElementById('chkRemove').classList.remove('checked');
+        document.getElementById('btnContinueSwap').classList.add('disabled');
+        document.getElementById('swapModal').classList.add('active');
+    }
+    function closeSwapModal() {
+        document.getElementById('swapModal').classList.remove('active');
+    }
+    function toggleCheck(id) {
+        document.getElementById(id).classList.toggle('checked');
+        const bothChecked =
+            document.getElementById('chkReady').classList.contains('checked') &&
+            document.getElementById('chkRemove').classList.contains('checked');
+        const cont = document.getElementById('btnContinueSwap');
+        if (bothChecked) cont.classList.remove('disabled');
+        else             cont.classList.add('disabled');
+    }
 
     // URL params
     (function() {
@@ -435,6 +514,7 @@
         // Header
         document.getElementById('hdrRailId').textContent = rail;
         document.getElementById('hdrMeta').textContent   = store + '  ·  Installed Aisle Location ' + aisle + '-' + section;
+        document.getElementById('modalRailId').textContent = rail;
 
         // Info card — Additional = sub-mods, Viewed = opposing aisle section
         const oppAisleNum = parseInt(aisleNum) % 2 === 0 ? parseInt(aisleNum) + 1 : parseInt(aisleNum) - 1;
@@ -452,6 +532,10 @@
                 el.href = el.getAttribute('href').split('?')[0] + params;
             }
         });
+
+        // Wire modal Continue → universal swap flow with from param
+        document.getElementById('btnContinueSwap').href =
+            'rail_camera_uninstall.html' + params + '&from=' + encodeURIComponent('rail_detail.html');
     })();
 
     function goBack(e) {
