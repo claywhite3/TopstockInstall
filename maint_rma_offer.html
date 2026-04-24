@@ -64,7 +64,7 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
             View RMA Process
         </a>
-        <button class="btn-skip" id="btnContinue" onclick="runFullRailTest()" style="font-family:'DM Sans',sans-serif;">
+        <button class="btn-skip" id="btnContinue" onclick="finishAndResolve()" style="font-family:'DM Sans',sans-serif;">
             I Know the Process — Continue
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M9 18l6-6-6-6"/></svg>
         </button>
@@ -86,50 +86,16 @@
         _rp = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail) + '&issueId=' + encodeURIComponent(issueId) + '&return=maintenance';
         _issueId = issueId;
 
-        // View RMA routes to rma.html, with next pointing back here with autoTest=1 so the test fires on return
-        const returnHref = 'maint_rma_offer.html' + _rp + '&autoTest=1';
-        document.getElementById('btnRma').href = 'rma.html' + _rp + '&next=' + encodeURIComponent(returnHref);
+        // Both paths end at maintenance.html with the item resolved.
+        // Rail test already fired on reg_success — RMA offer runs in parallel with that test.
+        const resolvedHref = 'maintenance.html?resolved=' + encodeURIComponent(issueId);
 
-        // If we're returning from RMA with autoTest=1, fire test immediately
-        if (p.get('autoTest') === '1') {
-            runFullRailTest();
-        }
+        // View RMA routes to rma.html, with next pointing to the checklist (item resolved)
+        document.getElementById('btnRma').href = 'rma.html' + _rp + '&next=' + encodeURIComponent(resolvedHref);
     })();
 
-    function runFullRailTest() {
-        document.body.insertAdjacentHTML('beforeend', `
-            <div id="testOverlay" style="position:fixed;inset:0;background:rgba(255,255,255,0.96);z-index:2000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;">
-                <div id="testPhase" style="text-align:center;max-width:340px;">
-                    <div style="width:64px;height:64px;border:5px solid #E5E7EB;border-top-color:#2563EB;border-radius:50%;animation:spinLoader 1s linear infinite;margin:0 auto 20px;"></div>
-                    <div style="font-size:20px;font-weight:800;color:#111827;margin-bottom:8px;">Running Full Rail Test…</div>
-                    <div style="font-size:14px;color:#6B7280;font-weight:500;line-height:1.5;">Checking camera, power, network, LED, and E-Label. This takes a few seconds.</div>
-                </div>
-            </div>
-            <style>@keyframes spinLoader { to { transform: rotate(360deg); } }</style>`);
-        setTimeout(() => {
-            const passed = Math.random() > 0.3;
-            const phaseEl = document.getElementById('testPhase');
-            if (passed) {
-                phaseEl.innerHTML = `
-                    <div style="width:72px;height:72px;background:#F0FDF4;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="36" height="36"><polyline points="20 6 9 17 4 12"/></svg>
-                    </div>
-                    <div style="font-size:11px;font-weight:700;color:#16A34A;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">All Systems Pass</div>
-                    <div style="font-size:22px;font-weight:800;color:#111827;margin-bottom:12px;">Rail Fixed</div>
-                    <div style="font-size:14px;color:#6B7280;font-weight:500;line-height:1.6;margin-bottom:24px;">Camera, power, network, LED, and E-Label all check out. Returning to checklist.</div>
-                    <button onclick="window.location.href='maintenance.html?resolved=' + encodeURIComponent('${_issueId}')" style="width:100%;padding:16px;background:#16A34A;color:#fff;border:none;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(22,163,74,0.3);">Back to Checklist</button>`;
-            } else {
-                phaseEl.innerHTML = `
-                    <div style="width:72px;height:72px;background:#FEF2F2;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="36" height="36"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    </div>
-                    <div style="font-size:11px;font-weight:700;color:#DC2626;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Still Failing</div>
-                    <div style="font-size:22px;font-weight:800;color:#111827;margin-bottom:12px;">Test Failed</div>
-                    <div style="font-size:14px;color:#6B7280;font-weight:500;line-height:1.6;margin-bottom:24px;">One or more systems still failing. Continue troubleshooting or return to the checklist to try again later.</div>
-                    <button onclick="window.location.href='maint_camera.html' + '${_rp}'" style="width:100%;padding:16px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;">Continue Troubleshooting</button>
-                    <button onclick="window.location.href='maintenance.html'" style="width:100%;padding:14px;background:#fff;color:#6B7280;border:1.5px solid #E5E7EB;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Back to Checklist</button>`;
-            }
-        }, 3000);
+    function finishAndResolve() {
+        window.location.href = 'maintenance.html?resolved=' + encodeURIComponent(_issueId);
     }
 </script>
 </body>
