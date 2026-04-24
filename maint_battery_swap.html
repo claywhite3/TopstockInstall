@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion — Maintenance: Battery Swap</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 40px; }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; }
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; flex-shrink: 0; }
+        .btn-back:active { transform: scale(.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+
+        /* Rail header */
+        .rail-header { padding: 4px 20px 0; }
+        .rail-id-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; }
+        .rail-id { font-size: 28px; font-weight: 800; color: #111827; line-height: 1.1; margin-top: 2px; letter-spacing: .5px; }
+        .rail-meta { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 4px; }
+
+        /* Pair warning */
+        .pair-card { margin: 14px 20px 0; background: #FFFBEB; border: 1.5px solid #FDE68A; border-radius: 16px; padding: 13px 16px; display: flex; gap: 10px; align-items: flex-start; }
+        .pair-card svg { width: 15px; height: 15px; color: #D97706; flex-shrink: 0; margin-top: 1px; }
+        .pair-text { font-size: 13px; color: #92400E; font-weight: 500; line-height: 1.5; }
+        .pair-text strong { font-weight: 700; }
+
+        /* Progress */
+        .progress-wrap { margin: 16px 20px 0; }
+        .progress-track { height: 4px; background: #E5E7EB; border-radius: 4px; overflow: hidden; }
+        .progress-fill { height: 100%; background: #2563EB; border-radius: 4px; transition: width .4s cubic-bezier(.4,0,.2,1); }
+        .progress-label { display: flex; justify-content: space-between; margin-top: 6px; }
+        .prog-step  { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .4px; }
+        .prog-count { font-size: 11px; font-weight: 600; color: #9CA3AF; }
+
+        /* Step card */
+        .step-wrap { padding: 14px 20px 0; }
+        .step-card { background: #fff; border-radius: 18px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.06); }
+        .step-img-wrap { width: 100%; background: linear-gradient(135deg, #E0E7EF, #C7D2E0); }
+        .img-placeholder { width: 100%; height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        .img-placeholder svg { width: 32px; height: 32px; color: #94A3B8; }
+        .img-placeholder span { font-size: 11px; color: #94A3B8; font-weight: 500; }
+        .step-body { padding: 18px 18px 20px; }
+        .step-eyebrow { font-size: 10px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 4px; }
+        .step-title { font-size: 17px; font-weight: 800; color: #111827; line-height: 1.2; }
+        .step-desc  { font-size: 14px; color: #6B7280; font-weight: 500; margin-top: 8px; line-height: 1.6; }
+
+        /* Buttons */
+        .btn-row-primary { padding: 16px 20px 0; }
+        .btn-next { width: 100%; padding: 16px; background: #2563EB; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: transform .15s; }
+        .btn-next:active { transform: scale(.975); }
+        .btn-retest { width: 100%; padding: 16px; background: #16A34A; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; box-shadow: 0 4px 14px rgba(22,163,74,0.3); transition: transform .15s; text-decoration: none; }
+        .btn-retest:active { transform: scale(.975); }
+
+        .btn-row-secondary { padding: 10px 20px 0; }
+        .btn-back-nav { width: 100%; padding: 14px; background: #fff; color: #6B7280; border: 1.5px solid #E5E7EB; border-radius: 14px; font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 6px; text-decoration: none; transition: transform .15s; }
+        .btn-back-nav:active { transform: scale(.975); }
+
+        /* Safety */
+        .safety-card { margin: 16px 20px 0; background: #FEF2F2; border: 1.5px solid #FECACA; border-radius: 16px; padding: 13px 16px; display: flex; gap: 10px; align-items: flex-start; }
+        .safety-card svg { width: 15px; height: 15px; color: #DC2626; flex-shrink: 0; margin-top: 1px; }
+        .safety-text { font-size: 12px; color: #991B1B; font-weight: 500; line-height: 1.5; }
+        .safety-text strong { font-weight: 700; }
+
+        @keyframes fadeUp { from { opacity:0; transform:translateY(12px); } to { opacity:1; transform:translateY(0); } }
+        .step-card { animation: fadeUp .3s ease both; }
+    </style>
+</head>
+<body>
+<div class="shell">
+
+    <div class="top-bar" style="position:relative;">
+        <a href="#" class="btn-back" id="backBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+                <a href="flow_pick.html" style="position:absolute;left:50%;transform:translateX(-50%);width:38px;height:38px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);text-decoration:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </a>
+        <div class="avatar" id="avatarEl">CW</div>
+    </div>
+
+    <div class="rail-header">
+        <div style="font-size:10px;font-weight:700;color:#2563EB;text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px;">Maintenance · Power</div>
+        <div class="rail-id-label">Rail ID</div>
+        <div class="rail-id" id="hdrRailId">—</div>
+        <div class="rail-meta" id="hdrMeta">—</div>
+    </div>
+
+    <div class="pair-card">
+        <svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        <div class="pair-text"><strong>Always replace as a pair.</strong> Never swap one battery without replacing the other.</div>
+    </div>
+
+    <div class="progress-wrap">
+        <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:25%"></div></div>
+        <div class="progress-label">
+            <div class="prog-step" id="progStep">Step 1 of 4</div>
+            <div class="prog-count" id="progTitle">Unplug</div>
+        </div>
+    </div>
+
+    <div class="step-wrap">
+        <div class="step-card" id="stepCard">
+            <div class="step-img-wrap" id="stepImgWrap"></div>
+            <div class="step-body">
+                <div class="step-eyebrow" id="stepEyebrow">Step 1 of 4</div>
+                <div class="step-title"  id="stepTitle">—</div>
+                <div class="step-desc"   id="stepDesc">—</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Next (hidden on last step) -->
+    <div class="btn-row-primary" id="nextRow">
+        <button class="btn-next" onclick="nextStep()">
+            Next Step
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M9 18l6-6-6-6"/></svg>
+        </button>
+    </div>
+
+    <!-- Retest (only on last step) -->
+    <div class="btn-row-primary" id="retestRow" style="display:none;">
+        <button class="btn-retest" id="btnRetest" onclick="runFullRailTest()" style="font-family:'DM Sans',sans-serif;cursor:pointer;border:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg>
+            Re-test Rail
+        </button>
+    </div>
+
+    <!-- Universal "I Fixed It — Retest" (steps 1-3; step 4's primary Re-test Rail covers this role) -->
+    <div class="btn-row-secondary" id="universalRetestRow">
+        <button id="btnUniversalRetest" onclick="runFullRailTest()" style="width:100%;padding:14px;background:#2563EB;color:#fff;border:none;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:6px;box-shadow:0 4px 12px rgba(37,99,235,0.2);transition:transform .15s;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 .49-3.84"/></svg>
+            I Fixed It — Retest
+        </button>
+    </div>
+
+    <div class="btn-row-secondary">
+        <a href="#" class="btn-back-nav" id="btnBackNav">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><path d="M15 18l-6-6 6-6"/></svg>
+            Back
+        </a>
+    </div>
+
+    <div class="safety-card">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <div class="safety-text"><strong>Primary alkaline cells — not rechargeable.</strong> Do not short the pins or allow exposed wire to contact metal. Dispose of used batteries per your store guidelines.</div>
+    </div>
+
+</div>
+<script>
+    const STEPS = [
+        {
+            title:   'Unplug Both Batteries',
+            eyebrow: 'Step 1 of 4',
+            short:   'Unplug',
+            desc:    'Pinch the connector and pull it straight out. Do both batteries. Do not pull by the wires.',
+            img:     'swap-unplug.jpg',
+            imgAlt:  'Unplug both batteries',
+        },
+        {
+            title:   'Remove Old Batteries from Clips',
+            eyebrow: 'Step 2 of 4',
+            short:   'Remove',
+            desc:    'Release the retainer clips and lift both battery packs out of their bays.',
+            img:     'swap-remove.jpg',
+            imgAlt:  'Remove batteries from retainer clips',
+        },
+        {
+            title:   'Secure New Batteries in the Clips',
+            eyebrow: 'Step 3 of 4',
+            short:   'Install',
+            desc:    'Place each new pack into its bay and secure the retainer clips.',
+            img:     'swap-install.jpg',
+            imgAlt:  'Secure new batteries in retainer clips',
+        },
+        {
+            title:   'Plug In Both Batteries',
+            eyebrow: 'Step 4 of 4',
+            short:   'Reconnect',
+            desc:    'Plug in both batteries. Left pack goes straight into the camera unit. Right pack connects through the extension cable. Push each connector until it clicks.',
+            img:     'swap-plug.jpg',
+            imgAlt:  'Plug in both batteries',
+        },
+    ];
+
+    let currentStep = 0;
+    let _railParams = '';
+
+    function renderStep(index) {
+        const s = STEPS[index];
+        const total = STEPS.length;
+        const isLast = index === total - 1;
+
+        document.getElementById('progressFill').style.width = ((index + 1) / total * 100) + '%';
+        document.getElementById('progStep').textContent  = 'Step ' + (index + 1) + ' of ' + total;
+        document.getElementById('progTitle').textContent = s.short;
+
+        document.getElementById('stepEyebrow').textContent = s.eyebrow;
+        document.getElementById('stepTitle').textContent   = s.title;
+        document.getElementById('stepDesc').textContent    = s.desc;
+
+        const imgWrap = document.getElementById('stepImgWrap');
+        const img = document.createElement('img');
+        img.src = s.img;
+        img.alt = s.imgAlt;
+        img.style.cssText = 'width:100%;height:auto;display:block;max-height:220px;object-fit:contain;';
+        img.onerror = function() {
+            imgWrap.innerHTML = '<div class="img-placeholder"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="6" width="18" height="12" rx="2"/><path d="M20 10h2v4h-2z"/></svg><span>' + s.img + '</span></div>';
+        };
+        imgWrap.innerHTML = '';
+        imgWrap.appendChild(img);
+
+        document.getElementById('nextRow').style.display   = isLast ? 'none'  : 'block';
+        document.getElementById('retestRow').style.display = isLast ? 'block' : 'none';
+        document.getElementById('universalRetestRow').style.display = isLast ? 'none' : 'block';
+
+        const card = document.getElementById('stepCard');
+        card.style.animation = 'none';
+        requestAnimationFrame(() => { card.style.animation = 'fadeUp .3s ease both'; });
+    }
+
+    function nextStep() {
+        if (currentStep < STEPS.length - 1) {
+            currentStep++;
+            renderStep(currentStep);
+        }
+    }
+
+    (function() {
+        const p       = new URLSearchParams(window.location.search);
+        const aisle   = p.get('aisle')   || 'C3';
+        const section = p.get('section') || '2';
+        const rail    = p.get('rail')    || 'Z001-0123';
+        const issueId = p.get('issueId') || (aisle + '.' + section);
+        const store   = sessionStorage.getItem('storeName') || 'Store 0100';
+
+        const userName = sessionStorage.getItem('userName') || 'CW';
+        document.getElementById('avatarEl').textContent = userName.slice(0,2).toUpperCase();
+
+        document.getElementById('hdrRailId').textContent = rail;
+        document.getElementById('hdrMeta').textContent   = store + '  ·  ' + aisle + '-' + section;
+
+        _railParams = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail) + '&issueId=' + encodeURIComponent(issueId) + '&return=maintenance';
+        const backHref = 'maint_power.html' + _railParams;
+
+        document.getElementById('backBtn').href    = backHref;
+        document.getElementById('btnBackNav').href = backHref;
+
+        renderStep(0);
+    })();
+
+    // Full rail test — special behavior: if POWER specifically fails after battery swap,
+    // auto-route to rail swap flow (new batteries stay installed — new rail ships with its own).
+    function runFullRailTest() {
+        document.body.insertAdjacentHTML('beforeend', `
+            <div id="testOverlay" style="position:fixed;inset:0;background:rgba(255,255,255,0.96);z-index:2000;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px;">
+                <div id="testPhase" style="text-align:center;max-width:340px;">
+                    <div style="width:64px;height:64px;border:5px solid #E5E7EB;border-top-color:#2563EB;border-radius:50%;animation:spinLoader 1s linear infinite;margin:0 auto 20px;"></div>
+                    <div style="font-size:20px;font-weight:800;color:#111827;margin-bottom:8px;">Running Full Rail Test…</div>
+                    <div style="font-size:14px;color:#6B7280;font-weight:500;line-height:1.5;">Checking camera, power, network, LED, and E-Label. This takes a few seconds.</div>
+                </div>
+            </div>
+            <style>@keyframes spinLoader { to { transform: rotate(360deg); } }</style>`);
+        setTimeout(() => {
+            const p = new URLSearchParams(window.location.search);
+            const issueId = p.get('issueId') || '';
+            // Random outcome: 60% pass, 25% power-fail (triggers rail swap), 15% non-power-fail
+            const roll = Math.random();
+            const phaseEl = document.getElementById('testPhase');
+            if (roll < 0.6) {
+                // Pass
+                phaseEl.innerHTML = `
+                    <div style="width:72px;height:72px;background:#F0FDF4;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#16A34A" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="36" height="36"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
+                    <div style="font-size:11px;font-weight:700;color:#16A34A;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">All Systems Pass</div>
+                    <div style="font-size:22px;font-weight:800;color:#111827;margin-bottom:12px;">Rail Fixed</div>
+                    <div style="font-size:14px;color:#6B7280;font-weight:500;line-height:1.6;margin-bottom:24px;">Camera, power, network, LED, and E-Label all check out. Returning to checklist.</div>
+                    <button onclick="window.location.href='maintenance.html?resolved=' + encodeURIComponent('${issueId}')" style="width:100%;padding:16px;background:#16A34A;color:#fff;border:none;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(22,163,74,0.3);">Back to Checklist</button>`;
+            } else if (roll < 0.85) {
+                // Power fail — auto-route to rail swap (fresh batteries stay installed)
+                phaseEl.innerHTML = `
+                    <div style="width:72px;height:72px;background:#FEF2F2;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="36" height="36"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+                    </div>
+                    <div style="font-size:11px;font-weight:700;color:#DC2626;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Power Still Failing</div>
+                    <div style="font-size:22px;font-weight:800;color:#111827;margin-bottom:12px;">New Batteries Didn't Resolve It</div>
+                    <div style="font-size:14px;color:#6B7280;font-weight:500;line-height:1.6;margin-bottom:20px;">The rail is not powering up even with new batteries. This points to a rail-side issue — the rail needs to be replaced.</div>
+                    <div style="background:#EFF6FF;border:1.5px solid #BFDBFE;border-radius:12px;padding:12px 14px;margin-bottom:20px;text-align:left;display:flex;gap:10px;align-items:flex-start;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16" style="flex-shrink:0;margin-top:1px;"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+                        <div style="font-size:12px;color:#1E40AF;font-weight:500;line-height:1.5;">Leave the new batteries in the rail. The replacement rail ships with its own batteries, so your new cells won't be wasted — reuse them.</div>
+                    </div>
+                    <button onclick="window.location.href='maint_camera_uninstall.html' + '${_railParams}' + '&from=maint_battery_swap.html'" style="width:100%;padding:16px;background:#DC2626;color:#fff;border:none;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;box-shadow:0 4px 14px rgba(220,38,38,0.3);">Start Rail Swap</button>
+                    <button onclick="window.location.href='maintenance.html'" style="width:100%;padding:14px;background:#fff;color:#6B7280;border:1.5px solid #E5E7EB;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Back to Checklist</button>`;
+            } else {
+                // Non-power fail — standard "continue troubleshooting"
+                phaseEl.innerHTML = `
+                    <div style="width:72px;height:72px;background:#FEF2F2;border-radius:20px;display:flex;align-items:center;justify-content:center;margin:0 auto 18px;">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="36" height="36"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </div>
+                    <div style="font-size:11px;font-weight:700;color:#DC2626;text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px;">Another System Failing</div>
+                    <div style="font-size:22px;font-weight:800;color:#111827;margin-bottom:12px;">Power is Good — Something Else Failed</div>
+                    <div style="font-size:14px;color:#6B7280;font-weight:500;line-height:1.6;margin-bottom:24px;">The battery swap resolved the power issue, but another system needs attention. Return to the checklist to continue.</div>
+                    <button onclick="window.location.href='maintenance.html?resolved=' + encodeURIComponent('${issueId}')" style="width:100%;padding:16px;background:#2563EB;color:#fff;border:none;border-radius:16px;font-family:'DM Sans',sans-serif;font-size:16px;font-weight:700;cursor:pointer;margin-bottom:10px;">Back to Checklist</button>
+                    <button onclick="document.getElementById('testOverlay').remove()" style="width:100%;padding:14px;background:#fff;color:#6B7280;border:1.5px solid #E5E7EB;border-radius:14px;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:700;cursor:pointer;">Stay on This Page</button>`;
+            }
+        }, 3000);
+    }
+</script>
+</body>
+</html>
