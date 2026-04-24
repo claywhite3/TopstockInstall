@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion — Maintenance: RMA Instructions (ESL)</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; color: #111827; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 40px; }
+
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; position: relative; }
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; flex-shrink: 0; }
+        .btn-back:active { transform: scale(.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+
+        .hero { padding: 8px 20px 0; }
+        .hero-eyebrow { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; }
+        .hero-title { font-size: 26px; font-weight: 800; color: #111827; line-height: 1.15; margin-top: 4px; }
+        .hero-sub { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 6px; line-height: 1.5; }
+
+        .tag-chip { margin: 14px 20px 0; background: #fff; border-radius: 12px; padding: 10px 14px; display: flex; align-items: center; gap: 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.04); }
+        .tag-chip-icon { width: 32px; height: 32px; border-radius: 9px; background: #F0FDF4; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .tag-chip-icon svg { width: 16px; height: 16px; color: #16A34A; }
+        .tag-chip-body { flex: 1; min-width: 0; }
+        .tag-chip-label { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .4px; }
+        .tag-chip-val   { font-size: 13px; font-weight: 700; color: #111827; margin-top: 1px; font-family: monospace; letter-spacing: .5px; }
+
+        .placeholder-card { margin: 14px 20px 0; background: #fff; border-radius: 20px; padding: 40px 24px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); display: flex; flex-direction: column; align-items: center; text-align: center; border: 2px dashed #E5E7EB; }
+        .placeholder-icon { width: 64px; height: 64px; border-radius: 18px; background: #F0FDF4; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+        .placeholder-icon svg { width: 32px; height: 32px; color: #16A34A; }
+        .placeholder-title { font-size: 18px; font-weight: 800; color: #111827; margin-bottom: 6px; }
+        .placeholder-desc { font-size: 13px; color: #6B7280; font-weight: 500; line-height: 1.55; }
+
+        .btn-primary-wrap { padding: 18px 20px 0; margin-top: auto; }
+        .btn-primary { width: 100%; padding: 16px; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s; text-decoration: none; background: #16A34A; box-shadow: 0 4px 14px rgba(22,163,74,0.3); }
+        .btn-primary:active { transform: scale(.975); }
+        .btn-primary svg { width: 16px; height: 16px; }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .shell > * { animation: fadeUp .3s ease both; }
+    </style>
+</head>
+<body>
+<div class="shell">
+
+    <div class="top-bar">
+        <a href="#" class="btn-back" id="backBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <a href="flow_pick.html" style="position:absolute;left:50%;transform:translateX(-50%);width:38px;height:38px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);text-decoration:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </a>
+        <div class="avatar" id="avatarEl">CW</div>
+    </div>
+
+    <div class="hero">
+        <div style="font-size:10px;font-weight:700;color:#2563EB;text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;">Maintenance · E-Label</div>
+        <div class="hero-eyebrow">ESL Tag Return</div>
+        <div class="hero-title">RMA Instructions</div>
+        <div class="hero-sub">How to return the replaced tag for processing.</div>
+    </div>
+
+    <!-- Which tag was replaced -->
+    <div class="tag-chip">
+        <div class="tag-chip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="9" x2="10" y2="9"/><line x1="6" y1="12" x2="14" y2="12"/><line x1="6" y1="15" x2="11" y2="15"/></svg>
+        </div>
+        <div class="tag-chip-body">
+            <div class="tag-chip-label">Replaced Tag</div>
+            <div class="tag-chip-val" id="replacedTagId">Y40F-CLAY</div>
+        </div>
+    </div>
+
+    <!-- Placeholder -->
+    <div class="placeholder-card">
+        <div class="placeholder-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        </div>
+        <div class="placeholder-title">RMA instructions will be added here</div>
+        <div class="placeholder-desc">Content coming soon. When ready, this page will walk you through packaging, labeling, and shipping the replaced tag.</div>
+    </div>
+
+    <div class="btn-primary-wrap">
+        <a href="#" class="btn-primary" id="btnDone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            Done
+        </a>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+        const p       = new URLSearchParams(window.location.search);
+        const aisle   = p.get('aisle')   || 'C3';
+        const section = p.get('section') || '2';
+        const rail    = p.get('rail')    || '4Z1-9S8TW';
+        const issueId = p.get('issueId') || (aisle + '.' + section);
+
+        const userName = sessionStorage.getItem('userName') || 'CW';
+        document.getElementById('avatarEl').textContent = userName.slice(0,2).toUpperCase();
+
+        const railParams = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail) + '&issueId=' + encodeURIComponent(issueId) + '&return=maintenance';
+
+        // Back button → return to maint_elabel
+        document.getElementById('backBtn').href = 'maint_elabel.html' + railParams;
+
+        // Done → mark issue resolved and return to checklist
+        document.getElementById('btnDone').href = 'maintenance.html?resolved=' + encodeURIComponent(issueId);
+    })();
+</script>
+</body>
+</html>
