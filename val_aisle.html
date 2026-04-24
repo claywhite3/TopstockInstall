@@ -91,7 +91,7 @@
 <body>
 <div class="shell">
     <div class="top-bar" style="position:relative;">
-        <a href="val_zone.html" class="btn-back">
+        <a href="val_zone.html" class="btn-back" id="btnBack">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
         </a>
         <a href="flow_pick.html" style="position:absolute;left:50%;transform:translateX(-50%);width:38px;height:38px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);text-decoration:none;">
@@ -124,101 +124,8 @@
     </a>
     <div class="section-list" id="sectionList">
         <div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;">Sections — tap to inspect</div>
-        
-        <a href="rail_detail.html?aisle=C3&section=1&rail=Z001-0121&status=issues" style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.00s ease both;opacity:0;text-decoration:none;cursor:pointer;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#DC2626;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S1</div>
-            <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 1</span>
-                    <span class="s-issues" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Has Issues</span>
-                </div>
-                <div style="font-size:11px;color:#9CA3AF;margin-top:2px;">Installed Feb 10 · 09:14</div>
-                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;"><span class="issue-pill pill-batt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><path d="M23 13v-2"/></svg>1 battery</span></div>
-            </div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
-        </a>
-        <a href="rail_detail.html?aisle=C3&section=2&rail=Z001-0122&status=issues" style="background:#FEF2F2;border:1.5px solid #FECACA;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.06s ease both;opacity:0;text-decoration:none;cursor:pointer;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#DC2626;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S2</div>
-            <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 2</span>
-                    <span class="s-issues" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Has Issues</span>
-                </div>
-                <div style="font-size:11px;color:#9CA3AF;margin-top:2px;">Installed Feb 10 · 09:31</div>
-                <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;"><span class="issue-pill pill-net"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>1 network</span></div>
-            </div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
-        </a>
-        <a href="rail_detail.html?aisle=C3&section=3&rail=Z001-0123&status=ok" style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.12s ease both;opacity:0;text-decoration:none;cursor:pointer;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#16A34A;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S3</div>
-            <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 3</span>
-                    <span class="s-complete" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>Installed</span>
-                </div>
-                <div style="font-size:11px;color:#9CA3AF;margin-top:2px;">Installed Feb 10 · 09:47</div>
-                
-            </div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
-        </a>
-        <a href="rail_detail.html?aisle=C3&section=4&rail=Z001-0124&status=ok" style="background:#F0FDF4;border:1.5px solid #86EFAC;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.18s ease both;opacity:0;text-decoration:none;cursor:pointer;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#16A34A;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S4</div>
-            <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 4</span>
-                    <span class="s-complete" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>Installed</span>
-                </div>
-                <div style="font-size:11px;color:#9CA3AF;margin-top:2px;">Installed Feb 10 · 10:02</div>
-                
-            </div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
-        </a>
-        <div onclick="openReview(5, 'Shelf bracket missing — rail won\'t clip into place. Tried two units both failed.', 'CW · Feb 10 · 11:32')" style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.24s ease both;opacity:0;cursor:pointer;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#D97706;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S5</div>
-            <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 5</span>
-                    <span class="s-flagged" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;">🚩 Flagged</span>
-                </div>
-                <div style="font-size:11px;color:#D97706;margin-top:2px;font-weight:500;">Installation blocker reported · tap to review</div>
-            </div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
-        </div>
-        <div  style="background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.30s ease both;opacity:0;text-decoration:none;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#9CA3AF;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S6</div>
-            <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:14px;font-weight:700;color:#9CA3AF;">Section 6</span>
-                    <span class="s-notstarted" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Not Installed</span>
-                </div>
-                <div style="font-size:11px;color:#D1D5DB;margin-top:2px;">Awaiting installation</div>
-                
-            </div>
-            
-        </div>
-        <div onclick="openReview(7, 'Display fixture blocking mount point — permanent endcap in the way, cannot remove.', 'CW · Feb 10 · 13:05')" style="background:#FFFBEB;border:1.5px solid #FDE68A;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.36s ease both;opacity:0;cursor:pointer;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#D97706;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S7</div>
-            <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:14px;font-weight:700;color:#111827;">Section 7</span>
-                    <span class="s-flagged" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;">🚩 Flagged</span>
-                </div>
-                <div style="font-size:11px;color:#D97706;margin-top:2px;font-weight:500;">Installation blocker reported · tap to review</div>
-            </div>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>
-        </div>
-        <div  style="background:#F9FAFB;border:1.5px dashed #D1D5DB;border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s 0.42s ease both;opacity:0;text-decoration:none;">
-            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:#9CA3AF;flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">S8</div>
-            <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:14px;font-weight:700;color:#9CA3AF;">Section 8</span>
-                    <span class="s-notstarted" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Not Installed</span>
-                </div>
-                <div style="font-size:11px;color:#D1D5DB;margin-top:2px;">Awaiting installation</div>
-                
-            </div>
-            
-        </div>
+        <div id="noDataMsg" style="text-align:center;padding:24px 16px;color:#9CA3AF;font-size:13px;font-weight:500;line-height:1.5;">No section data available for this aisle yet.<br>Tap <strong>Add Section</strong> below to configure this aisle.</div>
+    </div>
     <div class="add-delete-wrap">
         <button class="btn-add" onclick="openAddModal()">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
@@ -300,6 +207,7 @@
     const zone  = aisle.replace(/[^A-Z]/gi, '')[0] || 'C';
     document.getElementById('hdrAisle').textContent = 'Aisle ' + aisle;
     document.getElementById('hdrZone').textContent  = 'Zone ' + zone.toUpperCase() + ' · 8 sections';
+    document.getElementById('btnBack').href = 'val_zone.html?zone=' + zone.toUpperCase();
     // Show opposing aisle if stored
     try {
         const oppMap = JSON.parse(sessionStorage.getItem('opposingAisles_' + zone.toUpperCase()) || '{}');
@@ -309,8 +217,19 @@
     } catch(e) {}
 
     // ─────────────────────────────────────────────
-    // DEMO DATA OVERRIDE — F3 (mix of 4ft/8ft) and F4 (1ft sub-sections)
+    // DEMO DATA OVERRIDE — C3 (mixed), F3 (mix of 4ft/8ft), F4 (1ft sub-sections)
     // ─────────────────────────────────────────────
+    const C3_SECTIONS = [
+        { label: '1', rail: 'Z001-0121', status: 'issues',     installedAt: 'Feb 10 · 09:14', issues: [{ type: 'batt', label: '1 battery' }] },
+        { label: '2', rail: 'Z001-0122', status: 'issues',     installedAt: 'Feb 10 · 09:31', issues: [{ type: 'net',  label: '1 network' }] },
+        { label: '3', rail: 'Z001-0123', status: 'ok',         installedAt: 'Feb 10 · 09:47' },
+        { label: '4', rail: 'Z001-0124', status: 'ok',         installedAt: 'Feb 10 · 10:02' },
+        { label: '5', rail: null,        status: 'flagged',    flagNote: "Shelf bracket missing — rail won't clip into place. Tried two units both failed.", flagBy: 'CW · Feb 10 · 11:32' },
+        { label: '6', rail: null,        status: 'notstarted' },
+        { label: '7', rail: null,        status: 'flagged',    flagNote: 'Display fixture blocking mount point — permanent endcap in the way, cannot remove.', flagBy: 'CW · Feb 10 · 13:05' },
+        { label: '8', rail: null,        status: 'notstarted' }
+    ];
+
     const F3_SECTIONS = [
         // { label, rail, status, installedAt, issues: [{type, count}], eightFt: 'L'|'R'|null, isSub: false, flagged: false, flagNote, flagBy }
         { label: '1',    rail: 'Z006-0301', status: 'ok',       installedAt: 'Feb 10 · 08:45' },
@@ -324,10 +243,10 @@
     ];
 
     const F4_SECTIONS = [
-        { label: '1',  rail: 'Z006-0401', status: 'ok',         installedAt: 'Feb 10 · 11:02', isSub: true },
-        { label: '5',  rail: 'Z006-0405', status: 'issues',     installedAt: 'Feb 10 · 11:28', isSub: true, issues: [{ type: 'batt', label: '1 battery' }] },
-        { label: '9',  rail: 'Z006-0409', status: 'ok',         installedAt: 'Feb 10 · 11:54', isSub: true },
-        { label: '13', rail: null,        status: 'notstarted', isSub: true }
+        { label: '1',  rail: 'Z006-0401', status: 'ok',         installedAt: 'Feb 10 · 11:02', additionalSections: ['F4.2','F4.3','F4.4'] },
+        { label: '5',  rail: 'Z006-0405', status: 'issues',     installedAt: 'Feb 10 · 11:28', additionalSections: ['F4.6','F4.7','F4.8'], issues: [{ type: 'batt', label: '1 battery' }] },
+        { label: '9',  rail: 'Z006-0409', status: 'ok',         installedAt: 'Feb 10 · 11:54', additionalSections: ['F4.10','F4.11','F4.12'] },
+        { label: '13', rail: null,        status: 'notstarted', additionalSections: ['F4.14','F4.15','F4.16'] }
     ];
 
     const ISSUE_ICONS = {
@@ -342,22 +261,26 @@
     function renderSectionCard(aisleId, sec, delay) {
         const bgColor = sec.status === 'ok'        ? '#F0FDF4'
                       : sec.status === 'issues'    ? '#FEF2F2'
+                      : sec.status === 'flagged'   ? '#FFFBEB'
                       : sec.status === 'notstarted'? '#F9FAFB'
                       : '#FFFBEB';
         const brColor = sec.status === 'ok'        ? '#86EFAC'
                       : sec.status === 'issues'    ? '#FECACA'
+                      : sec.status === 'flagged'   ? '#FDE68A'
                       : sec.status === 'notstarted'? '#D1D5DB'
                       : '#FDE68A';
         const brStyle = sec.status === 'notstarted' ? 'dashed' : 'solid';
         const numColor = sec.status === 'ok'        ? '#16A34A'
                        : sec.status === 'issues'    ? '#DC2626'
+                       : sec.status === 'flagged'   ? '#D97706'
                        : sec.status === 'notstarted'? '#9CA3AF'
                        : '#D97706';
 
-        // Number badge text — 8ft shows "L"/"R", sub-sections show number with sub badge, normal shows "S<n>"
+        // Full rail position label (e.g. F3.1, F3.3L, F4.13)
         const pos = sec.label;
-        const numBadge = 'S' + pos.replace('-L','').replace('-R','');
-        const numText  = sec.eightFt ? sec.eightFt : numBadge;
+        const fullLabel = sec.eightFt
+            ? aisleId + '.' + pos.replace('-L','').replace('-R','') + sec.eightFt
+            : aisleId + '.' + pos;
 
         // Status pill
         let statusPill;
@@ -365,25 +288,28 @@
             statusPill = '<span class="s-complete" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>Installed</span>';
         } else if (sec.status === 'issues') {
             statusPill = '<span class="s-issues" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Has Issues</span>';
+        } else if (sec.status === 'flagged') {
+            statusPill = '<span class="s-flagged" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;">🚩 Flagged</span>';
         } else {
             statusPill = '<span class="s-notstarted" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Not Installed</span>';
         }
 
-        // Section label with badges
-        const labelTextColor = sec.status === 'notstarted' ? '#9CA3AF' : '#111827';
+        // Body title — rail ID if installed, blocker message if flagged, else "Awaiting installation"
+        const bodyTextColor = sec.status === 'notstarted' ? '#9CA3AF' : '#111827';
         const eightBadge = sec.eightFt ? '<span class="badge-8ft">8 FT</span>' : '';
-        const subBadge   = sec.isSub   ? '<span class="badge-sub">1 FT</span>' : '';
-        const sectionNameText = `Section ${pos}`;
+        const bodyTitle = sec.rail
+            ? sec.rail
+            : (sec.status === 'flagged' ? 'Installation blocker' : 'Awaiting installation');
 
-        // Sub-line
-        let subLine;
-        if (sec.status === 'notstarted') {
-            subLine = '<div style="font-size:11px;color:#D1D5DB;margin-top:2px;">Awaiting installation</div>';
-        } else {
+        // Install timestamp sub-line, or flagged context
+        let subLine = '';
+        if (sec.status === 'flagged') {
+            subLine = `<div style="font-size:11px;color:#D97706;margin-top:2px;font-weight:500;">Reported by ${sec.flagBy} · tap to review</div>`;
+        } else if (sec.status !== 'notstarted') {
             subLine = `<div style="font-size:11px;color:#9CA3AF;margin-top:2px;">Installed ${sec.installedAt}</div>`;
         }
 
-        // Issue pills
+        // Issue pills (battery, network, etc.)
         let issuesRow = '';
         if (sec.issues && sec.issues.length) {
             const pills = sec.issues.map(iss => {
@@ -397,27 +323,57 @@
             issuesRow = `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;">${pills}</div>`;
         }
 
-        // Clickable or not
+        // Additional sections row (for rails that consume sub-positions, like F4.1 covering F4.2/3/4)
+        let addlRow = '';
+        if (sec.additionalSections && sec.additionalSections.length) {
+            const pills = sec.additionalSections.map(s =>
+                `<span style="display:inline-flex;align-items:center;font-size:10px;font-weight:800;padding:3px 7px;border-radius:6px;background:#F5F3FF;color:#7C3AED;border:1px solid #DDD6FE;font-family:monospace;letter-spacing:.3px;">${s}</span>`
+            ).join('');
+            addlRow = `<div style="margin-top:8px;"><div style="font-size:10px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.4px;margin-bottom:4px;">Additional sections</div><div style="display:flex;gap:4px;flex-wrap:wrap;">${pills}</div></div>`;
+        }
+
+        // Clickable: installed/issues navigate to rail_detail; flagged opens review modal; notstarted is inert
         const sectionParam = encodeURIComponent(pos);
         const railParam    = sec.rail ? encodeURIComponent(sec.rail) : '';
         const statusParam  = sec.status === 'issues' ? 'issues' : 'ok';
-        const isClickable  = sec.status === 'ok' || sec.status === 'issues';
-        const href = isClickable ? `rail_detail.html?aisle=${aisleId}&section=${sectionParam}&rail=${railParam}&status=${statusParam}` : '';
+        const isNavigable  = sec.status === 'ok' || sec.status === 'issues';
+        const isFlagged    = sec.status === 'flagged';
 
-        const openTag  = isClickable ? `<a href="${href}"` : '<div';
-        const closeTag = isClickable ? '</a>'             : '</div>';
-        const chev     = isClickable ? CHEVRON : '';
-        const decoration = isClickable ? 'text-decoration:none;cursor:pointer;' : 'text-decoration:none;';
+        let openTag, closeTag, chev, decoration;
+        if (isNavigable) {
+            const href = `rail_detail.html?aisle=${aisleId}&section=${sectionParam}&rail=${railParam}&status=${statusParam}`;
+            openTag = `<a href="${href}"`;
+            closeTag = '</a>';
+            chev = CHEVRON;
+            decoration = 'text-decoration:none;cursor:pointer;';
+        } else if (isFlagged) {
+            // Escape single quotes and backslashes in flag text so the onclick handler parses cleanly
+            const safeNote = (sec.flagNote || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+            const safeBy   = (sec.flagBy   || '').replace(/\\/g,'\\\\').replace(/'/g,"\\'");
+            openTag = `<div onclick="openReview('${pos}', '${safeNote}', '${safeBy}')"`;
+            closeTag = '</div>';
+            chev = CHEVRON;
+            decoration = 'text-decoration:none;cursor:pointer;';
+        } else {
+            openTag = '<div';
+            closeTag = '</div>';
+            chev = '';
+            decoration = 'text-decoration:none;';
+        }
+
+        // Left-side name badge — wider + font scales by label length
+        const nameBadgeFontSize = fullLabel.length > 5 ? '11px' : '12px';
 
         return `${openTag} style="background:${bgColor};border:1.5px ${brStyle} ${brColor};border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s ${delay}s ease both;opacity:0;${decoration}">
-            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:${numColor};flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">${numText}</div>
+            <div style="min-width:58px;padding:0 8px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:${nameBadgeFontSize};font-weight:800;color:${numColor};flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);font-family:monospace;letter-spacing:.3px;white-space:nowrap;">${fullLabel}</div>
             <div style="flex:1;min-width:0;">
-                <div style="display:flex;justify-content:space-between;align-items:center;">
-                    <span style="font-size:14px;font-weight:700;color:${labelTextColor};">${sectionNameText}${eightBadge}${subBadge}</span>
+                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">
+                    <span style="font-size:14px;font-weight:700;color:${bodyTextColor};white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${bodyTitle}${eightBadge}</span>
                     ${statusPill}
                 </div>
                 ${subLine}
                 ${issuesRow}
+                ${addlRow}
             </div>
             ${chev}
         ${closeTag}`;
@@ -426,7 +382,7 @@
     function applyDemoData(aisleId, sections) {
         // Count stats
         const installed   = sections.filter(s => s.status === 'ok' || s.status === 'issues').length;
-        const remaining   = sections.filter(s => s.status === 'notstarted').length;
+        const remaining   = sections.filter(s => s.status === 'notstarted' || s.status === 'flagged').length;
         const withIssues  = sections.filter(s => s.status === 'issues').length;
         const total       = sections.length;
         const pctInstalled = Math.round((installed / total) * 100);
@@ -481,8 +437,24 @@
         listEl.innerHTML = header + cards;
     }
 
-    if (aisle === 'F3') applyDemoData('F3', F3_SECTIONS);
+    if (aisle === 'C3')      applyDemoData('C3', C3_SECTIONS);
+    else if (aisle === 'F3') applyDemoData('F3', F3_SECTIONS);
     else if (aisle === 'F4') applyDemoData('F4', F4_SECTIONS);
+    else {
+        // No demo data for this aisle — zero out stats and hide install-remaining button
+        document.getElementById('hdrZone').textContent = 'Zone ' + zone.toUpperCase() + ' · 0 sections';
+        document.getElementById('summaryCard').innerHTML = `
+            <div style="height:8px;background:#E5E7EB;border-radius:10px;overflow:hidden;margin-bottom:10px;">
+                <div style="height:100%;width:0%;background:#2563EB;border-radius:10px;"></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-chip"><div class="stat-chip-val" style="color:#16A34A;">0</div><div class="stat-chip-lbl">Installed</div></div>
+                <div class="stat-chip"><div class="stat-chip-val" style="color:#9CA3AF;">0</div><div class="stat-chip-lbl">Remaining</div></div>
+                <div class="stat-chip"><div class="stat-chip-val" style="color:#DC2626;">0</div><div class="stat-chip-lbl">With Issues</div></div>
+            </div>
+        `;
+        document.getElementById('btnInstallRemaining').style.display = 'none';
+    }
 
     let _reviewSec = null;
 
