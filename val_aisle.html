@@ -105,7 +105,7 @@
         <div style="font-size:13px;color:#6B7280;font-weight:500;margin-top:1px;" id="hdrZone">Zone C · 8 sections</div>
         <div style="font-size:11px;color:#9CA3AF;font-weight:500;margin-top:3px;" id="hdrOpposing"></div>
     </div>
-    <div class="summary-card">
+    <div class="summary-card" id="summaryCard">
         <div style="height:8px;background:#E5E7EB;border-radius:10px;overflow:hidden;margin-bottom:10px;">
             <div style="height:100%;width:50%;background:#2563EB;border-radius:10px;"></div>
         </div>
@@ -118,7 +118,7 @@
             <span class="issue-pill pill-batt"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><path d="M23 13v-2"/></svg>2 battery</span><span class="issue-pill pill-net"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>1 network</span>
         </div>
     </div>
-    <a href="page3.html" class="btn-install">
+    <a href="page3.html" class="btn-install" id="btnInstallRemaining">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
         Install Remaining 4 Sections
     </a>
@@ -307,6 +307,182 @@
         const oppEl  = document.getElementById('hdrOpposing');
         if (oppEl) oppEl.textContent = oppNum ? 'Opposing aisle: ' + zone.toUpperCase() + oppNum : '';
     } catch(e) {}
+
+    // ─────────────────────────────────────────────
+    // DEMO DATA OVERRIDE — F3 (mix of 4ft/8ft) and F4 (1ft sub-sections)
+    // ─────────────────────────────────────────────
+    const F3_SECTIONS = [
+        // { label, rail, status, installedAt, issues: [{type, count}], eightFt: 'L'|'R'|null, isSub: false, flagged: false, flagNote, flagBy }
+        { label: '1',    rail: 'Z006-0301', status: 'ok',       installedAt: 'Feb 10 · 08:45' },
+        { label: '2',    rail: 'Z006-0302', status: 'issues',   installedAt: 'Feb 10 · 09:02', issues: [{ type: 'batt', label: '1 battery' }] },
+        { label: '3-L',  rail: 'Z006-0303', status: 'ok',       installedAt: 'Feb 10 · 09:18', eightFt: 'L' },
+        { label: '3-R',  rail: 'Z006-0304', status: 'ok',       installedAt: 'Feb 10 · 09:24', eightFt: 'R' },
+        { label: '4',    rail: 'Z006-0305', status: 'ok',       installedAt: 'Feb 10 · 09:41' },
+        { label: '5-L',  rail: 'Z006-0306', status: 'issues',   installedAt: 'Feb 10 · 10:03', eightFt: 'L', issues: [{ type: 'net', label: '1 network' }] },
+        { label: '5-R',  rail: 'Z006-0307', status: 'ok',       installedAt: 'Feb 10 · 10:09', eightFt: 'R' },
+        { label: '6',    rail: null,        status: 'notstarted' }
+    ];
+
+    const F4_SECTIONS = [
+        { label: '1',  rail: 'Z006-0401', status: 'ok',         installedAt: 'Feb 10 · 11:02', isSub: true },
+        { label: '5',  rail: 'Z006-0405', status: 'issues',     installedAt: 'Feb 10 · 11:28', isSub: true, issues: [{ type: 'batt', label: '1 battery' }] },
+        { label: '9',  rail: 'Z006-0409', status: 'ok',         installedAt: 'Feb 10 · 11:54', isSub: true },
+        { label: '13', rail: null,        status: 'notstarted', isSub: true }
+    ];
+
+    const ISSUE_ICONS = {
+        batt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2"/><path d="M23 13v-2"/></svg>',
+        net:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><circle cx="12" cy="20" r="1" fill="currentColor"/></svg>',
+        cam:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>',
+        led:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8a6 6 0 0 0-12 0c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/></svg>',
+        esl:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><line x1="6" y1="9" x2="10" y2="9"/><line x1="6" y1="12" x2="14" y2="12"/></svg>'
+    };
+    const CHEVRON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14" style="flex-shrink:0;color:#9CA3AF;"><path d="M9 18l6-6-6-6"/></svg>';
+
+    function renderSectionCard(aisleId, sec, delay) {
+        const bgColor = sec.status === 'ok'        ? '#F0FDF4'
+                      : sec.status === 'issues'    ? '#FEF2F2'
+                      : sec.status === 'notstarted'? '#F9FAFB'
+                      : '#FFFBEB';
+        const brColor = sec.status === 'ok'        ? '#86EFAC'
+                      : sec.status === 'issues'    ? '#FECACA'
+                      : sec.status === 'notstarted'? '#D1D5DB'
+                      : '#FDE68A';
+        const brStyle = sec.status === 'notstarted' ? 'dashed' : 'solid';
+        const numColor = sec.status === 'ok'        ? '#16A34A'
+                       : sec.status === 'issues'    ? '#DC2626'
+                       : sec.status === 'notstarted'? '#9CA3AF'
+                       : '#D97706';
+
+        // Number badge text — 8ft shows "L"/"R", sub-sections show number with sub badge, normal shows "S<n>"
+        const pos = sec.label;
+        const numBadge = 'S' + pos.replace('-L','').replace('-R','');
+        const numText  = sec.eightFt ? sec.eightFt : numBadge;
+
+        // Status pill
+        let statusPill;
+        if (sec.status === 'ok') {
+            statusPill = '<span class="s-complete" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><polyline points="20 6 9 17 4 12"/></svg>Installed</span>';
+        } else if (sec.status === 'issues') {
+            statusPill = '<span class="s-issues" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>Has Issues</span>';
+        } else {
+            statusPill = '<span class="s-notstarted" style="display:flex;align-items:center;gap:3px;font-size:11px;font-weight:700;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="14" height="14"><circle cx="12" cy="12" r="10"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Not Installed</span>';
+        }
+
+        // Section label with badges
+        const labelTextColor = sec.status === 'notstarted' ? '#9CA3AF' : '#111827';
+        const eightBadge = sec.eightFt ? '<span class="badge-8ft">8 FT</span>' : '';
+        const subBadge   = sec.isSub   ? '<span class="badge-sub">1 FT</span>' : '';
+        const sectionNameText = `Section ${pos}`;
+
+        // Sub-line
+        let subLine;
+        if (sec.status === 'notstarted') {
+            subLine = '<div style="font-size:11px;color:#D1D5DB;margin-top:2px;">Awaiting installation</div>';
+        } else {
+            subLine = `<div style="font-size:11px;color:#9CA3AF;margin-top:2px;">Installed ${sec.installedAt}</div>`;
+        }
+
+        // Issue pills
+        let issuesRow = '';
+        if (sec.issues && sec.issues.length) {
+            const pills = sec.issues.map(iss => {
+                const cls = iss.type === 'batt' ? 'pill-batt'
+                          : iss.type === 'net'  ? 'pill-net'
+                          : iss.type === 'cam'  ? 'pill-cam'
+                          : iss.type === 'led'  ? 'pill-led'
+                          : 'pill-esl';
+                return `<span class="issue-pill ${cls}">${ISSUE_ICONS[iss.type] || ''}${iss.label}</span>`;
+            }).join('');
+            issuesRow = `<div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:5px;">${pills}</div>`;
+        }
+
+        // Clickable or not
+        const sectionParam = encodeURIComponent(pos);
+        const railParam    = sec.rail ? encodeURIComponent(sec.rail) : '';
+        const statusParam  = sec.status === 'issues' ? 'issues' : 'ok';
+        const isClickable  = sec.status === 'ok' || sec.status === 'issues';
+        const href = isClickable ? `rail_detail.html?aisle=${aisleId}&section=${sectionParam}&rail=${railParam}&status=${statusParam}` : '';
+
+        const openTag  = isClickable ? `<a href="${href}"` : '<div';
+        const closeTag = isClickable ? '</a>'             : '</div>';
+        const chev     = isClickable ? CHEVRON : '';
+        const decoration = isClickable ? 'text-decoration:none;cursor:pointer;' : 'text-decoration:none;';
+
+        return `${openTag} style="background:${bgColor};border:1.5px ${brStyle} ${brColor};border-radius:14px;padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px rgba(0,0,0,0.04);animation:fadeUp .3s ${delay}s ease both;opacity:0;${decoration}">
+            <div style="width:36px;height:36px;background:#fff;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:800;color:${numColor};flex-shrink:0;box-shadow:0 1px 4px rgba(0,0,0,0.08);">${numText}</div>
+            <div style="flex:1;min-width:0;">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <span style="font-size:14px;font-weight:700;color:${labelTextColor};">${sectionNameText}${eightBadge}${subBadge}</span>
+                    ${statusPill}
+                </div>
+                ${subLine}
+                ${issuesRow}
+            </div>
+            ${chev}
+        ${closeTag}`;
+    }
+
+    function applyDemoData(aisleId, sections) {
+        // Count stats
+        const installed   = sections.filter(s => s.status === 'ok' || s.status === 'issues').length;
+        const remaining   = sections.filter(s => s.status === 'notstarted').length;
+        const withIssues  = sections.filter(s => s.status === 'issues').length;
+        const total       = sections.length;
+        const pctInstalled = Math.round((installed / total) * 100);
+
+        // Issue totals by type
+        const typeCounts = {};
+        sections.forEach(s => {
+            (s.issues || []).forEach(iss => {
+                typeCounts[iss.type] = (typeCounts[iss.type] || 0) + 1;
+            });
+        });
+        const issueLabels = { batt: 'battery', net: 'network', cam: 'camera', led: 'LED', esl: 'E-Label' };
+        const pillClasses = { batt: 'pill-batt', net: 'pill-net', cam: 'pill-cam', led: 'pill-led', esl: 'pill-esl' };
+        const issuePills = Object.keys(typeCounts).map(type => {
+            const n = typeCounts[type];
+            return `<span class="issue-pill ${pillClasses[type]}">${ISSUE_ICONS[type]}${n} ${issueLabels[type]}</span>`;
+        }).join('');
+
+        // Header: section count (reuse hdrZone)
+        document.getElementById('hdrZone').textContent = 'Zone ' + zone.toUpperCase() + ' · ' + total + ' sections';
+
+        // Summary card
+        const summaryEl = document.getElementById('summaryCard');
+        summaryEl.innerHTML = `
+            <div style="height:8px;background:#E5E7EB;border-radius:10px;overflow:hidden;margin-bottom:10px;">
+                <div style="height:100%;width:${pctInstalled}%;background:#2563EB;border-radius:10px;"></div>
+            </div>
+            <div class="stat-row">
+                <div class="stat-chip"><div class="stat-chip-val" style="color:#16A34A;">${installed}</div><div class="stat-chip-lbl">Installed</div></div>
+                <div class="stat-chip"><div class="stat-chip-val" style="color:#9CA3AF;">${remaining}</div><div class="stat-chip-lbl">Remaining</div></div>
+                <div class="stat-chip"><div class="stat-chip-val" style="color:#DC2626;">${withIssues}</div><div class="stat-chip-lbl">With Issues</div></div>
+            </div>
+            ${issuePills ? `<div style="margin-top:10px;display:flex;gap:5px;flex-wrap:wrap;">${issuePills}</div>` : ''}
+        `;
+
+        // Install-remaining button
+        const btnInstall = document.getElementById('btnInstallRemaining');
+        if (remaining > 0) {
+            btnInstall.innerHTML = `
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+                Install Remaining ${remaining} Section${remaining>1?'s':''}
+            `;
+            btnInstall.style.display = '';
+        } else {
+            btnInstall.style.display = 'none';
+        }
+
+        // Section list
+        const listEl = document.getElementById('sectionList');
+        const header = '<div style="font-size:11px;font-weight:700;color:#9CA3AF;text-transform:uppercase;letter-spacing:.5px;">Sections — tap to inspect</div>';
+        const cards  = sections.map((s, i) => renderSectionCard(aisleId, s, (i * 0.06).toFixed(2))).join('');
+        listEl.innerHTML = header + cards;
+    }
+
+    if (aisle === 'F3') applyDemoData('F3', F3_SECTIONS);
+    else if (aisle === 'F4') applyDemoData('F4', F4_SECTIONS);
 
     let _reviewSec = null;
 
