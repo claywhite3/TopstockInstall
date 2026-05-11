@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vusion — E-Label Physical Swap</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'DM Sans', sans-serif; background: #F2F3F7; min-height: 100vh; display: flex; flex-direction: column; align-items: center; color: #111827; }
+        .shell { width: 100%; max-width: 390px; min-height: 100vh; background: #F2F3F7; display: flex; flex-direction: column; padding-bottom: 40px; }
+
+        /* Top bar */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 16px 20px 8px; position: relative; }
+        .btn-back { width: 38px; height: 38px; background: #fff; border-radius: 50%; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); text-decoration: none; transition: transform .15s; flex-shrink: 0; }
+        .btn-back:active { transform: scale(.93); }
+        .btn-back svg { width: 16px; height: 16px; color: #374151; }
+        .avatar { width: 40px; height: 40px; background: #2563EB; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+
+        /* Rail header */
+        .rail-header { padding: 4px 20px 0; }
+        .rail-id-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; }
+        .rail-id { font-size: 28px; font-weight: 800; color: #111827; line-height: 1.1; margin-top: 2px; letter-spacing: .5px; }
+        .rail-meta { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 4px; }
+
+        /* Tag chip - shows the new tag that's been paired */
+        .tag-chip { margin: 14px 20px 0; border-radius: 16px; padding: 13px 16px; display: flex; align-items: center; justify-content: space-between; background: #F0FDF4; border: 1.5px solid #BBF7D0; }
+        .tag-chip-label { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 3px; }
+        .tag-chip-val { font-size: 20px; font-weight: 800; line-height: 1.1; color: #16A34A; letter-spacing: .5px; }
+        .tag-chip-verdict { font-size: 12px; font-weight: 600; margin-top: 2px; color: #16A34A; }
+        .tag-chip-icon { width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; background: #DCFCE7; }
+        .tag-chip-icon svg { width: 20px; height: 20px; color: #16A34A; }
+
+        /* Section header */
+        .section-header { padding: 16px 20px 4px; }
+        .section-title { font-size: 22px; font-weight: 800; color: #111827; }
+        .section-sub { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 4px; line-height: 1.4; }
+
+        /* Step cards */
+        .steps { padding: 12px 20px 0; display: flex; flex-direction: column; gap: 12px; }
+        .step-card { background: #fff; border-radius: 16px; padding: 14px; display: flex; gap: 12px; align-items: flex-start; box-shadow: 0 1px 3px rgba(0,0,0,0.04); border-left: 4px solid #E5E7EB; }
+        .step-card.remove { border-left-color: #F59E0B; }
+        .step-card.install { border-left-color: #16A34A; }
+
+        .step-chip { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 14px; font-weight: 800; color: #fff; }
+        .step-chip.remove { background: #F59E0B; }
+        .step-chip.install { background: #16A34A; }
+
+        .step-body { flex: 1; min-width: 0; }
+        .step-title { font-size: 15px; font-weight: 700; color: #111827; line-height: 1.25; }
+        .step-desc { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 4px; line-height: 1.4; }
+
+        .step-img { width: 96px; height: 80px; border-radius: 10px; flex-shrink: 0; background: #F9FAFB; border: 1.5px dashed #D1D5DB; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .step-img img { width: 100%; height: 100%; object-fit: cover; }
+        .step-img.placeholder svg { width: 28px; height: 28px; color: #9CA3AF; }
+
+        /* RMA reminder */
+        .rma-reminder { margin: 16px 20px 0; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 14px; padding: 12px 14px; display: flex; gap: 10px; align-items: flex-start; }
+        .rma-reminder-icon { width: 28px; height: 28px; border-radius: 8px; background: #DBEAFE; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .rma-reminder-icon svg { width: 16px; height: 16px; color: #2563EB; }
+        .rma-reminder-text { flex: 1; }
+        .rma-reminder-title { font-size: 13px; font-weight: 700; color: #1E40AF; line-height: 1.3; }
+        .rma-reminder-desc { font-size: 12px; color: #1E40AF; font-weight: 500; margin-top: 2px; line-height: 1.4; opacity: .85; }
+
+        /* Primary button */
+        .btn-primary-wrap { padding: 20px 20px 0; }
+        .btn-primary { width: 100%; padding: 16px; color: #fff; border: none; border-radius: 16px; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: transform .15s, opacity .15s, background .15s; text-decoration: none; }
+        .btn-primary.blue { background: #2563EB; box-shadow: 0 4px 14px rgba(37,99,235,0.3); }
+        .btn-primary:active { transform: scale(.97); }
+
+        @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+        .shell { animation: fadeUp .25s ease both; }
+    </style>
+</head>
+<body>
+
+<div class="shell">
+
+    <!-- Top bar -->
+    <div class="top-bar">
+        <a href="#" class="btn-back" id="backBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </a>
+        <a href="flow_pick.html" style="position:absolute;left:50%;transform:translateX(-50%);width:38px;height:38px;background:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(0,0,0,0.08);text-decoration:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="#2563EB" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+        </a>
+        <div class="avatar" id="avatarEl">CW</div>
+    </div>
+
+    <!-- Rail header -->
+    <div class="rail-header">
+        <div class="rail-id-label">Rail ID</div>
+        <div class="rail-id" id="hdrRailId">—</div>
+        <div class="rail-meta" id="hdrMeta">—</div>
+    </div>
+
+    <!-- New tag confirmation chip -->
+    <div class="tag-chip">
+        <div>
+            <div class="tag-chip-label">New Tag Paired</div>
+            <div class="tag-chip-val">Y40F-CLAY</div>
+            <div class="tag-chip-verdict">Displaying correctly</div>
+        </div>
+        <div class="tag-chip-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+    </div>
+
+    <!-- Section header -->
+    <div class="section-header">
+        <div class="section-title">Physical Tag Swap</div>
+        <div class="section-sub">Now that the new tag is paired and verified, swap it onto the rail.</div>
+    </div>
+
+    <!-- Step cards -->
+    <div class="steps">
+
+        <!-- Step 1: Remove End Cap -->
+        <div class="step-card remove">
+            <div class="step-chip remove">1</div>
+            <div class="step-body">
+                <div class="step-title">Remove End Cap</div>
+                <div class="step-desc">Remove the 2 screws using a T8 screwdriver bit and slide the end cap off.</div>
+            </div>
+            <div class="step-img placeholder" id="img1">
+                <img src="esl_swap_screws.jpg" alt="" onerror="this.parentNode.classList.add('placeholder');this.style.display='none';this.nextElementSibling.style.display='block';">
+                <svg style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+        </div>
+
+        <!-- Step 2: Remove Old Tag -->
+        <div class="step-card remove">
+            <div class="step-chip remove">2</div>
+            <div class="step-body">
+                <div class="step-title">Remove the Old Tag</div>
+                <div class="step-desc">Gently flex the edge of the holder and lift tag to remove.</div>
+            </div>
+            <div class="step-img placeholder" id="img2">
+                <img src="esl_swap_remove.jpg" alt="" onerror="this.parentNode.classList.add('placeholder');this.style.display='none';this.nextElementSibling.style.display='block';">
+                <svg style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+        </div>
+
+        <!-- Step 3: Install New Tag -->
+        <div class="step-card install">
+            <div class="step-chip install">3</div>
+            <div class="step-body">
+                <div class="step-title">Install the New Tag</div>
+                <div class="step-desc">Push the new tag into place and click it into the holder.</div>
+            </div>
+            <div class="step-img placeholder" id="img3">
+                <img src="esl_swap_install.jpg" alt="" onerror="this.parentNode.classList.add('placeholder');this.style.display='none';this.nextElementSibling.style.display='block';">
+                <svg style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+        </div>
+
+        <!-- Step 4: Reinstall End Cap -->
+        <div class="step-card install">
+            <div class="step-chip install">4</div>
+            <div class="step-body">
+                <div class="step-title">Reinstall End Cap</div>
+                <div class="step-desc">Replace the 2 T8 screws to secure the end cap.</div>
+            </div>
+            <div class="step-img placeholder" id="img4">
+                <img src="esl_swap_screws.jpg" alt="" onerror="this.parentNode.classList.add('placeholder');this.style.display='none';this.nextElementSibling.style.display='block';">
+                <svg style="display:none;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- RMA reminder -->
+    <div class="rma-reminder">
+        <div class="rma-reminder-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        </div>
+        <div class="rma-reminder-text">
+            <div class="rma-reminder-title">Set the old tag aside</div>
+            <div class="rma-reminder-desc">The old tag goes back to RMA along with any removed rails.</div>
+        </div>
+    </div>
+
+    <!-- Continue button -->
+    <div class="btn-primary-wrap">
+        <a href="#" class="btn-primary blue" id="btnContinueRma">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="8" y1="9" x2="10" y2="9"/></svg>
+            Continue to RMA Process
+        </a>
+    </div>
+
+</div>
+
+<script>
+    // Parse URL params and propagate them through navigation
+    (function() {
+        var qs = window.location.search || '';
+        var params = new URLSearchParams(qs);
+
+        var railId = params.get('railId') || params.get('rail') || '4Z1-9S8TW';
+        var aisle  = params.get('aisle')  || 'A12';
+        var section = params.get('section') || 'A12-L';
+
+        document.getElementById('hdrRailId').textContent = railId;
+        document.getElementById('hdrMeta').textContent = aisle + ' · Section ' + section;
+
+        // Back button returns to rail_elabel preserving params
+        document.getElementById('backBtn').href = 'rail_elabel.html' + qs;
+
+        // Continue routes to rma_esl preserving params
+        document.getElementById('btnContinueRma').href = 'rma_esl.html' + qs;
+    })();
+</script>
+
+</body>
+</html>
