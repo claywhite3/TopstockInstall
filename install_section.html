@@ -44,7 +44,9 @@
         .sort-btn.active { background: #fff; color: #111827; box-shadow: 0 1px 6px rgba(0,0,0,0.1); }
 
         /* Selector */
-        .selector-section { padding: 12px 20px 0; animation: fadeUp .4s .15s ease both; }
+        .selector-section { padding: 12px 20px 0; animation: fadeUp .4s .15s ease both; position: relative; z-index: 5; }
+        .selector-section:has(.combobox-dropdown.open),
+        .selector-section.has-open-dropdown { z-index: 1000; }
         .selector-group { display: flex; flex-direction: column; gap: 6px; }
         .selector-label { font-size: 11px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; padding-left: 4px; }
 
@@ -349,6 +351,7 @@
         document.getElementById('modularInputWrap').setAttribute('aria-expanded', 'true');
         document.getElementById('modularChevron').classList.add('rotated');
         document.getElementById('modularInputWrap').closest('.combobox').classList.add('combobox-open');
+        document.getElementById('modularInputWrap').closest('.selector-section').classList.add('has-open-dropdown');
     }
 
     function closeDropdown() {
@@ -357,6 +360,7 @@
         document.getElementById('modularInputWrap').setAttribute('aria-expanded', 'false');
         document.getElementById('modularChevron').classList.remove('rotated');
         document.getElementById('modularInputWrap').closest('.combobox').classList.remove('combobox-open');
+        document.getElementById('modularInputWrap').closest('.selector-section').classList.remove('has-open-dropdown');
     }
 
     function toggleDropdown() {
