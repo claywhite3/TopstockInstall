@@ -661,10 +661,10 @@
         </div>
     </div>
 
-    <!-- Rescan / Manual Entry row -->
+    <!-- Rescan / Manual Entry row — mirror buttons, only one visible at a time -->
     <div class="scanner-sub">
         <button id="rescanBtn" class="btn-text-link hidden" onclick="initScanner()">Rescan</button>
-        <button class="btn-text-link" onclick="openManualEntry()">Manual Entry</button>
+        <button id="manualEntryBtn" class="btn-text-link" onclick="openManualEntry()">Manual Entry</button>
     </div>
 
     <!-- Rail ID status card -->
@@ -737,9 +737,10 @@
         const railIdValue = document.getElementById('railIdValue');
         const railIdBadge = document.getElementById('railIdBadge');
 
-        // Reset UI state
+        // Reset UI state — pre-scan: Manual Entry visible, Rescan hidden
         complete.style.display = 'none';
         rescanBtn.classList.add('hidden');
+        document.getElementById('manualEntryBtn').classList.remove('hidden');
         railIdCard.classList.remove('found');
         railIdValue.textContent = 'Awaiting scan…';
         railIdBadge.textContent = 'Pending';
@@ -768,7 +769,16 @@
             qrbox: undefined,                    // scan full viewport
             aspectRatio: undefined,              // let CSS handle it
             disableFlip: false,                  // try both flipped & unflipped
-            formatsToSupport: undefined,         // all formats — QR + 1D
+            formatsToSupport: [
+                Html5QrcodeSupportedFormats.QR_CODE,
+                Html5QrcodeSupportedFormats.CODE_39,
+                Html5QrcodeSupportedFormats.CODE_128,
+                Html5QrcodeSupportedFormats.CODE_93,
+                Html5QrcodeSupportedFormats.DATA_MATRIX,
+            ],
+            experimentalFeatures: {
+                useBarCodeDetectorIfSupported: true   // faster on Android
+            }
         };
 
         try {
@@ -839,6 +849,10 @@
 
         // Show complete overlay
         complete.style.display = 'flex';
+
+        // Swap sub-row buttons: post-scan, Rescan visible, Manual Entry hidden
+        document.getElementById('rescanBtn').classList.remove('hidden');
+        document.getElementById('manualEntryBtn').classList.add('hidden');
 
         // Update Rail ID card with REAL scanned value
         railIdCard.classList.add('found');
