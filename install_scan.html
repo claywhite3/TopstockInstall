@@ -431,6 +431,167 @@
 
         /* ── Animations ── */
         @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+        /* ── Real-camera scanner additions ── */
+        .qr-reader-mount {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #000;
+        }
+        /* Force the html5-qrcode video to fill the card */
+        .qr-reader-mount video {
+            width: 100% !important;
+            height: 100% !important;
+            object-fit: cover;
+            display: block;
+        }
+        /* Hide html5-qrcode's default UI scaffolding */
+        .qr-reader-mount > div { border: none !important; }
+        #qr-shaded-region { display: none !important; }
+
+        .camera-state {
+            position: absolute;
+            inset: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            background: #1F2937;
+            color: #D1D5DB;
+            z-index: 4;
+            padding: 20px;
+            text-align: center;
+        }
+        .camera-state.hidden { display: none; }
+        .camera-state svg { color: #9CA3AF; }
+        .camera-state-text { font-size: 13px; font-weight: 600; line-height: 1.4; }
+        .camera-retry-btn {
+            margin-top: 4px;
+            padding: 8px 18px;
+            background: #2563EB;
+            color: #fff;
+            border: none;
+            border-radius: 10px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .camera-retry-btn.hidden { display: none; }
+
+        .torch-btn {
+            position: absolute;
+            top: 12px;
+            right: 50px; /* leaves space for top-right corner bracket */
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0,0,0,0.55);
+            border: 1.5px solid rgba(255,255,255,0.3);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 6;
+            transition: background .15s, transform .12s;
+        }
+        .torch-btn:active { transform: scale(0.93); }
+        .torch-btn.on { background: #F59E0B; border-color: #F59E0B; color: #fff; }
+        .torch-btn.hidden { display: none; }
+        .torch-btn svg { width: 18px; height: 18px; }
+
+        /* Shake on invalid scan */
+        .scanner-card.shake {
+            animation: scanShake 0.35s ease;
+        }
+        @keyframes scanShake {
+            0%, 100% { transform: translateX(0); }
+            15%      { transform: translateX(-8px); }
+            30%      { transform: translateX(7px); }
+            45%      { transform: translateX(-5px); }
+            60%      { transform: translateX(4px); }
+            80%      { transform: translateX(-2px); }
+        }
+        .scanner-card.shake::before,
+        .scanner-card.shake::after,
+        .scanner-card.shake .scanner-corners::before,
+        .scanner-card.shake .scanner-corners::after {
+            border-color: #EF4444 !important;
+            transition: border-color 0.15s;
+        }
+
+        /* ── Manual Entry modal ── */
+        .manual-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(17,24,39,0.55);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(4px);
+            padding: 20px;
+        }
+        .manual-overlay.open { display: flex; }
+        .manual-sheet {
+            background: #fff;
+            width: 100%;
+            max-width: 340px;
+            border-radius: 22px;
+            padding: 22px 20px 18px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+        }
+        .manual-title {
+            font-size: 18px;
+            font-weight: 800;
+            color: #111827;
+            margin-bottom: 4px;
+        }
+        .manual-sub {
+            font-size: 13px;
+            color: #6B7280;
+            font-weight: 500;
+            margin-bottom: 14px;
+        }
+        .manual-input {
+            width: 100%;
+            padding: 14px 16px;
+            background: #F9FAFB;
+            border: 1.5px solid #E5E7EB;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            color: #111827;
+            letter-spacing: 1.5px;
+            text-align: center;
+            outline: none;
+            text-transform: uppercase;
+        }
+        .manual-input:focus { border-color: #2563EB; background: #fff; box-shadow: 0 0 0 3px rgba(37,99,235,0.1); }
+        .manual-input.error { border-color: #EF4444; box-shadow: 0 0 0 3px rgba(239,68,68,0.1); }
+        .manual-error { min-height: 18px; font-size: 12px; color: #EF4444; font-weight: 600; margin-top: 8px; text-align: center; }
+        .manual-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 12px;
+        }
+        .manual-cancel, .manual-submit {
+            flex: 1;
+            padding: 13px;
+            border-radius: 12px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.12s;
+        }
+        .manual-cancel { background: #fff; color: #6B7280; border: 1.5px solid #E5E7EB; }
+        .manual-submit { background: #2563EB; color: #fff; border: none; box-shadow: 0 3px 10px rgba(37,99,235,0.28); }
+        .manual-cancel:active, .manual-submit:active { transform: scale(0.975); }
+
     </style>
     <!-- PWA — TopStock Companion -->
     <link rel="manifest" href="manifest.json">
@@ -469,12 +630,23 @@
 
     <!-- Scanner window -->
     <div class="scanner-card" id="scannerBox">
-        <img src="blurry-image.png" id="blurryPlaceholder"
-             onerror="this.style.background='#1F2937'; this.style.display='block';">
-        <img src="rail-scanning.png" id="scanningImage" style="display:none;"
-             onerror="this.style.display='none';">
-        <div id="laser" class="laser-line"></div>
+        <!-- html5-qrcode mounts the video element here -->
+        <div id="qrReader" class="qr-reader-mount"></div>
+
+        <!-- Camera permission / loading state -->
+        <div id="cameraState" class="camera-state">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="36" height="36"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+            <div id="cameraStateText" class="camera-state-text">Starting camera…</div>
+            <button id="cameraRetryBtn" class="camera-retry-btn hidden" onclick="initScanner()">Try Again</button>
+        </div>
+
+        <div id="laser" class="laser-line" style="display:none;"></div>
         <div class="scanner-corners"></div>
+
+        <!-- Torch button (Android only — hidden if not supported) -->
+        <button id="torchBtn" class="torch-btn hidden" onclick="toggleTorch()" aria-label="Toggle flashlight">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6l-6 6-6-6"/><path d="M6 6h12l-3 9H9z"/><line x1="12" y1="22" x2="12" y2="15"/></svg>
+        </button>
 
         <!-- Complete overlay — whole div is tappable -->
         <div id="completeScreen" class="complete-ui" onclick="validateAndGo()">
@@ -491,8 +663,8 @@
 
     <!-- Rescan / Manual Entry row -->
     <div class="scanner-sub">
-        <button id="rescanBtn" class="btn-text-link hidden" onclick="startSequence()">Rescan</button>
-        <button class="btn-text-link" onclick="validateAndGo()">Manual Entry</button>
+        <button id="rescanBtn" class="btn-text-link hidden" onclick="initScanner()">Rescan</button>
+        <button class="btn-text-link" onclick="openManualEntry()">Manual Entry</button>
     </div>
 
     <!-- Rail ID status card -->
@@ -540,71 +712,236 @@
 <script>
     const successSound = new Audio('https://assets.mixkit.co/active_storage/sfx/2013/2013-preview.mp3');
 
-    // Start scanning immediately on load — no pre-scan modal
+    // Validation: 4 alphanumeric, hyphen, 4 alphanumeric (case-insensitive, normalized to upper)
+    const RAIL_ID_REGEX = /^[A-Z0-9]{4}-[A-Z0-9]{4}$/;
+
+    let html5QrCode = null;
+    let scanCompleted = false;
+    let lastInvalidShake = 0;     // debounce for shake animation
+    let currentTrack = null;       // active MediaStreamTrack (for torch)
+    let torchOn = false;
+
+    // Kick off on page load
     window.addEventListener('load', () => {
-        startSequence();
+        initScanner();
     });
 
-    function startSequence() {
-        const laser       = document.getElementById('laser');
-        const blurry      = document.getElementById('blurryPlaceholder');
-        const scanningImg = document.getElementById('scanningImage');
+    async function initScanner() {
+        scanCompleted = false;
+        const stateEl     = document.getElementById('cameraState');
+        const stateText   = document.getElementById('cameraStateText');
+        const retryBtn    = document.getElementById('cameraRetryBtn');
         const complete    = document.getElementById('completeScreen');
         const rescanBtn   = document.getElementById('rescanBtn');
         const railIdCard  = document.getElementById('railIdCard');
         const railIdValue = document.getElementById('railIdValue');
         const railIdBadge = document.getElementById('railIdBadge');
 
-        // Reset
-        blurry.style.display = 'block';
-        scanningImg.style.display = 'none';
-        laser.style.display = 'none';
+        // Reset UI state
         complete.style.display = 'none';
         rescanBtn.classList.add('hidden');
         railIdCard.classList.remove('found');
         railIdValue.textContent = 'Awaiting scan…';
         railIdBadge.textContent = 'Pending';
+        stateEl.classList.remove('hidden');
+        retryBtn.classList.add('hidden');
+        stateText.textContent = 'Starting camera…';
 
-        // Phase 1: blurry → scanning image + laser (3s)
-        setTimeout(() => {
-            blurry.style.display = 'none';
-            scanningImg.style.display = 'block';
-            laser.style.display = 'block';
+        // Stop any existing scanner cleanly
+        if (html5QrCode) {
+            try { await html5QrCode.stop(); } catch (e) {}
+            try { html5QrCode.clear(); } catch (e) {}
+            html5QrCode = null;
+        }
 
-            // Phase 2: scan completes (2s)
-            setTimeout(() => { completeScan(); }, 2000);
-        }, 3000);
+        // Check for library
+        if (typeof Html5Qrcode === 'undefined') {
+            stateText.textContent = 'Scanner library failed to load. Use Manual Entry below.';
+            retryBtn.classList.remove('hidden');
+            return;
+        }
+
+        html5QrCode = new Html5Qrcode('qrReader', { verbose: false });
+
+        const config = {
+            fps: 12,
+            qrbox: undefined,                    // scan full viewport
+            aspectRatio: undefined,              // let CSS handle it
+            disableFlip: false,                  // try both flipped & unflipped
+            formatsToSupport: undefined,         // all formats — QR + 1D
+        };
+
+        try {
+            await html5QrCode.start(
+                { facingMode: 'environment' },   // back camera
+                config,
+                handleScanSuccess,
+                handleScanFailure
+            );
+            // Camera started — hide the loading state
+            stateEl.classList.add('hidden');
+            // Try to set up torch
+            setTimeout(setupTorch, 500);
+        } catch (err) {
+            console.error('Camera init failed:', err);
+            // Permission denied or no camera
+            if (err && /permission|notallowed|denied/i.test(String(err))) {
+                stateText.textContent = 'Camera access denied. Grant permission in browser settings, or use Manual Entry below.';
+            } else if (err && /notfound|nocamera/i.test(String(err))) {
+                stateText.textContent = 'No camera found on this device. Use Manual Entry below.';
+            } else {
+                stateText.textContent = 'Could not start camera. Tap to retry, or use Manual Entry below.';
+            }
+            retryBtn.classList.remove('hidden');
+        }
     }
 
-    function completeScan() {
-        const laser       = document.getElementById('laser');
+    function handleScanSuccess(decodedText, decodedResult) {
+        if (scanCompleted) return;
+        const normalized = String(decodedText || '').trim().toUpperCase();
+
+        if (RAIL_ID_REGEX.test(normalized)) {
+            scanCompleted = true;
+            completeScan(normalized);
+        } else {
+            // Invalid format — brief shake, keep scanning
+            triggerInvalidShake();
+        }
+    }
+
+    function handleScanFailure(errorMessage) {
+        // Called frequently when nothing is in frame — silent, don't log
+    }
+
+    function triggerInvalidShake() {
+        const now = Date.now();
+        if (now - lastInvalidShake < 600) return;  // debounce — one shake per 600ms
+        lastInvalidShake = now;
+        const card = document.getElementById('scannerBox');
+        card.classList.add('shake');
+        setTimeout(() => card.classList.remove('shake'), 400);
+    }
+
+    async function completeScan(railId) {
         const complete    = document.getElementById('completeScreen');
-        const rescanBtn   = document.getElementById('rescanBtn');
         const railIdCard  = document.getElementById('railIdCard');
         const railIdValue = document.getElementById('railIdValue');
         const railIdBadge = document.getElementById('railIdBadge');
+
         // Sound + haptic
         successSound.play().catch(() => {});
         if (navigator.vibrate) navigator.vibrate([100, 50, 100]);
 
-        // Scanner shows complete
-        laser.style.display = 'none';
+        // Stop camera — we've got our scan
+        if (html5QrCode) {
+            try { await html5QrCode.stop(); } catch (e) {}
+        }
+
+        // Show complete overlay
         complete.style.display = 'flex';
 
-        // Rail ID card goes green
+        // Update Rail ID card with REAL scanned value
         railIdCard.classList.add('found');
-        railIdValue.textContent = '4Z1-9S8TW';
+        railIdValue.textContent = railId;
         railIdBadge.textContent = 'Scanned ✓';
+
+        // Persist scanned rail ID
+        sessionStorage.setItem('scannedRailId', railId);
 
         // Bounce the checkmark
         const checkEl = document.getElementById('completeCheck');
-        setTimeout(() => {
-            checkEl.classList.add('bounce-trigger');
-            setTimeout(() => checkEl.classList.remove('bounce-trigger'), 550);
-        }, 300);
-
-        rescanBtn.classList.remove('hidden');
+        if (checkEl) {
+            checkEl.style.animation = 'none';
+            void checkEl.offsetWidth;
+            checkEl.style.animation = '';
+        }
     }
+
+    // ── Torch (flashlight) ──
+    function setupTorch() {
+        const btn = document.getElementById('torchBtn');
+        try {
+            const stream = document.querySelector('#qrReader video')?.srcObject;
+            if (!stream) return;
+            const track = stream.getVideoTracks()[0];
+            if (!track) return;
+            currentTrack = track;
+            const capabilities = track.getCapabilities ? track.getCapabilities() : {};
+            if (capabilities.torch) {
+                btn.classList.remove('hidden');
+            } else {
+                btn.classList.add('hidden');   // iOS Safari typically lacks torch support
+            }
+        } catch (e) {
+            btn.classList.add('hidden');
+        }
+    }
+
+    async function toggleTorch() {
+        if (!currentTrack) return;
+        torchOn = !torchOn;
+        try {
+            await currentTrack.applyConstraints({ advanced: [{ torch: torchOn }] });
+            document.getElementById('torchBtn').classList.toggle('on', torchOn);
+        } catch (e) {
+            console.warn('Torch toggle failed', e);
+            torchOn = !torchOn;  // revert state
+        }
+    }
+
+    // ── Manual Entry ──
+    function openManualEntry() {
+        const overlay = document.getElementById('manualOverlay');
+        const input = document.getElementById('manualInput');
+        const err = document.getElementById('manualError');
+        input.value = '';
+        input.classList.remove('error');
+        err.textContent = '';
+        overlay.classList.add('open');
+        setTimeout(() => input.focus(), 50);
+    }
+
+    function closeManualEntry() {
+        document.getElementById('manualOverlay').classList.remove('open');
+    }
+
+    async function submitManualEntry() {
+        const input = document.getElementById('manualInput');
+        const err = document.getElementById('manualError');
+        const value = input.value.trim().toUpperCase();
+        if (!RAIL_ID_REGEX.test(value)) {
+            input.classList.add('error');
+            err.textContent = 'Enter 4 characters, dash, 4 characters (e.g. Y01R-006M).';
+            return;
+        }
+        closeManualEntry();
+        scanCompleted = true;
+        completeScan(value);
+    }
+
+    // Auto-uppercase manual input as the user types
+    document.addEventListener('DOMContentLoaded', () => {
+        const input = document.getElementById('manualInput');
+        if (input) {
+            input.addEventListener('input', () => {
+                const pos = input.selectionStart;
+                input.value = input.value.toUpperCase();
+                input.classList.remove('error');
+                document.getElementById('manualError').textContent = '';
+                // Auto-insert hyphen after 4 chars if user is typing without one
+                if (input.value.length === 4 && !input.value.includes('-')) {
+                    input.value = input.value + '-';
+                    input.setSelectionRange(5, 5);
+                } else {
+                    input.setSelectionRange(pos, pos);
+                }
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') submitManualEntry();
+                else if (e.key === 'Escape') closeManualEntry();
+            });
+        }
+    });
 
     function validateAndGo() {
         window.location.href = 'install_registering.html';
@@ -619,5 +956,22 @@
         if (pill) pill.textContent = aisle + '-' + section;
     })();
 </script>
+<!-- Manual Entry modal -->
+<div class="manual-overlay" id="manualOverlay" onclick="if(event.target===this)closeManualEntry()">
+    <div class="manual-sheet">
+        <div class="manual-title">Enter Rail ID</div>
+        <div class="manual-sub">Type the 9-character ID printed on the rail.</div>
+        <input class="manual-input" id="manualInput" type="text" placeholder="XXXX-XXXX" maxlength="9" autocomplete="off" autocapitalize="characters" spellcheck="false">
+        <div class="manual-error" id="manualError"></div>
+        <div class="manual-actions">
+            <button class="manual-cancel" onclick="closeManualEntry()">Cancel</button>
+            <button class="manual-submit" onclick="submitManualEntry()">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<!-- html5-qrcode library — loaded from jsDelivr CDN -->
+<script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
 </body>
 </html>
