@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>Vusion - Select Section</title>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -74,12 +74,12 @@
         .status-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         .dot-installed { background: #059669; } .dot-flagged { background: #D97706; } .dot-uninstalled { background: #CBD5E1; }
 
-        .status-slot { position: relative; margin-top: 14px; min-height: 50px; }
-        .status-badge { position: absolute; inset: 0; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; justify-content: space-between; opacity: 0; pointer-events: none; transition: opacity .2s; }
+        .status-slot { position: relative; margin-top: 12px; min-height: 40px; }
+        .status-badge { position: absolute; inset: 0; background: #EFF6FF; border: 1.5px solid #BFDBFE; border-radius: 12px; padding: 8px 14px; display: flex; align-items: center; justify-content: space-between; opacity: 0; pointer-events: none; transition: opacity .2s; }
         .status-badge.visible { opacity: 1; pointer-events: all; }
         .badge-label { font-size: 11px; font-weight: 700; color: #2563EB; text-transform: uppercase; letter-spacing: .5px; }
-        .badge-value { font-size: 18px; font-weight: 800; color: #2563EB; }
-        .status-error { position: absolute; inset: 0; background: #FEF2F2; border: 1.5px solid #FECACA; border-radius: 12px; padding: 13px 16px; font-size: 13px; color: #DC2626; font-weight: 600; display: flex; align-items: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
+        .badge-value { font-size: 16px; font-weight: 800; color: #2563EB; }
+        .status-error { position: absolute; inset: 0; background: #FEF2F2; border: 1.5px solid #FECACA; border-radius: 12px; padding: 9px 14px; font-size: 13px; color: #DC2626; font-weight: 600; display: flex; align-items: center; opacity: 0; pointer-events: none; transition: opacity .2s; }
         .status-error.visible { opacity: 1; pointer-events: all; }
 
         /* Nav */
@@ -123,6 +123,17 @@
 
         @keyframes fadeUp { from { opacity:0; transform:translateY(16px); } to { opacity:1; transform:translateY(0); } }
     </style>
+    <!-- PWA — TopStock Companion -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2563EB">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="TopStock">
+    <link rel="apple-touch-icon" href="icons/icon-180.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+    <!-- /PWA -->
 </head>
 <body>
 <div class="phone-shell">
