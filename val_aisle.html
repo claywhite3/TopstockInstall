@@ -208,12 +208,14 @@
     document.getElementById('hdrAisle').textContent = 'Aisle ' + aisle;
     document.getElementById('hdrZone').textContent  = 'Zone ' + zone.toUpperCase() + ' · 8 sections';
     document.getElementById('btnBack').href = 'val_zone.html?zone=' + zone.toUpperCase();
-    // Show opposing aisle if stored
+    // Show opposing aisle if stored — and remember it for rail_detail links
+    let _opposingAisle = ''; // e.g. "C2" — empty if not configured
     try {
         const oppMap = JSON.parse(sessionStorage.getItem('opposingAisles_' + zone.toUpperCase()) || '{}');
         const oppNum = oppMap[aisle.replace(/[^0-9]/g,'')] || oppMap[aisle];
+        if (oppNum) _opposingAisle = zone.toUpperCase() + oppNum;
         const oppEl  = document.getElementById('hdrOpposing');
-        if (oppEl) oppEl.textContent = oppNum ? 'Opposing aisle: ' + zone.toUpperCase() + oppNum : '';
+        if (oppEl) oppEl.textContent = oppNum ? 'Opposing aisle: ' + _opposingAisle : '';
     } catch(e) {}
 
     // ─────────────────────────────────────────────
@@ -341,7 +343,18 @@
 
         let openTag, closeTag, chev, decoration;
         if (isNavigable) {
-            const href = `rail_detail.html?aisle=${aisleId}&section=${sectionParam}&rail=${railParam}&status=${statusParam}`;
+            // Compute viewed (opposing-aisle counterpart) — same section number on opposing aisle
+            // Strip 8ft L/R suffix and sub-section decimal so we pair section-to-section
+            const baseSec = String(pos).replace(/-[LR]$/i, '').split('.')[0];
+            const viewedParam = _opposingAisle
+                ? encodeURIComponent(_opposingAisle + '-' + baseSec)
+                : '';
+            const addlParam = (sec.additionalSections && sec.additionalSections.length)
+                ? encodeURIComponent(sec.additionalSections.join(','))
+                : '';
+            let href = `rail_detail.html?aisle=${aisleId}&section=${sectionParam}&rail=${railParam}&status=${statusParam}`;
+            if (viewedParam) href += `&viewed=${viewedParam}`;
+            if (addlParam)   href += `&addl=${addlParam}`;
             openTag = `<a href="${href}"`;
             closeTag = '</a>';
             chev = CHEVRON;

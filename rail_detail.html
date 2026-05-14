@@ -23,6 +23,20 @@
         .rail-id { font-size: 28px; font-weight: 800; color: #111827; line-height: 1.1; margin-top: 2px; font-family: 'DM Sans', monospace; letter-spacing: .5px; }
         .rail-meta { font-size: 13px; color: #6B7280; font-weight: 500; margin-top: 4px; }
 
+        /* Location pill rows (in rail-header) */
+        .loc-eyebrow { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; margin-top: 12px; }
+        .loc-row { display: flex; align-items: center; gap: 8px; margin-top: 6px; flex-wrap: wrap; }
+        .pill-loc-primary { display: inline-flex; align-items: center; font-size: 14px; font-weight: 800; padding: 6px 12px; border-radius: 10px; background: #EFF6FF; color: #2563EB; border: 1.5px solid #BFDBFE; font-family: 'DM Sans', monospace; letter-spacing: .4px; }
+        .pill-loc-viewed  { display: inline-flex; align-items: center; gap: 5px; font-size: 12px; font-weight: 800; padding: 5px 10px; border-radius: 9px; background: #F5F3FF; color: #7C3AED; border: 1.5px solid #DDD6FE; font-family: 'DM Sans', monospace; letter-spacing: .4px; }
+        .pill-loc-viewed svg { width: 13px; height: 13px; flex-shrink: 0; }
+        .loc-arrow { color: #9CA3AF; flex-shrink: 0; display: flex; align-items: center; }
+        .loc-arrow svg { width: 16px; height: 16px; }
+
+        /* Additional sections row (second row, smaller) */
+        .addl-eyebrow { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; margin-top: 10px; }
+        .addl-row { display: flex; gap: 5px; flex-wrap: wrap; margin-top: 5px; }
+        .pill-addl { display: inline-flex; align-items: center; font-size: 11px; font-weight: 800; padding: 4px 8px; border-radius: 7px; background: #DBEAFE; color: #1D4ED8; border: 1px solid #93C5FD; font-family: 'DM Sans', monospace; letter-spacing: .3px; }
+
         /* Status banner */
         .status-banner { margin: 14px 20px 0; border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
         .status-banner.testing { background: #FFFBEB; border: 1.5px solid #FDE68A; }
@@ -37,13 +51,6 @@
         .status-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
         .status-ts-label { font-size: 10px; font-weight: 600; color: #9CA3AF; text-transform: uppercase; letter-spacing: .3px; }
         .status-ts-val   { font-size: 13px; font-weight: 700; color: #374151; }
-
-        /* Info card */
-        .info-card { margin: 12px 20px 0; background: #fff; border-radius: 18px; padding: 2px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-        .info-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; border-bottom: 1px solid #F3F4F6; }
-        .info-row:last-child { border-bottom: none; }
-        .info-label { font-size: 13px; font-weight: 500; color: #9CA3AF; }
-        .info-val   { font-size: 13px; font-weight: 700; color: #111827; text-align: right; }
 
         /* System checks */
         .check-card { margin: 12px 20px 0; background: #fff; border-radius: 18px; padding: 6px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
@@ -146,6 +153,23 @@
         <div class="rail-id-label">Rail ID</div>
         <div class="rail-id" id="hdrRailId">—</div>
         <div class="rail-meta" id="hdrMeta">—</div>
+
+        <!-- Row 1: Installed → Viewing -->
+        <div class="loc-eyebrow" id="locEyebrow" style="display:none;">Installed → Viewing</div>
+        <div class="loc-row" id="locRow" style="display:none;">
+            <span class="pill-loc-primary" id="pillInstalled">—</span>
+            <span class="loc-arrow" id="locArrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+            </span>
+            <span class="pill-loc-viewed" id="pillViewed">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                <span id="pillViewedVal">—</span>
+            </span>
+        </div>
+
+        <!-- Row 2: Additional sections -->
+        <div class="addl-eyebrow" id="addlEyebrow" style="display:none;">Additional Sections</div>
+        <div class="addl-row" id="addlRow" style="display:none;"></div>
     </div>
 
     <!-- Status banner -->
@@ -157,18 +181,6 @@
         <div class="status-right">
             <div class="status-ts-label" id="bannerTsLabel">Last test</div>
             <div class="status-ts-val"   id="bannerTsVal">—</div>
-        </div>
-    </div>
-
-    <!-- Info card -->
-    <div class="info-card">
-        <div class="info-row">
-            <span class="info-label">Additional Aisle Locations</span>
-            <span class="info-val" id="infoAdditional">—</span>
-        </div>
-        <div class="info-row">
-            <span class="info-label">Viewed Aisle Location</span>
-            <span class="info-val" id="infoViewed">—</span>
         </div>
     </div>
 
@@ -502,30 +514,55 @@
         const section = p.get('section') || '2';
         const rail    = p.get('rail')    || 'Z001-0123';
         const status  = p.get('status')  || 'issues';
+        const viewed  = p.get('viewed')  || '';   // e.g. "C2-1" — from upstream
+        const addl    = p.get('addl')    || '';   // e.g. "F4.2,F4.3,F4.4" — from upstream
         const store   = sessionStorage.getItem('storeName') || 'Store 0100';
-        const zone    = aisle.replace(/[^A-Za-z]/g, '')[0] || 'C';
-        const aisleNum = aisle.replace(/[^0-9]/g, '');
-        const secNum  = parseInt(section) || 2;
 
         // Avatar
         const userName = sessionStorage.getItem('userName') || 'CW';
         document.getElementById('avatarEl').textContent = userName.slice(0,2).toUpperCase();
 
-        // Header
+        // Header — meta line drops "Installed Aisle Location" since it now appears as a pill
         document.getElementById('hdrRailId').textContent = rail;
-        document.getElementById('hdrMeta').textContent   = store + '  ·  Installed Aisle Location ' + aisle + '-' + section;
+        document.getElementById('hdrMeta').textContent   = store;
         document.getElementById('modalRailId').textContent = rail;
 
-        // Info card — Additional = sub-mods, Viewed = opposing aisle section
-        const oppAisleNum = parseInt(aisleNum) % 2 === 0 ? parseInt(aisleNum) + 1 : parseInt(aisleNum) - 1;
-        document.getElementById('infoAdditional').textContent = aisle + '.' + (secNum + 1) + ', ' + aisle + '.' + (secNum + 2);
-        document.getElementById('infoViewed').textContent     = zone + oppAisleNum + '.' + section;
+        // Row 1: Installed → Viewing pills
+        const installedLoc = aisle + '-' + section;
+        document.getElementById('pillInstalled').textContent = installedLoc;
+        if (viewed) {
+            document.getElementById('pillViewedVal').textContent = viewed;
+            document.getElementById('locEyebrow').style.display = '';
+            document.getElementById('locRow').style.display = '';
+        } else {
+            // No opposing aisle configured — show just the installed pill, no arrow/viewed
+            document.getElementById('locEyebrow').textContent = 'Installed';
+            document.getElementById('locEyebrow').style.display = '';
+            document.getElementById('locRow').style.display = '';
+            document.getElementById('locArrow').style.display = 'none';
+            document.getElementById('pillViewed').style.display = 'none';
+        }
+
+        // Row 2: Additional sections pills
+        if (addl) {
+            const sections = addl.split(',').map(s => s.trim()).filter(Boolean);
+            if (sections.length) {
+                const row = document.getElementById('addlRow');
+                row.innerHTML = sections.map(s =>
+                    `<span class="pill-addl">${s}</span>`
+                ).join('');
+                document.getElementById('addlEyebrow').style.display = '';
+                row.style.display = '';
+            }
+        }
 
         window._initialStatus = status;
         window._autoRetest    = (p.get('retest') === '1');
 
-        // Pass aisle/section/rail to drill links
-        const params = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail);
+        // Pass aisle/section/rail to drill links (preserve viewed/addl too so back-nav works)
+        let params = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail);
+        if (viewed) params += '&viewed=' + encodeURIComponent(viewed);
+        if (addl)   params += '&addl='   + encodeURIComponent(addl);
         ['power','ble','wifi','camera','led','elabel'].forEach(id => {
             const el = document.getElementById('drill-' + id);
             if (el && el.getAttribute('href') !== '#') {
