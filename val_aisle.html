@@ -352,9 +352,16 @@
             const addlParam = (sec.additionalSections && sec.additionalSections.length)
                 ? encodeURIComponent(sec.additionalSections.join(','))
                 : '';
+            // Map issue types → rail_detail check IDs so the right pills fail downstream
+            const ISSUE_TO_CHECK = { batt:'power', net:'ble', cam:'camera', led:'led', esl:'elabel' };
+            const failsList = (sec.issues || [])
+                .map(iss => ISSUE_TO_CHECK[iss.type])
+                .filter(Boolean);
+            const failsParam = failsList.length ? encodeURIComponent(failsList.join(',')) : '';
             let href = `rail_detail.html?aisle=${aisleId}&section=${sectionParam}&rail=${railParam}&status=${statusParam}`;
             if (viewedParam) href += `&viewed=${viewedParam}`;
             if (addlParam)   href += `&addl=${addlParam}`;
+            if (failsParam)  href += `&fails=${failsParam}`;
             openTag = `<a href="${href}"`;
             closeTag = '</a>';
             chev = CHEVRON;

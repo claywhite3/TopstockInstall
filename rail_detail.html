@@ -38,21 +38,6 @@
         .addl-row { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 5px; }
         .pill-addl { display: inline-flex; align-items: center; font-size: 11px; font-weight: 800; padding: 4px 12px; border-radius: 7px; background: #DBEAFE; color: #1D4ED8; border: 1px solid #93C5FD; font-family: 'DM Sans', monospace; letter-spacing: .3px; }
 
-        /* Status banner */
-        .status-banner { margin: 14px 20px 0; border-radius: 16px; padding: 14px 16px; display: flex; align-items: center; justify-content: space-between; }
-        .status-banner.testing { background: #FFFBEB; border: 1.5px solid #FDE68A; }
-        .status-banner.ok      { background: #F0FDF4; border: 1.5px solid #86EFAC; }
-        .status-banner.issues  { background: #FFF7ED; border: 1.5px solid #FED7AA; }
-        .status-left { display: flex; flex-direction: column; gap: 2px; }
-        .status-eyebrow { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .4px; }
-        .status-val { font-size: 18px; font-weight: 800; }
-        .status-banner.testing .status-val { color: #D97706; }
-        .status-banner.ok      .status-val { color: #16A34A; }
-        .status-banner.issues  .status-val { color: #F97316; }
-        .status-right { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; }
-        .status-ts-label { font-size: 10px; font-weight: 600; color: #9CA3AF; text-transform: uppercase; letter-spacing: .3px; }
-        .status-ts-val   { font-size: 13px; font-weight: 700; color: #374151; }
-
         /* System checks */
         .check-card { margin: 12px 20px 0; background: #fff; border-radius: 18px; padding: 6px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
         .check-section-label { font-size: 10px; font-weight: 700; color: #9CA3AF; text-transform: uppercase; letter-spacing: .5px; padding: 10px 18px 6px; }
@@ -177,18 +162,6 @@
         <!-- Row 2: Additional sections -->
         <div class="addl-eyebrow" id="addlEyebrow" style="display:none;">Additional Sections</div>
         <div class="addl-row" id="addlRow" style="display:none;"></div>
-    </div>
-
-    <!-- Status banner -->
-    <div class="status-banner testing" id="mainBanner">
-        <div class="status-left">
-            <div class="status-eyebrow">Installation Status</div>
-            <div class="status-val" id="mainStatusVal"><span class="spin">↻</span> Testing…</div>
-        </div>
-        <div class="status-right">
-            <div class="status-ts-label" id="bannerTsLabel">Last test</div>
-            <div class="status-ts-val"   id="bannerTsVal">—</div>
-        </div>
     </div>
 
     <!-- System checks -->
@@ -365,16 +338,15 @@
 </div>
 
 <script>
-    const mainBanner    = document.getElementById('mainBanner');
-    const mainStatusVal = document.getElementById('mainStatusVal');
-    const bannerTsVal   = document.getElementById('bannerTsVal');
-    const bannerTsLabel = document.getElementById('bannerTsLabel');
-    const tsLastTest    = document.getElementById('tsLastTest');
     const btnSwap       = document.getElementById('btnSwap');
     const btnRetest     = document.getElementById('btnRetest');
     const btnFull       = document.getElementById('btnFull');
+    const tsLastTest    = document.getElementById('tsLastTest');
 
     const CHECKS = ['power','ble','wifi','camera','led','elabel'];
+
+    // Set of failing check IDs — populated from URL `fails` param in the init block below
+    window._failingChecks = new Set();
 
     function now() {
         const d = new Date();
@@ -385,10 +357,24 @@
                String(d.getMinutes()).padStart(2,'0');
     }
 
+    // Generate a plausible "failure-start" timestamp — N minutes ago, stable per page load per check
+    const _failTimes = {};
+    function failureTimestamp(checkId) {
+        if (_failTimes[checkId]) return _failTimes[checkId];
+        // Random 4–40 minutes ago, deterministic order so checks aren't all the exact same time
+        const minsAgo = 4 + (checkId.charCodeAt(0) % 7) * 5 + Math.floor(Math.random() * 5);
+        const d = new Date(Date.now() - minsAgo * 60000);
+        const stamp = d.getFullYear() + '/' +
+                      String(d.getMonth()+1).padStart(2,'0') + '/' +
+                      String(d.getDate()).padStart(2,'0') + ' · ' +
+                      String(d.getHours()).padStart(2,'0') + ':' +
+                      String(d.getMinutes()).padStart(2,'0');
+        _failTimes[checkId] = stamp;
+        return stamp;
+    }
+
     function setTimestamp() {
-        const t = now();
-        bannerTsVal.textContent = t;
-        tsLastTest.textContent  = t;
+        if (tsLastTest) tsLastTest.textContent = now();
     }
 
     function setPill(id, state, subtext) {
@@ -416,18 +402,6 @@
         if (sub && subtext !== undefined) sub.textContent = subtext;
     }
 
-    function setBanner(state) {
-        mainBanner.className = 'status-banner ' + state;
-        bannerTsLabel.textContent = state === 'issues' ? 'Failure start' : 'Last test';
-        if (state === 'testing') {
-            mainStatusVal.innerHTML = '<span class="spin">↻</span> Testing…';
-        } else if (state === 'ok') {
-            mainStatusVal.textContent = '✓ Installed';
-        } else if (state === 'issues') {
-            mainStatusVal.textContent = '⚠ Needs Attention';
-        }
-    }
-
     function lockButtons(lock) {
         btnSwap.disabled   = lock;
         btnRetest.disabled = lock;
@@ -443,21 +417,23 @@
         elabel: { ok: 'Displaying · Aisle C3',            fail: 'Tag not responding' },
     };
 
+    // Build the fail sub-line: "<reason> · Since <timestamp>"
+    function failSub(id) {
+        return SUB_LABELS[id].fail + ' · Since ' + failureTimestamp(id);
+    }
+
     window.addEventListener('load', () => {
         setTimestamp();
         CHECKS.forEach(id => setPill(id, 'testing', 'Running check…'));
 
-        const initialOk = (window._initialStatus !== 'issues');
         const delays = [900, 1600, 2300, 3100, 3800, 4500];
-
         CHECKS.forEach((id, i) => {
-            const isFailing = !initialOk && id === 'camera';
+            const isFailing = window._failingChecks.has(id);
             setTimeout(() => setPill(id, isFailing ? 'fail' : 'ok',
-                isFailing ? SUB_LABELS[id].fail : SUB_LABELS[id].ok), delays[i]);
+                isFailing ? failSub(id) : SUB_LABELS[id].ok), delays[i]);
         });
 
         setTimeout(() => {
-            setBanner(initialOk ? 'ok' : 'issues');
             setTimestamp();
             lockButtons(false);
             if (window._autoRetest) setTimeout(runRetest, 600);
@@ -466,14 +442,14 @@
 
     function runRetest() {
         lockButtons(true);
-        setBanner('testing');
         CHECKS.forEach(id => setPill(id, 'testing', 'Re-testing…'));
         const delays = [700, 1200, 1700, 2300, 2900, 3500];
         CHECKS.forEach((id, i) => {
             setTimeout(() => setPill(id, 'ok', SUB_LABELS[id].ok), delays[i]);
         });
         setTimeout(() => {
-            setBanner('ok');
+            // All checks now passing — clear failing set so the next render is clean
+            window._failingChecks.clear();
             setTimestamp();
             lockButtons(false);
         }, 3800);
@@ -481,14 +457,13 @@
 
     function runFullTest() {
         lockButtons(true);
-        setBanner('testing');
         CHECKS.forEach(id => setPill(id, 'testing', 'Running check…'));
         const delays = [800, 1500, 2200, 3000, 3700, 4400];
         CHECKS.forEach((id, i) => {
             setTimeout(() => setPill(id, 'ok', SUB_LABELS[id].ok), delays[i]);
         });
         setTimeout(() => {
-            setBanner('ok');
+            window._failingChecks.clear();
             setTimestamp();
             lockButtons(false);
         }, 4700);
@@ -523,6 +498,17 @@
         const status  = p.get('status')  || 'issues';
         let   viewed  = p.get('viewed')  || '';   // e.g. "C2-1" — from upstream
         const addl    = p.get('addl')    || '';   // e.g. "F4.2,F4.3,F4.4" — from upstream
+        const fails   = p.get('fails')   || '';   // e.g. "power,ble" — from upstream
+
+        // Populate failing-checks set so init render fails the right pills
+        if (fails) {
+            fails.split(',').map(s => s.trim()).filter(Boolean).forEach(id => {
+                window._failingChecks.add(id);
+            });
+        } else if (status === 'issues') {
+            // Legacy direct entry (status=issues with no fails list) — fall back to camera as the failing check
+            window._failingChecks.add('camera');
+        }
 
         // Avatar
         const userName = sessionStorage.getItem('userName') || 'CW';
@@ -581,10 +567,11 @@
         window._initialStatus = status;
         window._autoRetest    = (p.get('retest') === '1');
 
-        // Pass aisle/section/rail to drill links (preserve viewed/addl too so back-nav works)
+        // Pass aisle/section/rail to drill links (preserve viewed/addl/fails so back-nav works)
         let params = '?aisle=' + aisle + '&section=' + section + '&rail=' + encodeURIComponent(rail);
         if (viewed) params += '&viewed=' + encodeURIComponent(viewed);
         if (addl)   params += '&addl='   + encodeURIComponent(addl);
+        if (fails)  params += '&fails='  + encodeURIComponent(fails);
         ['power','ble','wifi','camera','led','elabel'].forEach(id => {
             const el = document.getElementById('drill-' + id);
             if (el && el.getAttribute('href') !== '#') {
