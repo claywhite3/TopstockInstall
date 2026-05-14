@@ -293,7 +293,7 @@
                 <line x1="16" y1="8" x2="16" y2="16"/>
                 <line x1="13" y1="14" x2="13" y2="16"/>
             </svg>
-            <span>4Z1-9S8TW</span>
+            <span id="failRailId">—</span>
         </div>
 
         <p class="card-body-text">
@@ -337,6 +337,11 @@
     </div>
 
 </div>
+
+<script>
+    const railId = sessionStorage.getItem('scannedRailId') || '—';
+    document.getElementById('failRailId').textContent = railId;
+</script>
 
 </body>
 </html>

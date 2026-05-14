@@ -480,7 +480,7 @@
             </div>
             <div class="rail-meta-chip wide">
                 <div class="chip-label">Rail ID</div>
-                <div class="chip-value green">4Z1-9S8TW</div>
+                <div class="chip-value green" id="chipRailId">—</div>
             </div>
         </div>
     </div>
@@ -540,9 +540,11 @@
 <script>
     const aisle   = sessionStorage.getItem('selectedAisle')   || '—';
     const section = sessionStorage.getItem('selectedSection') || '—';
+    const railId  = sessionStorage.getItem('scannedRailId')   || '—';
 
     document.getElementById('chipAisle').textContent   = aisle;
     document.getElementById('chipSection').textContent = section;
+    document.getElementById('chipRailId').textContent  = railId;
     document.getElementById('topPill').textContent     = aisle + '-' + section;
 
     // Get ordered section list for current aisle — from sessionStorage or fallback logic
